@@ -113,7 +113,7 @@ minetest.register_node("digibutton:button_off", {
 		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
 		minetest.swap_node(pos, {name = "digibutton:button_on", param2=node.param2})
 		minetest.sound_play("mesecons_button_push", {pos=pos})
-		minetest.after(1, digibutton.button_turnoff, pos)
+		minetest.after(0.5, digibutton.button_turnoff, pos)
 	end,
 	sounds = default.node_sound_stone_defaults(),
 })
@@ -151,6 +151,11 @@ minetest.register_node("digibutton:button_on", {
 	},
 	groups = {dig_immediate=2, not_in_creative_inventory=1},
 	drop = 'digibutton:button',
+	on_rightclick = function (pos, node, clicker)
+		local meta = minetest.get_meta(pos)
+		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
+		minetest.sound_play("mesecons_button_push", {pos=pos})
+	end,
 	description = "Digilines Button (on state - you hacker you!)",
 	sounds = default.node_sound_stone_defaults(),
 })
