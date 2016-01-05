@@ -1,16 +1,16 @@
-digibutton = {}
+digistuff = {}
 
-digibutton.button_turnoff = function (pos)
+digistuff.button_turnoff = function (pos)
 	local node = minetest.get_node(pos)
-	if node.name=="digibutton:button_on" then --has not been dug
-		minetest.swap_node(pos, {name = "digibutton:button_off", param2=node.param2})
+	if node.name=="digistuff:button_on" then --has not been dug
+		minetest.swap_node(pos, {name = "digistuff:button_off", param2=node.param2})
 		minetest.sound_play("mesecons_button_pop", {pos=pos})
 	end
 end
 
-minetest.register_node("digibutton:digimese", {
+minetest.register_node("digistuff:digimese", {
 	description = "Digimese",
-	tiles = {"digimese.png"},
+	tiles = {"digistuff_digimese.png"},
 	paramtype = "light",
 	light_source = 3,
 	groups = {cracky = 3, level = 2},
@@ -25,15 +25,15 @@ minetest.register_node("digibutton:digimese", {
 	{x = 0, y = 0, z =-1}}}}
 })
 
-minetest.register_node("digibutton:button", {
+minetest.register_node("digistuff:button", {
 	drawtype = "nodebox",
 	tiles = {
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_off.png"
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_off.png"
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -75,15 +75,15 @@ minetest.register_node("digibutton:button", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
-minetest.register_node("digibutton:button_off", {
+minetest.register_node("digistuff:button_off", {
 	drawtype = "nodebox",
 	tiles = {
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_sides.png",
-	"digibutton_off.png"
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_sides.png",
+	"digistuff_digibutton_off.png"
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -106,27 +106,27 @@ minetest.register_node("digibutton:button_off", {
 		receptor = {}
 	},
 	groups = {dig_immediate=2, not_in_creative_inventory=1},
-	drop = "digibutton:button",
+	drop = "digistuff:button",
 	description = "Digilines Button (off state - you hacker you!)",
 	on_rightclick = function (pos, node, clicker)
 		local meta = minetest.get_meta(pos)
 		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
-		minetest.swap_node(pos, {name = "digibutton:button_on", param2=node.param2})
+		minetest.swap_node(pos, {name = "digistuff:button_on", param2=node.param2})
 		minetest.sound_play("mesecons_button_push", {pos=pos})
-		minetest.after(0.5, digibutton.button_turnoff, pos)
+		minetest.after(0.5, digistuff.button_turnoff, pos)
 	end,
 	sounds = default.node_sound_stone_defaults(),
 })
 
-minetest.register_node("digibutton:button_on", {
+minetest.register_node("digistuff:button_on", {
 	drawtype = "nodebox",
 	tiles = {
-		"digibutton_sides.png",
-		"digibutton_sides.png",
-		"digibutton_sides.png",
-		"digibutton_sides.png",
-		"digibutton_sides.png",
-		"digibutton_on.png"
+		"digistuff_digibutton_sides.png",
+		"digistuff_digibutton_sides.png",
+		"digistuff_digibutton_sides.png",
+		"digistuff_digibutton_sides.png",
+		"digistuff_digibutton_sides.png",
+		"digistuff_digibutton_on.png"
 		},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -150,7 +150,7 @@ minetest.register_node("digibutton:button_on", {
 		receptor = {}
 	},
 	groups = {dig_immediate=2, not_in_creative_inventory=1},
-	drop = 'digibutton:button',
+	drop = 'digistuff:button',
 	on_rightclick = function (pos, node, clicker)
 		local meta = minetest.get_meta(pos)
 		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
@@ -161,7 +161,7 @@ minetest.register_node("digibutton:button_on", {
 })
 
 minetest.register_craft({
-	output = "digibutton:digimese",
+	output = "digistuff:digimese",
 	recipe = {
 		{"digilines:wire_std_00000000","digilines:wire_std_00000000","digilines:wire_std_00000000"},
 		{"digilines:wire_std_00000000","default:mese","digilines:wire_std_00000000"},
@@ -170,10 +170,17 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "digibutton:button",
+	output = "digistuff:button",
 	recipe = {
 		{"mesecons_button:button_off"},
 		{"mesecons_luacontroller:luacontroller0000"},
 		{"digilines:wire_std_00000000"}
 	}
 })
+
+minetest.register_alias("digibutton:button","digistuff:button")
+minetest.register_alias("digibutton:button_off","digistuff:button_off")
+minetest.register_alias("digibutton:button_on","digistuff:button_on")
+minetest.register_alias("digibutton:digimese","digistuff:digimese")
+
+
