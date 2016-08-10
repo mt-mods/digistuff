@@ -1,5 +1,52 @@
 digistuff = {}
 
+digistuff.update_panel_formspec = function (pos,dispstr)
+	local meta = minetest.get_meta(pos)
+	local fs = "size[10,8]"..
+		"background[0,0;0,0;digistuff_panel_bg.png;true]"..
+		"label[0,0;%s]"..
+		"image_button[2,4.5;1,1;digistuff_adwaita_go-up.png;up;]"..
+		"image_button[1,5;1,1;digistuff_adwaita_go-previous.png;left;]"..
+		"image_button[3,5;1,1;digistuff_adwaita_go-next.png;right;]"..
+		"image_button[2,5.5;1,1;digistuff_adwaita_go-down.png;down;]"..
+		"image_button[1,6.5;1,1;digistuff_adwaita_edit-undo.png;back;]"..
+		"image_button[3,6.5;1,1;digistuff_adwaita_emblem-default.png;enter;]"..
+		"field[6,5.75;2,1;channel;Channel;${channel}]"..
+		"button[8,5.5;1,1;savechan;Set]"
+	fs = fs:format(minetest.formspec_escape(dispstr))
+	meta:set_string("formspec",fs)
+end
+
+digistuff.panel_on_digiline_receive = function (pos, node, channel, msg)
+	local meta = minetest.get_meta(pos)
+	local setchan = meta:get_string("channel")
+	if channel ~= setchan then return end
+	if type(msg) ~= "string" then return end
+	digistuff.update_panel_formspec(pos,msg)
+end
+
+digistuff.panel_on_receive_fields = function(pos, formname, fields, sender)
+	local meta = minetest.get_meta(pos)
+	local setchan = meta:get_string("channel")
+	if fields.savechan then
+		meta:set_string("channel",fields.channel)
+		local helpmsg = "Channel has been set. Waiting for data..."
+		digistuff.update_panel_formspec(pos,helpmsg)
+	elseif fields.up then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "up")
+	elseif fields.down then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "down")
+	elseif fields.left then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "left")
+	elseif fields.right then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "right")
+	elseif fields.back then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "back")
+	elseif fields.enter then
+		digiline:receptor_send(pos, digiline.rules.default, setchan, "enter")
+	end
+end
+
 digistuff.button_turnoff = function (pos)
 	local node = minetest.get_node(pos)
 	if node.name=="digistuff:button_on" then --has not been dug
@@ -233,11 +280,54 @@ minetest.register_abm({
 		end
 })
 
+minetest.register_node("digistuff:panel", {
+	description = "Digilines Control Panel",
+	groups = {cracky=3},
+	on_construct = function(pos)
+		local helpmsg = "Please set a channel."
+		digistuff.update_panel_formspec(pos,helpmsg)
+	end,
+	drawtype = "nodebox",
+	tiles = {
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_front.png"
+		},
+	paramtype = "light",
+	paramtype2 = "facedir",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
+		}
+    	},
+	on_receive_fields = digistuff.panel_on_receive_fields,
+	digiline = 
+	{
+		receptor = {},
+		effector = {
+			action = digistuff.panel_on_digiline_receive
+		},
+	},
+})
+
 minetest.register_craft({
 	output = "digistuff:detector",
 	recipe = {
 		{"mesecons_detector:object_detector_off"},
 		{"mesecons_luacontroller:luacontroller0000"},
 		{"digilines:wire_std_00000000"}
+	}
+})
+
+minetest.register_craft({
+	output = "digistuff:panel",
+	recipe = {
+		{"","digistuff:button",""},
+		{"digistuff:button","digilines:lcd","digistuff:button"},
+		{"","digistuff:button",""}
 	}
 })
