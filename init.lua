@@ -305,6 +305,11 @@ minetest.register_node("digistuff:detector", {
 		meta:set_string("formspec","size[8,4;]field[1,1;6,2;channel;Channel;${channel}]field[1,2;6,2;radius;Radius;${radius}]button_exit[2.25,3;3,1;submit;Save]")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
+		local name = sender:get_player_name()
+		if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then
+			minetest.record_protection_violation(pos,name)
+			return
+		end
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 		if fields.msg then meta:set_string("msg",fields.msg) end
