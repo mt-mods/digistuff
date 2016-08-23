@@ -111,7 +111,7 @@ digistuff.button_turnoff = function (pos)
 	local node = minetest.get_node(pos)
 	if node.name=="digistuff:button_on" then --has not been dug
 		minetest.swap_node(pos, {name = "digistuff:button_off", param2=node.param2})
-		minetest.sound_play("mesecons_button_pop", {pos=pos})
+		if minetest.get_modpath("mesecons") then  minetest.sound_play("mesecons_button_pop", {pos=pos}) end
 	end
 end
 
@@ -219,7 +219,7 @@ minetest.register_node("digistuff:button_off", {
 		local meta = minetest.get_meta(pos)
 		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
 		minetest.swap_node(pos, {name = "digistuff:button_on", param2=node.param2})
-		minetest.sound_play("mesecons_button_push", {pos=pos})
+		if minetest.get_modpath("mesecons") then minetest.sound_play("mesecons_button_push", {pos=pos}) end
 		minetest.after(0.5, digistuff.button_turnoff, pos)
 	end,
 	sounds = default.node_sound_stone_defaults(),
@@ -261,7 +261,7 @@ minetest.register_node("digistuff:button_on", {
 	on_rightclick = function (pos, node, clicker)
 		local meta = minetest.get_meta(pos)
 		digiline:receptor_send(pos, digiline.rules.default, meta:get_string("channel"), meta:get_string("msg"))
-		minetest.sound_play("mesecons_button_push", {pos=pos})
+		if minetest.get_modpath("mesecons") then minetest.sound_play("mesecons_button_push", {pos=pos}) end
 	end,
 	description = "Digilines Button (on state - you hacker you!)",
 	sounds = default.node_sound_stone_defaults(),
