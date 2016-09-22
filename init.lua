@@ -80,12 +80,7 @@ digistuff.ts_on_receive_fields = function (pos, formname, fields, sender)
 	end
 end
 
-digistuff.ts_on_digiline_receive = function (pos, node, channel, msg)
-	local meta = minetest.get_meta(pos)
-	local setchan = meta:get_string("channel")
-	if channel ~= setchan then return end
-	if type(msg) ~= "table" then return end
-	local data = minetest.deserialize(meta:get_string("data")) or {}
+digistuff.process_command = function (meta, data, msg)
 	if msg.command == "clear" then
 		data = {}
 	elseif msg.command == "addimage" then
@@ -216,6 +211,24 @@ digistuff.ts_on_digiline_receive = function (pos, node, channel, msg)
 		meta:set_int("locked",1)
 	elseif msg.command == "unlock" then
 		meta:set_int("locked",0)
+	end
+	return data
+end
+
+digistuff.ts_on_digiline_receive = function (pos, node, channel, msg)
+	local meta = minetest.get_meta(pos)
+	local setchan = meta:get_string("channel")
+	if channel ~= setchan then return end
+	if type(msg) ~= "table" then return end
+	local data = minetest.deserialize(meta:get_string("data")) or {}
+	if msg.command then
+		data = digistuff.process_command(meta,data,msg)
+	else
+		for _,i in ipairs(msg) do
+			if i.command then
+				data = digistuff.process_command(meta,data,i)
+			end
+		end
 	end
 	meta:set_string("data",minetest.serialize(data))
 	digistuff.update_ts_formspec(pos)
