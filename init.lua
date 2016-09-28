@@ -249,7 +249,7 @@ digistuff.ts_on_digiline_receive = function (pos, node, channel, msg)
 	else
 		for _,i in ipairs(msg) do
 			if i.command then
-				data = digistuff.process_command(meta,data,i)
+				data = digistuff.process_command(meta,data,i) or data
 			end
 		end
 	end
