@@ -50,6 +50,15 @@ digistuff.update_ts_formspec = function (pos)
 				fs = fs..string.format("image_button[%s,%s;%s,%s;%s;%s;%s]",field.X,field.Y,field.W,field.H,field.image,field.name,field.label)
 			elseif field.type == "image_button_exit" then
 				fs = fs..string.format("image_button_exit[%s,%s;%s,%s;%s;%s;%s]",field.X,field.Y,field.W,field.H,field.image,field.name,field.label)
+			elseif field.type == "dropdown" then
+				local choices = ""
+				for _,i in ipairs(field.choices) do
+					if type(i) == "string" then
+						choices = choices..minetest.formspec_escape(i)..","
+					end
+				end
+				choices = string.sub(choices,1,-2)
+				fs = fs..string.format("dropdown[%s,%s;%s,%s;%s;%s;%s]",field.X,field.Y,field.W,field.H,field.name,choices,field.selected_id)
 			end
 		end
 	end
@@ -206,6 +215,20 @@ digistuff.process_command = function (meta, data, msg)
 			end
 		end
 		local field = {type="image_button_exit",X=msg.X,Y=msg.Y,W=msg.W,H=msg.H,image=minetest.formspec_escape(msg.image),name=minetest.formspec_escape(msg.name),label=minetest.formspec_escape(msg.label)}
+		table.insert(data,field)
+	elseif msg.command == "adddropdown" then
+		for _,i in pairs({"X","Y","W","H","selected_id"}) do
+			if not msg[i] or type(msg[i]) ~= "number" then
+				return
+			end
+		end
+		if not msg.name or type(msg.name) ~= "string" then
+			return
+		end
+		if not msg.choices or type(msg.choices) ~= "table" or #msg.choices < 1 then
+			return
+		end
+		local field = {type="dropdown",X=msg.X,Y=msg.Y,W=msg.W,H=msg.H,name=msg.name,selected_id=msg.selected_id,choices=msg.choices}
 		table.insert(data,field)
 	elseif msg.command == "lock" then
 		meta:set_int("locked",1)
