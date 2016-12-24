@@ -756,3 +756,52 @@ minetest.register_node("digistuff:piezo", {
 		},
 	},
 })
+
+local http = minetest.request_http_api()
+
+if http then
+	minetest.register_node("digistuff:modem", {
+		description = "Digilines Modem",
+		groups = {cracky=3},
+		on_construct = function(pos)
+			local meta = minetest.get_meta(pos)
+			meta:set_string("formspec","field[channel;Channel;${channel}")
+		end,
+		tiles = {
+			"digistuff_piezo_top.png",
+			"digistuff_piezo_sides.png",
+			"digistuff_piezo_sides.png",
+			"digistuff_piezo_sides.png",
+			"digistuff_piezo_sides.png",
+			"digistuff_piezo_sides.png"
+			},
+		on_receive_fields = function(pos, formname, fields, sender)
+			local name = sender:get_player_name()
+			if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then
+				minetest.record_protection_violation(pos,name)
+				return
+			end
+			local meta = minetest.get_meta(pos)
+			if fields.channel then meta:set_string("channel",fields.channel) end
+		end,
+		digiline = 
+		{
+			receptor = {},
+			effector = {
+				action = function(pos,node,channel,msg)
+						local meta = minetest.get_meta(pos)
+						if meta:get_string("channel") ~= channel then return end
+						if type(msg) ~= "string" then return end
+						http.fetch({
+							url = msg,
+							timeout = 5,
+							user_agent = "Minetest Digilines Modem",
+							},
+							function(res)
+								digiline:receptor_send(pos, digiline.rules.default, channel, res)
+							end)
+					end
+			},
+		},
+	})
+end
