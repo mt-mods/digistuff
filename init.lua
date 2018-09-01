@@ -1039,8 +1039,9 @@ for i=0,14,1 do
 				action = function(pos,node,channel,msg)
 						local meta = minetest.get_meta(pos)
 						if meta:get_string("channel") ~= channel then return end
-						if type(msg) ~= "number" or msg > 14 or msg < 0 then return end
-						node.name = "digistuff:light_"..math.floor(msg)
+						local value = tonumber(msg)
+						if (not value) or value > 14 or value < 0 then return end
+						node.name = "digistuff:light_"..math.floor(value)
 						minetest.swap_node(pos,node)
 					end
 			},
