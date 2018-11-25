@@ -35,16 +35,17 @@ minetest.register_node("digistuff:noteblock", {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
+					local meta = minetest.get_meta(pos)
+					local setchan = meta:get_string("channel")
+					if channel ~= setchan then return end
 					if msg == "get_sounds" then
 						local soundnames = {}
 						for i in pairs(validnbsounds) do
 							table.insert(soundnames,i)
 						end
 						digiline:receptor_send(pos, digiline.rules.default, channel, soundnames)
+						return
 					end
-					local meta = minetest.get_meta(pos)
-					local setchan = meta:get_string("channel")
-					if channel ~= setchan then return end
 					if type(msg) == "string" then
 						local sound = validnbsounds[msg]
 						if sound then minetest.sound_play(sound,{pos=pos}) end
