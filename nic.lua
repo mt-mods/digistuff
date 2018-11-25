@@ -1,10 +1,4 @@
-local http = minetest.request_http_api()
-if not http then
-	minetest.log("error","digistuff is not allowed to use the HTTP API - digilines NIC will not be available!")
-	minetest.log("error","If this functionality is desired, please add digistuff to your secure.http_mods setting")
-	return
-end
-
+local http = ...
 minetest.register_node("digistuff:nic", {
 	description = "Digilines NIC",
 	groups = {cracky=3},
