@@ -66,8 +66,17 @@ minetest.register_node("digistuff:piston", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
+		wire = {
+			rules = {
+				{x = 1, y = 0, z = 0},
+				{x =-1, y = 0, z = 0},
+				{x = 0, y = 1, z = 0},
+				{x = 0, y =-1, z = 0},
+				{x = 0, y = 0, z = 1},
+				{x = 0, y = 0, z =-1},
+			},
+		},
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -132,8 +141,17 @@ minetest.register_node("digistuff:piston_ext", {
 			minetest.remove_node(ppos)
 		end
 	end,
-	digiline = 
-	{
+	digiline = {
+		wire = {
+			rules = {
+				{x = 1, y = 0, z = 0},
+				{x =-1, y = 0, z = 0},
+				{x = 0, y = 1, z = 0},
+				{x = 0, y =-1, z = 0},
+				{x = 0, y = 0, z = 1},
+				{x = 0, y = 0, z =-1},
+			},
+		},
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -161,6 +179,8 @@ minetest.register_node("digistuff:piston_ext", {
 minetest.register_node("digistuff:piston_pusher", {
 	description = "Digilines Piston Pusher (you hacker you!)",
 	groups = {not_in_creative_inventory=1},
+	paramtype = "light",
+	sunlight_propagates = true,
 	paramtype2 = "facedir",
 	tiles = {
 		"digistuff_piston_sides.png^[transformR180",
@@ -183,6 +203,18 @@ minetest.register_node("digistuff:piston_pusher", {
 		fixed = {
 				{0,0,0,0,0,0},
 			}
+	},
+	digiline = {
+		wire = {
+			rules = {
+				{x = 1, y = 0, z = 0},
+				{x =-1, y = 0, z = 0},
+				{x = 0, y = 1, z = 0},
+				{x = 0, y =-1, z = 0},
+				{x = 0, y = 0, z = 1},
+				{x = 0, y = 0, z =-1},
+			},
+		},
 	},
 })
 
