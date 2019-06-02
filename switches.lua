@@ -13,6 +13,8 @@ digistuff.button_get_rules = function(node)
 		{x =  0,y =  0,z =  1},
 		{x =  0,y =  0,z = -1},
 		{x =  0,y =  0,z =  2},
+		{x =  0,y =  1,z =  1},
+		{x =  0,y = -1,z =  1},
 	}
 	local dir = minetest.facedir_to_dir(node.param2)
 	rules = digistuff.rotate_rules(rules,dir)
