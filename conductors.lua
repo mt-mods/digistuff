@@ -125,6 +125,7 @@ minetest.register_node("digistuff:receiver", {
 	is_ground_content = false,
 	paramtype = "light",
 	paramtype2 = "facedir",
+	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -189,6 +190,12 @@ minetest.register_node("digistuff:vertical_bottom", {
 				{-0.05,-0.4375,-0.05,0.05,0.5,0.05},
 			},
 	},
+	collision_box = {
+		type = "fixed",
+		fixed = {
+				{-0.5,-0.5,-0.5,0.5,-0.4375,0.5},
+			},
+	},
 	after_place_node = digistuff.vertical_autoconnect,
 	after_destruct = digistuff.vertical_remove,
 	digiline = {
@@ -214,6 +221,7 @@ minetest.register_node("digistuff:vertical_middle", {
 	drop = "digistuff:vertical_bottom",
 	is_ground_content = false,
 	paramtype = "light",
+	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -277,6 +285,7 @@ minetest.register_node("digistuff:insulated_straight", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	walkable = false,
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
@@ -316,6 +325,7 @@ minetest.register_node("digistuff:insulated_tjunction", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	walkable = false,
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
@@ -357,6 +367,7 @@ minetest.register_node("digistuff:insulated_corner", {
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
+	walkable = false,
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
@@ -396,6 +407,7 @@ minetest.register_node("digistuff:insulated_fourway", {
 		"digistuff_insulated_edge.png",
 	},
 	paramtype = "light",
+	walkable = false,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
 	paramtype = "light",
