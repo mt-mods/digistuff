@@ -130,11 +130,18 @@ minetest.register_node("digistuff:receiver", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-				{-0.05,-0.05,-1.49,0.05,0.05,-0.5},
-				{-0.2,-0.2,-0.5,0.2,0.2,-0.4},
-				{-0.0625,-0.5,-0.5,0.0625,-0.2,-0.4},
-				{-0.0625,-0.5,-0.4,0.0625,-0.4375,0.5},
+			{-0.05,-0.05,-1.49,0.05,0.05,-0.5},
+			{-0.2,-0.2,-0.5,0.2,0.2,-0.4},
+			{-0.0625,-0.5,-0.5,0.0625,-0.2,-0.4},
+			{-0.0625,-0.5,-0.4,0.0625,-0.4375,0.5},
 			},
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.2,-0.5,-0.5,0.2,0.2,0.5},
+			{-0.075,-0.075,-1.49,0.075,0.075,-0.5},
+		},
 	},
 	digiline = {
 		receptor = {},
@@ -297,6 +304,12 @@ minetest.register_node("digistuff:insulated_straight", {
 				{-0.5,-0.5,-0.1,0.5,-0.4,0.1},
 			},
 	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5,-0.5,-0.15,0.5,-0.35,0.15},
+		},
+	},
 	after_place_node = digilines.update_autoconnect,
 	after_destruct = digilines.update_autoconnect,
 	digiline = {
@@ -337,6 +350,12 @@ minetest.register_node("digistuff:insulated_tjunction", {
 				{-0.5,-0.5,-0.1,0.5,-0.4,0.1},
 				{-0.1,-0.5,-0.5,0.1,-0.4,-0.1},
 			},
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5,-0.5,-0.5,0.5,-0.35,0.15},
+		},
 	},
 	after_place_node = digilines.update_autoconnect,
 	after_destruct = digilines.update_autoconnect,
@@ -380,6 +399,12 @@ minetest.register_node("digistuff:insulated_corner", {
 				{-0.5,-0.5,-0.1,0.1,-0.4,0.1},
 			},
 	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5,-0.5,-0.5,0.15,-0.35,0.15},
+		},
+	},
 	after_place_node = digilines.update_autoconnect,
 	after_destruct = digilines.update_autoconnect,
 	digiline = {
@@ -419,6 +444,12 @@ minetest.register_node("digistuff:insulated_fourway", {
 				{-0.1,-0.5,-0.5,0.1,-0.4,-0.1},
 				{-0.1,-0.5,0.1,0.1,-0.4,0.5},
 			},
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5,-0.5,-0.5,0.5,-0.35,0.5},
+		},
 	},
 	after_place_node = digilines.update_autoconnect,
 	after_destruct = digilines.update_autoconnect,
