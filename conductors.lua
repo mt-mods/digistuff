@@ -5,7 +5,8 @@ digistuff.remove_receiver = function(pos,node)
 	if rnode.name == "digistuff:receiver" then
 		rnode.name = "digilines:wire_std_00000000"
 		minetest.remove_node(rpos)
-		minetest.place_node(rpos,rnode)
+		minetest.set_node(rpos,rnode)
+		digilines.update_autoconnect(rpos)
 	end
 end
 

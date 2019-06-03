@@ -181,9 +181,6 @@ minetest.register_craft({
 })
 
 minetest.register_node("digistuff:wall_knob", {
-	tiles = {
-	"digistuff_digibutton_sides.png",
-	},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
@@ -195,10 +192,17 @@ minetest.register_node("digistuff:wall_knob", {
 			rules = digistuff.button_get_rules,
 		},
 	},
-	drawtype = "nodebox",
-	node_box = {
+	drawtype = "mesh",
+	mesh = "digistuff_wall_knob.obj",
+	tiles = {
+		"digistuff_digibutton_sides.png",
+		"digistuff_digiline_full.png",
+	},
+	selection_box = {
 		type = "fixed",
-		fixed = {-0.2,-0.2,0.4,0.2,0.2,0.5,},
+		fixed = {
+			{-0.4,-0.4,0,0.4,0.4,0.5},
+		},
 	},
 	groups = {dig_immediate = 2,digiline_receiver = 1,},
 	description = "Digilines Wall Knob",
@@ -232,9 +236,6 @@ minetest.register_node("digistuff:wall_knob", {
 })
 
 minetest.register_node("digistuff:wall_knob_configured", {
-	tiles = {
-	"digistuff_digibutton_sides.png",
-	},
 	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
@@ -246,30 +247,39 @@ minetest.register_node("digistuff:wall_knob_configured", {
 			rules = digistuff.button_get_rules,
 		},
 	},
-	drawtype = "nodebox",
-	node_box = {
+	drawtype = "mesh",
+	mesh = "digistuff_wall_knob.obj",
+	tiles = {
+		"digistuff_digibutton_sides.png",
+		"digistuff_digiline_full.png",
+	},
+	selection_box = {
 		type = "fixed",
-		fixed = {-0.2,-0.2,0.4,0.2,0.2,0.5,},
+		fixed = {
+			{-0.4,-0.4,0,0.4,0.4,0.5},
+		},
 	},
 	groups = {dig_immediate = 2,digiline_receiver = 1,not_in_creative_inventory = 1,},
 	description = "Digilines Wall Knob (configured state - you hacker you!)",
 	drop = "digistuff:wall_knob",
 	after_place_node = digistuff.place_receiver,
 	after_destruct = digistuff.remove_receiver,
-	on_punch = function(pos,node)
+	on_punch = function(pos,node,player)
 		local meta = minetest.get_meta(pos)
 		local max = meta:get_int("max")
 		local value = meta:get_int("value")
-		value = math.min(max,value+1)
+		local full = player:get_player_control().aux1
+		value = full and max or math.min(max,value+1)
 		meta:set_int("value",value)
 		meta:set_string("infotext",string.format("Current setting: %d\nLeft-click to turn up or right-click to turn down",math.floor(tonumber(value))))
 		digiline:receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
 	end,
-	on_rightclick = function(pos,node)
+	on_rightclick = function(pos,node,player)
 		local meta = minetest.get_meta(pos)
 		local min = meta:get_int("min")
 		local value = meta:get_int("value")
-		value = math.max(min,value-1)
+		local full = player:get_player_control().aux1
+		value = full and min or math.max(min,value-1)
 		meta:set_int("value",value)
 		meta:set_string("infotext",string.format("Current setting: %d\nLeft-click to turn up or right-click to turn down",math.floor(tonumber(value))))
 		digiline:receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
