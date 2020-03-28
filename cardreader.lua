@@ -89,7 +89,7 @@ minetest.register_node("digistuff:card_reader",{
 					meta:set_int("writepending",1)
 					if type(msg.data) ~= "string" then msg.data = tostring(msg.data) end
 					meta:set_string("writedata",string.sub(msg.data,1,256))
-					if type(msg.description == "string") then
+					if type(msg.description) == "string" then
 						meta:set_string("writedescription",string.sub(msg.description,1,64))
 					else
 						meta:set_string("writedescription","no name")
