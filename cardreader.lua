@@ -19,6 +19,7 @@ minetest.register_craftitem("digistuff:card",{
 	stack_max = 1,
 	on_use = function(stack,_,pointed)
 		local pos = pointed.under
+		if not pos then return end
 		if minetest.get_node(pos).name ~= "digistuff:card_reader" then return end
 		local meta = minetest.get_meta(pos)
 		local channel = meta:get_string("channel")
