@@ -17,7 +17,7 @@ local implode_port_states = function(port)
 end
 
 local gettiles = function(state)
-	tiles = {
+	local tiles = {
 		"digistuff_ioexp_top.png",
 		"jeija_microcontroller_bottom.png",
 		"jeija_microcontroller_sides.png",
