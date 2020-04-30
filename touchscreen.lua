@@ -290,6 +290,11 @@ minetest.register_node("digistuff:touchscreen", {
 			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
 		}
     	},
+    	_digistuff_channelcopier_fieldname = "channel",
+	_digistuff_channelcopier_onset = function(pos)
+		minetest.get_meta(pos):set_int("init",1)
+		digistuff.update_ts_formspec(pos)
+	end,
 	on_receive_fields = digistuff.ts_on_receive_fields,
 	digiline = 
 	{

@@ -21,6 +21,7 @@ minetest.register_node("digistuff:noteblock", {
 	tiles = {
 		"mesecons_noteblock.png"
 		},
+	_digistuff_channelcopier_fieldname = "channel",
 	on_receive_fields = function(pos, formname, fields, sender)
 		local name = sender:get_player_name()
 		if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then

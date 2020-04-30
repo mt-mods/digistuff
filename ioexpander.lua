@@ -118,6 +118,7 @@ for i=0,15,1 do
 			meta:set_int("don",0)
 			meta:set_int("outstate",i)
 		end,
+		_digistuff_channelcopier_fieldname = "channel",
 		tiles = gettiles(i),
 		inventory_image = "digistuff_ioexp_top.png",
 		drawtype = "nodebox",
