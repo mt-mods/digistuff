@@ -286,7 +286,7 @@ local function runcommand(pos,meta,command)
 		if type(transparent) ~= "string" or string.len(transparent) > 7 or string.len(transparent) < 6 then transparent = "000000" end
 		if string.sub(transparent,1,1) == "#" then transparent = string.sub(transparent,2,7) end
 		if not tonumber(transparent,16) then transparent = "000000" end
-		for y=0,xsize-1,1 do
+		for y=0,ysize-1,1 do
 			for x=0,xsize-1,1 do
 				local srcpx = sourcebuffer[srcy+y][srcx+x]
 				local destpx = destbuffer[dsty+y][dstx+x]
