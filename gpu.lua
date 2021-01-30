@@ -309,7 +309,7 @@ local function runcommand(pos,meta,command)
 		if #command.data[1] < 1 then return end
 		local ysize = #command.data
 		local xsize = #command.data[1]
-		if xstart+xsize > buffer.xsize or ystart+ysize > buffer.ysize then return end
+		if xstart+xsize-1 > buffer.xsize or ystart+ysize-1 > buffer.ysize then return end
 		for y=1,ysize,1 do
 			if type(command.data[y]) == "table" then
 				for x=1,xsize,1 do
