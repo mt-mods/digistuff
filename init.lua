@@ -18,6 +18,7 @@ local components = {
 	"controller",
 	"memory",
 	"gpu",
+	"sillystuff",
 }
 
 if minetest.get_modpath("mesecons_luacontroller") then table.insert(components,"ioexpander") end
