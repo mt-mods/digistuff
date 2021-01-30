@@ -92,8 +92,8 @@ nor: Perform a bitwise NOR of the source and destination and write the result to
 xor: Perform a bitwise XOR of the source and destination and write the result to the destination.
 xnor: Perform a bitwise XNOR of the source and destination and write the result to the destination.
 not: Perform a bitwise NOT of the source and write the result to the destination.
-tohsv: Convert the source from the RGB color system to the HSV color system and write the result to the destination, storing hue as "red", saturation as "green", and value as "blue".
-torgb: Convert the source from the HSV color system to the RGB color system, reading hue from the red channel, saturation from the green channel, and value from the blue channel, and write the result to the destination.
+rgbtohsv: Convert the source from the RGB color system to the HSV color system and write the result to the destination, storing hue as "red", saturation as "green", and value as "blue".
+hsvtorgb: Convert the source from the HSV color system to the RGB color system, reading hue from the red channel, saturation from the green channel, and value from the blue channel, and write the result to the destination.
 
 Command: load
 -------------

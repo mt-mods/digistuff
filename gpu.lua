@@ -16,7 +16,7 @@ local function implodebits(input)
 	return output
 end
 
-local function tohsv(r,g,b)
+local function rgbtohsv(r,g,b)
 	r = r/255
 	g = g/255
 	b = b/255
@@ -44,7 +44,7 @@ local function tohsv(r,g,b)
 	return math.floor(hue*255),math.floor(sat*255),math.floor(max*255)
 end
 
-local function torgb(h,s,v)
+local function hsvtorgb(h,s,v)
 	h = h/255*360
 	s = s/255
 	v = v/255
@@ -159,10 +159,10 @@ local function blend(src,dst,mode,transparent)
 		return string.format("%02X%02X%02X",r,g,b)
 	elseif op == "and" or op == "or" or op == "xor" or op == "xnor" or op == "not" or op == "nand" or op == "nor" then
 		return bitwiseblend(srcr,dstr,srcg,dstg,srcb,dstb,op)
-	elseif op == "tohsv" then
-		return string.format("%02X%02X%02X",tohsv(srcr,srcg,srcb))
-	elseif op == "torgb" then
-		return string.format("%02X%02X%02X",torgb(srcr,srcg,srcb))
+	elseif op == "tohsv" or op == "rgbtohsv" then
+		return string.format("%02X%02X%02X",rgbtohsv(srcr,srcg,srcb))
+	elseif op == "torgb" or op == "hsvtorgb" then
+		return string.format("%02X%02X%02X",hsvtorgb(srcr,srcg,srcb))
 	else
 		return src
 	end
