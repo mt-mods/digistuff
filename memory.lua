@@ -94,7 +94,11 @@ minetest.register_node("digistuff:eeprom", {
 		minetest.remove_node(pos)
 		smeta:set_string("description","Digilines 128KBit EEPROM (with data)")
 		local inv = minetest.get_inventory({type = "player",name = name,})
-		inv:add_item("main",istack)
+		if player.is_fake_player or not inv:room_for_item("main",istack) then
+			minetest.handle_node_drops(pos,{istack},player)
+		else
+			inv:add_item("main",istack)
+		end
 		digilines.update_autoconnect(pos)
 	end,
 	tiles = {
