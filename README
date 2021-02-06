@@ -10,7 +10,7 @@ Textures WITH "adwaita" in the file name - These are icons by the GNOME Project,
 
 Depends:
 Required: digilines (base only) and mesecons (base only)
-Optional: mesecons_noteblock (for digilines noteblock), mesecons_mvps (for digilines piston), mesecons_luacontroller (for I/O expander)
+Optional: mesecons_noteblock (for digilines noteblock), mesecons_mvps (for digilines piston and movestone), mesecons_luacontroller (for I/O expander)
 Only needed for craft recipes: default, basic_materials
 
 
