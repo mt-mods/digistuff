@@ -101,3 +101,27 @@ The RAM and EEPROM chips behave identically, except that the RAM chip loses its 
 
 How to use the 2D graphics processor:
 Please see gpu.txt for information on this part.
+
+How to use the digilines pistons:
+The following commands are accepted as strings: "extend" (extend the piston), "retract" (retract the piston), and "retract_sticky" (retract the piston, pulling one node like a sticky piston)
+You can also send a command as a table. If so, the fields that can be used in the table are as follows:
+* action: "extend" or "retract"
+* max: The maximum number of nodes to push/pull, cannot be set higher than 16. Set to 0 (or omit) when retracting to perform a non-sticky retraction.
+* allsticky: Pull a whole stack of nodes (like movestone), not just one.
+
+How to use the digilines movestone:
+Commands for this node are in the form of a table, with the field "command" set to the desired action, and other fields providing parameters.
+The commands are as follows:
+* "getstate": Returns a table containing the following elements: "targetpos" (table representing the target position), "pos" (table representing the current position), and "moveaxis" (the current axis being moved along, nil if not moving)
+* "absmove": Moves to the absolute position specified by "x" "y" and "z". No axis can move more than 50m as a result of one command. If movements along more than one axis are needed, they are processed in alphabetical order (X,Y,Z).
+* "relmove": Same as absmove, but relative to the current position (for example, y=1 moves up 1m, not *to* Y=1)
+The available parameters for absmove and relmove are:
+* x: Target X position (for absmove) or target change in X position (for relmove)
+* y: Same, but for Y
+* z: Same, but for Z
+* sticky: Whether to pull nodes along behind the movestone
+* allsticky: Whether to pull a full stack of nodes like normal movestone (true) or just one like a sticky piston (false)
+* maxstack: The maximum number of nodes to push/pull, with the movestone itself counting as 1. Cannot be set higher than 50.
+* sound: "mesecons" to have the mesecons movestone sound play or "none" for no sound at all
+If any of x/y/z are omitted, then they default to the current position (for absmove) or 0 (for relmove).
+If any of maxstack/sticky/allsticky/sound are omitted, they default to the values last used.
