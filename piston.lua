@@ -3,14 +3,18 @@ if not minetest.get_modpath("mesecons_mvps") then
 	return
 end
 
-local function extend(pos,node,max)
+local function extend(pos,node,max,sound)
 	local meta = minetest.get_meta(pos):to_table()
 	local facedir = minetest.facedir_to_dir(node.param2)
 	local actiondir = vector.multiply(facedir,-1)
 	local ppos = vector.add(pos,actiondir)
 	local success,stack,oldstack = mesecon.mvps_push(ppos,actiondir,max)
 	if not success then return end
-	minetest.sound_play("digistuff_piston_extend",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	if sound == "digilines" then
+		minetest.sound_play("digistuff_piston_extend",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	elseif sound == "mesecons" then
+		minetest.sound_play("piston_extend",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	end
 	minetest.swap_node(pos,{name = "digistuff:piston_ext",param2 = node.param2})
 	minetest.swap_node(ppos,{name = "digistuff:piston_pusher",param2 = node.param2})
 	mesecon.mvps_process_stack(stack)
@@ -18,7 +22,7 @@ local function extend(pos,node,max)
 	minetest.get_meta(pos):from_table(meta)
 end
 
-local function retract(pos,node,max,allsticky)
+local function retract(pos,node,max,allsticky,sound)
 	local facedir = minetest.facedir_to_dir(node.param2)
 	local actiondir = vector.multiply(facedir,-1)
 	local ppos = vector.add(pos,actiondir)
@@ -26,7 +30,11 @@ local function retract(pos,node,max,allsticky)
 	if minetest.get_node(ppos).name == "digistuff:piston_pusher" then
 		minetest.remove_node(ppos)
 	end
-	minetest.sound_play("digistuff_piston_retract",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	if sound == "digilines" then
+		minetest.sound_play("digistuff_piston_retract",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	elseif sound == "mesecons" then
+		minetest.sound_play("piston_retract",{pos = pos,max_hear_distance = 20,gain = 0.6})
+	end
 	minetest.check_for_falling(ppos)
 	if type(max) ~= "number" or max <= 0 then return end
 	local pullpos = vector.add(pos,vector.multiply(actiondir,2))
@@ -91,7 +99,7 @@ minetest.register_node("digistuff:piston", {
 						if type(msg.max) == "number" then
 							max = math.max(0,math.min(16,math.floor(msg.max)))
 						end
-						extend(pos,node,max)
+						extend(pos,node,max,msg.sound or "digilines")
 					end
 				end
 		},
@@ -171,7 +179,7 @@ minetest.register_node("digistuff:piston_ext", {
 						elseif msg.max == nil then
 							max = 0
 						end
-						retract(pos,node,max,msg.allsticky)
+						retract(pos,node,max,msg.allsticky,msg.sound or "digilines")
 					end
 				end
 		},

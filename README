@@ -108,6 +108,7 @@ You can also send a command as a table. If so, the fields that can be used in th
 * action: "extend" or "retract"
 * max: The maximum number of nodes to push/pull, cannot be set higher than 16. Set to 0 (or omit) when retracting to perform a non-sticky retraction.
 * allsticky: Pull a whole stack of nodes (like movestone), not just one.
+* sound: The sound to make. "mesecons" for the mesecons piston sounds, "digilines" for the digilines piston sounds (default), or "none" for no sounds at all.
 
 How to use the digilines movestone:
 Commands for this node are in the form of a table, with the field "command" set to the desired action, and other fields providing parameters.
