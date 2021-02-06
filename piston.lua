@@ -169,9 +169,9 @@ minetest.register_node("digistuff:piston_ext", {
 					local setchan = meta:get_string("channel")
 					if channel ~= setchan then return end
 					if msg == "retract" then
-						retract(pos,node,nil,"digilines")
+						retract(pos,node,0,false,"digilines")
 					elseif msg == "retract_sticky" then
-						retract(pos,node,16,"digilines")
+						retract(pos,node,16,false,"digilines")
 					elseif type(msg) == "table" and msg.action == "retract" then
 						local max = 16
 						if type(msg.max) == "number" then
