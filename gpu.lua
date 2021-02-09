@@ -20,9 +20,9 @@ local function rgbtohsv(r,g,b)
 	r = r/255
 	g = g/255
 	b = b/255
-	max = math.max(r,g,b)
-	min = math.min(r,g,b)
-	delta = max-min
+	local max = math.max(r,g,b)
+	local min = math.min(r,g,b)
+	local delta = max-min
 	local hue = 0
 	if delta > 0 then
 		if max == r then
@@ -73,7 +73,7 @@ local function hsvtorgb(h,s,v)
 		b = c
 	else
 		r = c
-		b = x 
+		b = x
 	end
 	r = r+m
 	g = g+m
@@ -199,7 +199,7 @@ local function runcommand(pos,meta,command)
 		if string.len(buffer) == 0 then return end
 		buffer = minetest.deserialize(buffer)
 		if type(buffer) == "table" then
-			digiline:receptor_send(pos,digiline.rules.default,command.channel,buffer)
+			digilines.receptor_send(pos,digilines.rules.default,command.channel,buffer)
 		end
 	elseif command.command == "drawrect" then
 		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
@@ -400,8 +400,7 @@ minetest.register_node("digistuff:gpu", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)

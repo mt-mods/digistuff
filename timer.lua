@@ -44,12 +44,11 @@ minetest.register_node("digistuff:timer", {
 	on_timer = function(pos)
 		local meta = minetest.get_meta(pos)
 		local channel = meta:get_string("channel")
-		digiline:receptor_send(pos,digiline.rules.default,channel,"done")
+		digilines.receptor_send(pos,digilines.rules.default,channel,"done")
 		local loop = meta:get_int("loop") > 0
 		return loop
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -69,7 +68,7 @@ minetest.register_node("digistuff:timer", {
 				end
 		},
 	},
-	
+
 })
 minetest.register_craft({
 	output = "digistuff:timer 2",
