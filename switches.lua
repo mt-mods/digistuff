@@ -15,8 +15,7 @@ end
 digistuff.button_push = function(pos,node,player)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("protected") == 1 and not digistuff.check_protection(pos,player) then return end
-	local mlight = meta:get_int("mlight") == 1
-	digiline:receptor_send(pos, digistuff.button_get_rules(node), meta:get_string("channel"), meta:get_string("msg"))
+	digilines.receptor_send(pos, digistuff.button_get_rules(node), meta:get_string("channel"), meta:get_string("msg"))
 	local newnode = "digistuff:button_on_pushed"
 	if meta:get_int("mlight") == 1 and (node.name == "digistuff:button_off" or node.name == "digistuff:button_off_pushed") then newnode = "digistuff:button_off_pushed" end
 	if node.name ~= newnode then minetest.swap_node(pos, {name = newnode, param2=node.param2}) end
@@ -190,13 +189,12 @@ minetest.register_node("digistuff:button_off_pushed", {
 	},
 	node_box = {
 	type = "fixed",
-	fixed = {
-		{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
-		{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
-	}
-    	},
-	digiline =
-	{
+		fixed = {
+			{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
+			{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
+		}
+	},
+	digiline = {
 		receptor = {},
 		wire = {
 			rules = digistuff.button_get_rules,
@@ -285,13 +283,12 @@ minetest.register_node("digistuff:button_on_pushed", {
 	_digistuff_channelcopier_fieldname = "channel",
 	node_box = {
 	type = "fixed",
-	fixed = {
-		{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
-		{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
-	}
-    	},
-	digiline =
-	{
+		fixed = {
+			{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
+			{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
+		}
+	},
+	digiline = {
 		receptor = {},
 		wire = {
 			rules = digistuff.button_get_rules,
@@ -417,7 +414,7 @@ minetest.register_node("digistuff:wall_knob_configured", {
 		value = full and max or math.min(max,value+1)
 		meta:set_int("value",value)
 		meta:set_string("infotext",string.format("Current setting: %d\nLeft-click to turn down or right-click to turn up",math.floor(tonumber(value))))
-		digiline:receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
+		digilines.receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
 	end,
 	on_punch = function(pos,node,player)
 		local meta = minetest.get_meta(pos)
@@ -428,7 +425,7 @@ minetest.register_node("digistuff:wall_knob_configured", {
 		value = full and min or math.max(min,value-1)
 		meta:set_int("value",value)
 		meta:set_string("infotext",string.format("Current setting: %d\nLeft-click to turn down or right-click to turn up",math.floor(tonumber(value))))
-		digiline:receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
+		digilines.receptor_send(pos,digistuff.button_get_rules(node),meta:get_string("channel"),value)
 	end,
 	sounds = default and default.node_sound_stone_defaults(),
 })
@@ -436,8 +433,8 @@ minetest.register_node("digistuff:wall_knob_configured", {
 minetest.register_craft({
 	output = "digistuff:wall_knob",
 	recipe = {
-		{"",                           "mesecons_button:button_off",               ""},
+		{"", "mesecons_button:button_off", ""},
 		{"digilines:wire_std_00000000","mesecons_luacontroller:luacontroller0000", "digilines:wire_std_00000000"},
-		{"",                           "digilines:wire_std_00000000",              ""},
+		{"", "digilines:wire_std_00000000", ""},
 	},
 })

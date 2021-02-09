@@ -2,8 +2,7 @@ minetest.register_node("digistuff:detector", {
 	tiles = {
 	"digistuff_digidetector.png"
 	},
-	digiline = 
-	{
+	digiline = {
 		receptor = {}
 	},
 	groups = {cracky=2},
@@ -40,7 +39,6 @@ minetest.register_abm({
 			if not radius or not tonumber(radius) or tonumber(radius) < 1 or tonumber(radius) > 10 then radius = 6 end
 			local objs = minetest.get_objects_inside_radius(pos, radius)
 			if objs then
-				local _,obj
 				for _,obj in ipairs(objs) do
 					if obj:is_player() then
 						table.insert(players_found,obj:get_player_name())
@@ -48,7 +46,7 @@ minetest.register_abm({
 					end
 				end
 				if found_any then
-					digiline:receptor_send(pos, digiline.rules.default, channel, players_found)
+					digilines.receptor_send(pos, digilines.rules.default, channel, players_found)
 				end
 			end
 		end
