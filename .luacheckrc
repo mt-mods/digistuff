@@ -1,4 +1,5 @@
 unused_args = false
+max_line_length = 300  -- TODO: fix line lengths
 
 globals = {
     "minetest",
