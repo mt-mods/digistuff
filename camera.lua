@@ -83,7 +83,7 @@ minetest.register_abm({
 					end
 				end
 				if found_any then
-					digiline:receptor_send({x=pos.x,y=pos.y-1,z=pos.z}, digiline.rules.default, channel, players_found)
+					digilines.receptor_send({x=pos.x,y=pos.y-1,z=pos.z}, digilines.rules.default, channel, players_found)
 				end
 			end
 		end

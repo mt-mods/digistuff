@@ -48,7 +48,7 @@ minetest.register_abm({
 					end
 				end
 				if found_any then
-					digiline:receptor_send(pos, digiline.rules.default, channel, players_found)
+					digilines.receptor_send(pos, digilines.rules.default, channel, players_found)
 				end
 			end
 		end

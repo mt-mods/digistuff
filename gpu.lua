@@ -199,7 +199,7 @@ local function runcommand(pos,meta,command)
 		if string.len(buffer) == 0 then return end
 		buffer = minetest.deserialize(buffer)
 		if type(buffer) == "table" then
-			digiline:receptor_send(pos,digiline.rules.default,command.channel,buffer)
+			digilines.receptor_send(pos,digilines.rules.default,command.channel,buffer)
 		end
 	elseif command.command == "drawrect" then
 		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end

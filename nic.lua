@@ -56,7 +56,7 @@ minetest.register_node("digistuff:nic", {
 						user_agent = "Minetest Digilines Modem",
 						},
 						function(res)
-							digiline:receptor_send(pos, digiline.rules.default, channel, res)
+							digilines.receptor_send(pos, digilines.rules.default, channel, res)
 						end)
 				end
 		},

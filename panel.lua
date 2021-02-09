@@ -44,42 +44,42 @@ digistuff.panel_on_receive_fields = function(pos, formname, fields, sender)
 		end
 	elseif fields.up then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "up")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "up")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")
 		end
 	elseif fields.down then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "down")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "down")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")
 		end
 	elseif fields.left then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "left")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "left")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")
 		end
 	elseif fields.right then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "right")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "right")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")
 		end
 	elseif fields.back then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "back")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "back")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")
 		end
 	elseif fields.enter then
 		if can_bypass or not is_protected or not locked then
-			digiline:receptor_send(pos, digiline.rules.default, setchan, "enter")
+			digilines.receptor_send(pos, digilines.rules.default, setchan, "enter")
 		else
 			minetest.record_protection_violation(pos,playername)
 			minetest.chat_send_player(playername,"You are not authorized to use this panel.")

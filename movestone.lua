@@ -177,7 +177,7 @@ minetest.register_node("digistuff:movestone", {
 						ret.pos = pos
 						ret.targetpos = vector.new(state.targetx,state.targety,state.targetz)
 						ret.moveaxis = state.moveaxis
-						digiline:receptor_send(pos,rules,channel,ret)
+						digilines.receptor_send(pos,rules,channel,ret)
 					elseif msg.command == "absmove" then
 						local ret = {}
 						local meta = minetest.get_meta(pos)

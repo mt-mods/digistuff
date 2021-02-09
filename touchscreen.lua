@@ -76,7 +76,7 @@ digistuff.ts_on_receive_fields = function (pos, formname, fields, sender)
 		end
 	else
 		fields.clicker = sender:get_player_name()
-		digiline:receptor_send(pos, digiline.rules.default, setchan, fields)
+		digilines.receptor_send(pos, digilines.rules.default, setchan, fields)
 	end
 end
 
