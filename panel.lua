@@ -135,10 +135,9 @@ minetest.register_node("digistuff:panel", {
 		fixed = {
 			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
 		}
-    	},
+	},
 	on_receive_fields = digistuff.panel_on_receive_fields,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = digistuff.panel_on_digiline_receive

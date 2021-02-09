@@ -7,8 +7,7 @@ minetest.register_node("digistuff:camera", {
 		"digistuff_camera_back.png",
 		"digistuff_camera_front.png",
 	},
-	digiline = 
-	{
+	digiline = {
 		receptor = {}
 	},
 	_digistuff_channelcopier_fieldname = "channel",

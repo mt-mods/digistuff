@@ -2,8 +2,7 @@ minetest.register_node("digistuff:detector", {
 	tiles = {
 	"digistuff_digidetector.png"
 	},
-	digiline = 
-	{
+	digiline = {
 		receptor = {}
 	},
 	groups = {cracky=2},

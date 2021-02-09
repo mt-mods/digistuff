@@ -73,7 +73,7 @@ local function hsvtorgb(h,s,v)
 		b = c
 	else
 		r = c
-		b = x 
+		b = x
 	end
 	r = r+m
 	g = g+m
@@ -400,8 +400,7 @@ minetest.register_node("digistuff:gpu", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)

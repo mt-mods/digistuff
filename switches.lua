@@ -190,13 +190,12 @@ minetest.register_node("digistuff:button_off_pushed", {
 	},
 	node_box = {
 	type = "fixed",
-	fixed = {
-		{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
-		{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
-	}
-    	},
-	digiline =
-	{
+		fixed = {
+			{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
+			{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
+		}
+	},
+	digiline = {
 		receptor = {},
 		wire = {
 			rules = digistuff.button_get_rules,
@@ -285,13 +284,12 @@ minetest.register_node("digistuff:button_on_pushed", {
 	_digistuff_channelcopier_fieldname = "channel",
 	node_box = {
 	type = "fixed",
-	fixed = {
-		{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
-		{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
-	}
-    	},
-	digiline =
-	{
+		fixed = {
+			{ -6/16, -6/16,  6/16, 6/16, 6/16, 8/16 },
+			{ -4/16, -2/16, 11/32, 4/16, 2/16, 6/16 }
+		}
+	},
+	digiline = {
 		receptor = {},
 		wire = {
 			rules = digistuff.button_get_rules,
@@ -436,8 +434,8 @@ minetest.register_node("digistuff:wall_knob_configured", {
 minetest.register_craft({
 	output = "digistuff:wall_knob",
 	recipe = {
-		{"",                           "mesecons_button:button_off",               ""},
+		{"", "mesecons_button:button_off", ""},
 		{"digilines:wire_std_00000000","mesecons_luacontroller:luacontroller0000", "digilines:wire_std_00000000"},
-		{"",                           "digilines:wire_std_00000000",              ""},
+		{"", "digilines:wire_std_00000000", ""},
 	},
 })
