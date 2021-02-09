@@ -38,6 +38,7 @@ local function retract(pos,node,max,allsticky,sound)
 	minetest.check_for_falling(ppos)
 	if type(max) ~= "number" or max <= 0 then return end
 	local pullpos = vector.add(pos,vector.multiply(actiondir,2))
+	--luacheck: no unused
 	local success,stack,oldstack
 	if allsticky then
 		success,stack,oldstack = mesecon.mvps_pull_all(pullpos,facedir,max)

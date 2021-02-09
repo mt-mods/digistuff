@@ -61,7 +61,7 @@ local function process_inputs(pos)
 	last_seen_inputs[name] = inputs
 	if send_needed then
 		local channel = meta:get_string("channel")
-		local inputs = table.copy(inputs)
+		inputs = table.copy(inputs)
 		inputs.look_vector = player:get_look_dir()
 		inputs.name = name
 		digilines.receptor_send(pos,digiline_rules,channel,inputs)
@@ -181,7 +181,6 @@ minetest.register_node("digistuff:controller_programmed", {
 			toggle_trap_player(pos,clicker)
 		end
 	end,
-	_digistuff_channelcopier_fieldname = "channel",
 	digiline = {
 		receptor = {},
 		wire = {

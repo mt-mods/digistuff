@@ -33,7 +33,6 @@ minetest.register_craftitem("digistuff:card",{
 			stackmeta:set_string("description",string.format("Magnetic Card (%s)",meta:get_string("writedescription")))
 			return stack
 		else
-			local channel = meta:get_string("channel")
 			local data = stackmeta:get_string("data")
 			digilines.receptor_send(pos,cardreader_rules,channel,{event = "read",data = data,})
 		end

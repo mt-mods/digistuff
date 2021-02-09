@@ -25,7 +25,6 @@ local function checkprotection(pos,player)
 end
 
 local function move(pos,dir,state)
-	local newpos = vector.add(pos,dir)
 	local stack = mesecon.mvps_get_stack(pos,dir,state.maxstack,state.sticky and state.allsticky)
 	if not stack then
 		abortmovement(pos)
@@ -37,6 +36,7 @@ local function move(pos,dir,state)
 			return false
 		end
 	end
+	--luacheck: no redefined
 	local success,stack,oldstack = mesecon.mvps_push(pos,dir,state.maxstack)
 	if not success then
 		abortmovement(pos)
@@ -49,6 +49,7 @@ local function move(pos,dir,state)
 	end
 	if not state.sticky then return true end
 	local ppos = vector.add(pos,vector.multiply(dir,-1))
+	--luacheck: no unused, no redefined
 	local success,stack,oldstack
 	if state.allsticky then
 		success,stack,oldstack = mesecon.mvps_pull_all(ppos,dir,state.maxstack)
@@ -167,7 +168,6 @@ minetest.register_node("digistuff:movestone", {
 					if type(msg) ~= "table" or not msg.command then return end
 					if msg.command == "getstate" then
 						local ret = {}
-						local meta = minetest.get_meta(pos)
 						local state = meta:get_string("state")
 						if state ~= "" then state = minetest.deserialize(state) else state = {} end
 						if not state then
@@ -179,8 +179,6 @@ minetest.register_node("digistuff:movestone", {
 						ret.moveaxis = state.moveaxis
 						digilines.receptor_send(pos,rules,channel,ret)
 					elseif msg.command == "absmove" then
-						local ret = {}
-						local meta = minetest.get_meta(pos)
 						local state = meta:get_string("state")
 						if state ~= "" then state = minetest.deserialize(state) else state = {} end
 						if not state then
@@ -221,8 +219,6 @@ minetest.register_node("digistuff:movestone", {
 							minetest.get_node_timer(pos):start(0.1)
 						end
 					elseif msg.command == "relmove" then
-						local ret = {}
-						local meta = minetest.get_meta(pos)
 						local state = meta:get_string("state")
 						if state ~= "" then state = minetest.deserialize(state) else state = {} end
 						if not state then

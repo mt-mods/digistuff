@@ -39,7 +39,6 @@ minetest.register_abm({
 			if not radius or not tonumber(radius) or tonumber(radius) < 1 or tonumber(radius) > 10 then radius = 6 end
 			local objs = minetest.get_objects_inside_radius(pos, radius)
 			if objs then
-				local _,obj
 				for _,obj in ipairs(objs) do
 					if obj:is_player() then
 						table.insert(players_found,obj:get_player_name())

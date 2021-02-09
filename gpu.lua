@@ -20,9 +20,9 @@ local function rgbtohsv(r,g,b)
 	r = r/255
 	g = g/255
 	b = b/255
-	max = math.max(r,g,b)
-	min = math.min(r,g,b)
-	delta = max-min
+	local max = math.max(r,g,b)
+	local min = math.min(r,g,b)
+	local delta = max-min
 	local hue = 0
 	if delta > 0 then
 		if max == r then

@@ -15,7 +15,6 @@ end
 digistuff.button_push = function(pos,node,player)
 	local meta = minetest.get_meta(pos)
 	if meta:get_int("protected") == 1 and not digistuff.check_protection(pos,player) then return end
-	local mlight = meta:get_int("mlight") == 1
 	digilines.receptor_send(pos, digistuff.button_get_rules(node), meta:get_string("channel"), meta:get_string("msg"))
 	local newnode = "digistuff:button_on_pushed"
 	if meta:get_int("mlight") == 1 and (node.name == "digistuff:button_off" or node.name == "digistuff:button_off_pushed") then newnode = "digistuff:button_off_pushed" end

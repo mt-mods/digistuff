@@ -74,7 +74,6 @@ minetest.register_abm({
 			local players_found = {}
 			local objs = minetest.get_objects_inside_radius(spot,radius)
 			if objs then
-				local _,obj
 				for _,obj in ipairs(objs) do
 					if obj:is_player() then
 						table.insert(players_found,obj:get_player_name())
