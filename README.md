@@ -110,7 +110,7 @@ Please see gpu.txt for information on this part.
 
 ### How to use the digilines pistons:
 
-The following commands are accepted as strings: "extend" (extend the piston), "retract" (retract the piston), and "retract_sticky" (retract the piston, pulling one node like a sticky piston)
+The following commands are accepted as strings: "extend" (extend the piston), "retract" (retract the piston), "retract_sticky" (retract the piston, pulling one node like a sticky piston), and "retract_allsticky" (retract the piston, pulling a whole stack of nodes like movestone).
 You can also send a command as a table. If so, the fields that can be used in the table are as follows:
 
 * action: "extend" or "retract"
