@@ -18,8 +18,8 @@ jobs:
         git remote add -f upstream "https://cheapiesystems.com/git/digistuff"
         git fetch upstream
         git checkout -B upstream
-        git pull upstream master
-        git push -u origin upstream
+        git reset --hard upstream/master
+        git push origin upstream --force
         (printf "GITLOG<<EOF\n";git log origin/master..upstream/master;printf "\nEOF")>>$GITHUB_ENV
       shell: bash
     - name: Create Pull Request
