@@ -16,10 +16,9 @@ jobs:
         git config --global user.name 'Upstream Merge Action'
         git config --global user.email '50966843+S-S-X@users.noreply.github.com'
         git remote add -f upstream "https://cheapiesystems.com/git/digistuff"
-        git remote -v
         git fetch upstream
-        git checkout master
-        git rebase upstream/master
+        git checkout -B upstream
+        git pull upstream master
       shell: bash
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3
