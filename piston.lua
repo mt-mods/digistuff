@@ -8,7 +8,10 @@ local function extend(pos,node,max,sound)
 	local facedir = minetest.facedir_to_dir(node.param2)
 	local actiondir = vector.multiply(facedir,-1)
 	local ppos = vector.add(pos,actiondir)
-	local success,stack,oldstack = mesecon.mvps_push(ppos,actiondir,max)
+	local success,stack,oldstack = mesecon.mvps_push(ppos,actiondir,max,meta.fields.owner)
+	if stack == "protected" then
+		minetest.record_protection_violation(pos,meta.fields.owner)
+	end
 	if not success then return end
 	if sound == "digilines" then
 		minetest.sound_play("digistuff_piston_extend",{pos = pos,max_hear_distance = 20,gain = 0.6})
@@ -39,10 +42,14 @@ local function retract(pos,node,max,allsticky,sound)
 	if type(max) ~= "number" or max <= 0 then return end
 	local pullpos = vector.add(pos,vector.multiply(actiondir,2))
 	local success,stack,oldstack
+	local owner = minetest.get_meta(pos):get_string("owner")
 	if allsticky then
-		success,stack,oldstack = mesecon.mvps_pull_all(pullpos,facedir,max)
+		success,stack,oldstack = mesecon.mvps_pull_all(pullpos,facedir,max,owner ~= "" and owner)
 	else
-		success,stack,oldstack = mesecon.mvps_pull_single(pullpos,facedir,max)
+		success,stack,oldstack = mesecon.mvps_pull_single(pullpos,facedir,max,owner ~= "" and owner)
+	end
+	if stack == "protected" then
+		minetest.record_protection_violation(pos,owner)
 	end
 	if success then
 		mesecon.mvps_move_objects(pullpos,actiondir,oldstack,-1)
@@ -56,6 +63,10 @@ minetest.register_node("digistuff:piston", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec","field[channel;Channel;${channel}")
+	end,
+	after_place_node = function(pos,placer)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("owner",placer:get_player_name())
 	end,
 	tiles = {
 		"digistuff_piston_sides.png^[transformR180",
