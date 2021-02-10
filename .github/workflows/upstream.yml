@@ -19,8 +19,15 @@ jobs:
         git fetch upstream
         git checkout -B upstream
         git pull upstream master
+        git push -u origin upstream
+        (printf "GITLOG<<EOF\n";git log origin/master..upstream/master;printf "\nEOF")>>$GITHUB_ENV
       shell: bash
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
+      uses: repo-sync/pull-request@v2
       with:
-        branch: upstream 
+        source_branch: upstream
+        destination_branch: master
+        pr_title: "Pulling upstream into master"
+        pr_body: "${{ env.GITLOG }}"
+        pr_label: "upstream"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
