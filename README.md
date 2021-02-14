@@ -1,5 +1,7 @@
 # Digilines Stuff [digistuff]
 
+[![luacheck](https://github.com/mt-mods/digistuff/workflows/luacheck/badge.svg)](https://github.com/mt-mods/digistuff/actions)
+
 ## License:
 
 Code - LGPL v3 or later (contains some code from mesecons and digilines)
