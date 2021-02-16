@@ -67,7 +67,6 @@ minetest.register_node("digistuff:ram", {
 minetest.register_node("digistuff:eeprom", {
 	description = "Digilines 128Kbit EEPROM",
 	groups = {cracky=3},
-	stack_max = 1,
 	after_place_node = function(pos,_,istack)
 		local meta = minetest.get_meta(pos)
 		local smeta = istack:get_meta()
