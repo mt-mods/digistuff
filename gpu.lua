@@ -201,6 +201,33 @@ local function runcommand(pos,meta,command)
 		if type(buffer) == "table" then
 			digiline:receptor_send(pos,digiline.rules.default,command.channel,buffer)
 		end
+	elseif command.command == "sendregion" then
+		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
+		local bufnum = math.floor(command.buffer)
+		if bufnum < 0 or bufnum > 7 then return end
+		local buffer = meta:get_string("buffer"..bufnum)
+		if string.len(buffer) == 0 then return end
+		buffer = minetest.deserialize(buffer)
+		if type(buffer) ~= "table" then return end
+		if type(command.x1) ~= "number" or type(command.x2) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" then return end
+		local x1 = math.min(64,math.floor(command.x1))
+		local y1 = math.min(64,math.floor(command.y1))
+		local x2 = math.min(64,math.floor(command.x2))
+		local y2 = math.min(64,math.floor(command.y2))	
+		if x1 < 1 or y1 < 1 or x2 < 1 or y2 < 1 then return end
+		x2 = math.min(x2,buffer.xsize)
+		y2 = math.min(y2,buffer.ysize)
+		if x1 > x2 or y1 > y2 then return end
+		local tempbuf = {}
+		for y=y1,y2,1 do
+			local dsty = y-y1+1
+			tempbuf[dsty] = {}
+			for x=x1,x2,1 do
+				local dstx = x-x1+1
+				tempbuf[dsty][dstx] = buffer[y][x]
+			end
+		end
+		digiline:receptor_send(pos,digiline.rules.default,command.channel,tempbuf)
 	elseif command.command == "drawrect" then
 		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
 		local bufnum = math.floor(command.buffer)

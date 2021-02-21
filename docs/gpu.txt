@@ -12,6 +12,7 @@ Example:
 		{command="send",buffer=0,channel="example"}
 	}
 	
+Invalid commands or commands with missing/invalid parameters will be ignored.
 
 Command: createbuffer
 ---------------------
@@ -32,6 +33,19 @@ Sends the contents of a buffer to a digiscreen, rgblightstone panel, or other di
 Parameters:
 buffer [integer 0-7]: The buffer to send the contents of.
 channel [string]: The digilines channel to send the message on.
+
+Command: sendregion
+-------------------
+
+Sends part of the contents of a buffer to a digiscreen, rgblightstone panel, or other digilines device.
+
+Parameters:
+buffer [integer 0-7]: The buffer to send part of the contents of.
+channel [string]: The digilines channel to send the message on.
+x1 [integer 1-64]: The X position of the left side of the region to send.
+x2 [integer 1-64]: The X position of the right side of the region to send.
+y1 [integer 1-64]: The Y position of the top side of the region to send.
+y2 [integer 1-64]: The Y position of the bottom side of the region to send.
 
 Command: drawrect
 -----------------
