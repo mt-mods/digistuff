@@ -98,6 +98,11 @@ minetest.register_node("digistuff:movestone", {
 	end,
 	tiles = {
 		"jeija_movestone_side.png",
+		"jeija_movestone_side.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
 	},
 	on_receive_fields = function(pos, formname, fields, sender)
 		local name = sender:get_player_name()
