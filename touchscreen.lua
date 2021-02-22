@@ -8,6 +8,8 @@ digistuff.update_ts_formspec = function (pos)
 	if meta:get_int("init") == 0 then
 		fs = fs.."field[3.75,3;3,1;channel;Channel;]"..
 		"button_exit[4,3.75;2,1;save;Save]"
+	elseif minetest.get_node(pos).name == "digistuff:advtouchscreen" then
+		fs = fs.."label[0,0;No data received yet]"
 	else
 		local data = minetest.deserialize(meta:get_string("data")) or {}
 		for _,field in pairs(data) do
@@ -252,19 +254,23 @@ digistuff.ts_on_digiline_receive = function (pos, node, channel, msg)
 	local meta = minetest.get_meta(pos)
 	local setchan = meta:get_string("channel")
 	if channel ~= setchan then return end
-	if type(msg) ~= "table" then return end
-	local data = minetest.deserialize(meta:get_string("data")) or {}
-	if msg.command then
-		data = digistuff.process_command(meta,data,msg)
+	if node.name == "digistuff:advtouchscreen" then
+		if type(msg) == "string" then meta:set_string("formspec",msg) end
 	else
-		for _,i in ipairs(msg) do
-			if type(i) == "table" and i.command then
-				data = digistuff.process_command(meta,data,i) or data
+		if type(msg) ~= "table" then return end
+		local data = minetest.deserialize(meta:get_string("data")) or {}
+		if msg.command then
+			data = digistuff.process_command(meta,data,msg)
+		else
+			for _,i in ipairs(msg) do
+				if type(i) == "table" and i.command then
+					data = digistuff.process_command(meta,data,i) or data
+				end
 			end
 		end
+		meta:set_string("data",minetest.serialize(data))
+		digistuff.update_ts_formspec(pos)
 	end
-	meta:set_string("data",minetest.serialize(data))
-	digistuff.update_ts_formspec(pos)
 end
 
 minetest.register_node("digistuff:touchscreen", {
@@ -297,6 +303,44 @@ minetest.register_node("digistuff:touchscreen", {
 	end,
 	on_receive_fields = digistuff.ts_on_receive_fields,
 	digiline = {
+		receptor = {},
+		effector = {
+			action = digistuff.ts_on_digiline_receive
+		},
+	},
+})
+
+minetest.register_node("digistuff:advtouchscreen", {
+	description = "Advanced Digilines Touchscreen",
+	groups = {cracky=3},
+	on_construct = function(pos)
+		digistuff.update_ts_formspec(pos,true)
+	end,
+	drawtype = "nodebox",
+	tiles = {
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_panel_back.png",
+		"digistuff_advts_front.png"
+		},
+	paramtype = "light",
+	paramtype2 = "facedir",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
+		}
+    	},
+    	_digistuff_channelcopier_fieldname = "channel",
+	_digistuff_channelcopier_onset = function(pos)
+		minetest.get_meta(pos):set_int("init",1)
+		digistuff.update_ts_formspec(pos)
+	end,
+	on_receive_fields = digistuff.ts_on_receive_fields,
+	digiline = 
+	{
 		receptor = {},
 		effector = {
 			action = digistuff.ts_on_digiline_receive
