@@ -269,11 +269,3 @@ minetest.register_node("digistuff:movestone", {
 		},
 	},
 })
-
-minetest.register_craft({
-	output = "digistuff:movestone",
-	recipe = {
-		{"mesecons_movestones:movestone","digilines:wire_std_00000000"},
-		{"mesecons_movestones:movestone_vertical","mesecons_luacontroller:luacontroller0000"},
-	},
-})
