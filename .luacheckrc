@@ -20,3 +20,7 @@ read_globals = {
 	"mesecon",
 	"screwdriver",
 }
+
+exclude_files = {
+	"**/spec/**",
+}
