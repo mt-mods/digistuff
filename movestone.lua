@@ -98,6 +98,11 @@ minetest.register_node("digistuff:movestone", {
 	end,
 	tiles = {
 		"jeija_movestone_side.png",
+		"jeija_movestone_side.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
+		"digistuff_movestone.png",
 	},
 	on_receive_fields = function(pos, formname, fields, sender)
 		local name = sender:get_player_name()
@@ -114,6 +119,7 @@ minetest.register_node("digistuff:movestone", {
 		local state = meta:get_string("state")
 		local newpos = pos
 		if state ~= "" then state = minetest.deserialize(state) else return end
+		if not state.player then state.player = meta:get_string("owner") end
 		if state.moveaxis == "x" then
 			local dir = vector.new(state.targetx > pos.x and 1 or -1,0,0)
 			move(pos,dir,state)
