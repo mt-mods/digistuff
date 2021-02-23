@@ -82,7 +82,6 @@ local function release_player(pos)
 	local player = minetest.get_player_by_name(players_on_controller[hash])
 	if player and player:get_properties()._is_gamecontroller then
 		local parent = player:get_attach()
-		print(dump(parent:get_properties()))
 		if parent then
 			player:set_detach()
 		end
