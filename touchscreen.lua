@@ -78,7 +78,7 @@ digistuff.ts_on_receive_fields = function (pos, formname, fields, sender)
 		end
 	else
 		fields.clicker = sender:get_player_name()
-		digiline:receptor_send(pos, digiline.rules.default, setchan, fields)
+		digilines.receptor_send(pos, digilines.rules.default, setchan, fields)
 	end
 end
 
@@ -94,7 +94,7 @@ digistuff.process_command = function (meta, data, msg)
 			end
 		end
 		if not msg.texture_name or type(msg.texture_name) ~= "string" then
-			return	
+			return
 		end
 		local field = {type="image",X=msg.X,Y=msg.Y,W=msg.W,H=msg.H,texture_name=minetest.formspec_escape(msg.texture_name)}
 		table.insert(data,field)
@@ -144,7 +144,7 @@ digistuff.process_command = function (meta, data, msg)
 			end
 		end
 		if not msg.label or type(msg.label) ~= "string" then
-			return	
+			return
 		end
 		local field = {type="label",X=msg.X,Y=msg.Y,label=minetest.formspec_escape(msg.label)}
 		table.insert(data,field)
@@ -155,7 +155,7 @@ digistuff.process_command = function (meta, data, msg)
 			end
 		end
 		if not msg.label or type(msg.label) ~= "string" then
-			return	
+			return
 		end
 		local field = {type="vertlabel",X=msg.X,Y=msg.Y,label=minetest.formspec_escape(msg.label)}
 		table.insert(data,field)
@@ -295,15 +295,14 @@ minetest.register_node("digistuff:touchscreen", {
 		fixed = {
 			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
 		}
-    	},
-    	_digistuff_channelcopier_fieldname = "channel",
+	},
+	_digistuff_channelcopier_fieldname = "channel",
 	_digistuff_channelcopier_onset = function(pos)
 		minetest.get_meta(pos):set_int("init",1)
 		digistuff.update_ts_formspec(pos)
 	end,
 	on_receive_fields = digistuff.ts_on_receive_fields,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = digistuff.ts_on_digiline_receive

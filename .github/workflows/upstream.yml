@@ -1,0 +1,33 @@
+name: "Merge Upstream"
+
+on:
+  schedule:
+    - cron: "30 20 * * *"
+  workflow_dispatch:
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - run: | 
+        git config --global user.name 'Upstream Merge Action'
+        git config --global user.email '50966843+S-S-X@users.noreply.github.com'
+        git remote add -f upstream "https://cheapiesystems.com/git/digistuff"
+        git fetch upstream
+        git checkout -B upstream
+        git reset --hard upstream/master
+        git push origin upstream --force
+        (printf "GITLOG<<EOF\n";git log origin/master..upstream/master;printf "\nEOF")|sed 's/"/\&#34;/g'>>$GITHUB_ENV
+      shell: bash
+    - name: Create Pull Request
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: upstream
+        destination_branch: master
+        pr_title: "Pulling upstream into master"
+        pr_body: "${{ env.GITLOG }}"
+        pr_label: "upstream"
+        github_token: ${{ secrets.GITHUB_TOKEN }}

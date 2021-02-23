@@ -79,7 +79,6 @@ minetest.register_node("digistuff:junctionbox", {
 	paramtype2 = "facedir",
 	groups = {cracky = 3},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -124,7 +123,6 @@ minetest.register_node("digistuff:receiver", {
 	groups = {dig_immediate = 3,not_in_creative_inventory = 1,},
 	drop = "digilines:wire_std_00000000",
 	is_ground_content = false,
-	paramtype = "light",
 	paramtype2 = "facedir",
 	walkable = false,
 	drawtype = "nodebox",
@@ -190,7 +188,6 @@ minetest.register_node("digistuff:vertical_tap", {
 	paramtype = "light",
 	groups = {dig_immediate = 3,vertical_digiline = 1,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -228,7 +225,6 @@ minetest.register_node("digistuff:vertical_bottom", {
 	paramtype = "light",
 	groups = {dig_immediate = 3,vertical_digiline = 1,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -267,7 +263,6 @@ minetest.register_node("digistuff:vertical_middle", {
 	groups = {dig_immediate = 3,not_in_creative_inventory = 1,vertical_digiline = 1,},
 	drop = "digistuff:vertical_bottom",
 	is_ground_content = false,
-	paramtype = "light",
 	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
@@ -296,7 +291,6 @@ minetest.register_node("digistuff:vertical_top", {
 	groups = {dig_immediate = 3,not_in_creative_inventory = 1,vertical_digiline = 1,},
 	drop = "digistuff:vertical_bottom",
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -336,7 +330,6 @@ minetest.register_node("digistuff:insulated_straight", {
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -382,7 +375,6 @@ minetest.register_node("digistuff:insulated_tjunction", {
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -430,7 +422,6 @@ minetest.register_node("digistuff:insulated_corner", {
 	on_rotate = minetest.get_modpath("screwdriver") and screwdriver.rotate_simple,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",
@@ -475,7 +466,6 @@ minetest.register_node("digistuff:insulated_fourway", {
 	walkable = false,
 	groups = {dig_immediate = 3,},
 	is_ground_content = false,
-	paramtype = "light",
 	drawtype = "nodebox",
 	node_box = {
 		type = "fixed",

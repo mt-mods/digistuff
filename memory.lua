@@ -44,8 +44,7 @@ minetest.register_node("digistuff:ram", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -53,7 +52,7 @@ minetest.register_node("digistuff:ram", {
 				if meta:get_string("channel") ~= channel or type(msg) ~= "table" then return end
 				if msg.command == "read" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 then
-						digiline:receptor_send(pos,digiline.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))					
+						digilines.receptor_send(pos,digilines.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))
 					end
 				elseif msg.command == "write" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 and type(msg.data) == "string" then
@@ -136,8 +135,7 @@ minetest.register_node("digistuff:eeprom", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -145,7 +143,7 @@ minetest.register_node("digistuff:eeprom", {
 				if meta:get_string("channel") ~= channel or type(msg) ~= "table" then return end
 				if msg.command == "read" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 then
-						digiline:receptor_send(pos,digiline.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))					
+						digilines.receptor_send(pos,digilines.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))
 					end
 				elseif msg.command == "write" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 and type(msg.data) == "string" then
