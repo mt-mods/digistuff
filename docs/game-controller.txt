@@ -5,5 +5,4 @@ When a player leaves a controller, the string "player_left" is sent.
 In addition to right-clicking the controller in use to stop using it, the following will also cause a player to stop using the controller:
 * The controller is moved or removed
 * The player leaves the game
-* The player is teleported away from the controller
 * The controller receives the string "release" on its digilines channel

@@ -14,6 +14,15 @@ local players_on_controller = {}
 
 local last_seen_inputs = {}
 
+local function removeEntity(pos)
+	local entitiesNearby = minetest.get_objects_inside_radius(pos,0.5)
+	for _,i in pairs(entitiesNearby) do
+		if i:get_luaentity() and i:get_luaentity().name == "digistuff:controller_entity" then
+			i:remove()
+		end
+	end
+end
+
 local function process_inputs(pos)
 	local meta = minetest.get_meta(pos)
 	local hash = minetest.hash_node_position(pos)
@@ -33,14 +42,6 @@ local function process_inputs(pos)
 	if not player then
 		digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 		minetest.get_meta(pos):set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
-		players_on_controller[hash] = nil
-		return
-	end
-	local distance = vector.distance(pos,player:get_pos())
-	if distance > 1 then
-		digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
-		minetest.get_meta(pos):set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
-		player:set_physics_override({speed = 1,jump = 1,})
 		players_on_controller[hash] = nil
 		return
 	end
@@ -71,11 +72,14 @@ end
 local function release_player(pos)
 	local hash = minetest.hash_node_position(pos)
 	local player = minetest.get_player_by_name(players_on_controller[hash])
-	if player then
-		player:set_physics_override({speed = 1,jump = 1,})
-		player:set_pos(vector.add(pos,vector.new(0.25,0,0.25)))
+	if player and player:get_properties()._is_gamecontroller then
+		local parent = player:get_attach()
+		if parent then
+			player:set_detach()
+		end
 		minetest.chat_send_player(players_on_controller[hash],"You are now free to move.")
 	end
+	removeEntity(pos)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 	last_seen_inputs[players_on_controller[hash]] = nil
@@ -92,8 +96,8 @@ local function trap_player(pos,player)
 			return
 	else
 		players_on_controller[hash] = newname
-		player:set_pos(vector.add(pos,vector.new(0,-0.4,0)))
-		player:set_physics_override({speed = 0,jump = 0,})
+		local entity = minetest.add_entity(pos,"digistuff:controller_entity")
+		player:set_attach(entity,"",vector.new(0,0,0),vector.new(0,0,0))
 		minetest.chat_send_player(newname,"You are now using a digilines game controller. Right-click the controller again to be released.")
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext","Digilines Game Controller\nIn use by: "..newname)
@@ -198,6 +202,16 @@ minetest.register_node("digistuff:controller_programmed", {
 				end
 			end,
 		},
+	},
+})
+
+minetest.register_entity("digistuff:controller_entity",{
+	initial_properties = {
+		visual = "sprite",
+		physical = false,
+		collisionbox = {0,0,0,0,0,0,},
+		textures = {"digistuff_transparent.png",},
+		_is_gamecontroller = true,
 	},
 })
 

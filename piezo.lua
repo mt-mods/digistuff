@@ -64,15 +64,16 @@ minetest.register_node("digistuff:piezo", {
 	}
 })
 
-local crystal = "default:mese_crystal_fragment"
-if minetest.get_modpath("quartz") then
-	crystal = "quartz:quartz_crystal_piece"
+local crystal = "quartz:quartz_crystal_piece"
+
+if not minetest.get_modpath("quartz") then
+	crystal = "default:mese_crystal_fragment"
 end
 
 minetest.register_craft({
 	output = "digistuff:piezo",
 	recipe = {
-		{crystal, "basic_materials:steel_strip"},
-		{"digilines:wire_std_00000000", "mesecons_luacontroller:luacontroller0000"},
-	}
+		{crystal,"basic_materials:steel_strip"},
+		{"digilines:wire_std_00000000","mesecons_luacontroller:luacontroller0000"},
+	},
 })

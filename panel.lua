@@ -13,7 +13,7 @@ digistuff.update_panel_formspec = function (pos,dispstr)
 		"image_button[3,6.5;1,1;digistuff_adwaita_emblem-default.png;enter;]"..
 		"field[6,5.75;2,1;channel;Channel;${channel}]"..
 		"button[8,5.5;1,1;savechan;Set]"
-	fs = fs:format(minetest.formspec_escape(dispstr)):gsub("|","\n")
+	fs = fs:format(minetest.colorize("#000000",minetest.formspec_escape(dispstr):gsub("|","\n")))
 	meta:set_string("formspec",fs)
 	meta:set_string("text",dispstr)
 end
