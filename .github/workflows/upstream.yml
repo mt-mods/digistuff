@@ -20,7 +20,7 @@ jobs:
         git checkout -B upstream
         git reset --hard upstream/master
         git push origin upstream --force
-        (printf "GITLOG<<EOF\n";git log origin/master..upstream/master;printf "\nEOF")>>$GITHUB_ENV
+        (printf "GITLOG<<EOF\n";git log origin/master..upstream/master;printf "\nEOF")|sed 's/"/\&#34;/g'>>$GITHUB_ENV
       shell: bash
     - name: Create Pull Request
       uses: repo-sync/pull-request@v2
