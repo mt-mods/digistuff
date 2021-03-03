@@ -1,6 +1,7 @@
 # Digilines Stuff [digistuff]
 
 [![luacheck](https://github.com/mt-mods/digistuff/workflows/luacheck/badge.svg)](https://github.com/mt-mods/digistuff/actions)
+[![mineunit](https://github.com/mt-mods/digistuff/actions/workflows/mineunit.yml/badge.svg)](https://github.com/mt-mods/digistuff/actions/workflows/mineunit.yml)
 
 ## License:
 
