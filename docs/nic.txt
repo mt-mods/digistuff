@@ -1,2 +1,48 @@
 How to use the NIC:
 Send a digilines signal with the URL you want to download. The HTTPRequestResult table will be sent back on the same channel.
+
+# Examples
+
+## GET request with a plain url
+```lua
+-- request
+digiline_send("nic", "http://example.com")
+-- response
+event.msg = {
+	code = 200,
+	succeeded = true,
+	data = "<html></html>"
+}
+```
+
+## GET request with headers
+```lua
+-- request
+digiline_send("nic", {
+	url = "http://example.com",
+	headers = {"Accept: text/plain"}
+})
+-- response
+event.msg = {
+	code = 200,
+	succeeded = true,
+	data = "blah"
+}
+```
+
+## GET request with parsed json response
+```lua
+-- request
+digiline_send("nic", {
+	url = "http://example.com",
+	parse_json = true
+})
+-- response
+event.msg = {
+	code = 200,
+	succeeded = true,
+	data = {
+		my = "data"
+	}
+}
+```
