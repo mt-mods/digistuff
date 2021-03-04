@@ -14,11 +14,12 @@ read_globals = {
 	"vector",
 	"ItemStack",
 	"DIR_DELIM",
-	
+
 	-- Mod Deps
 	"default",
 	"mesecon",
 	"screwdriver",
+	"QoS"
 }
 
 exclude_files = {

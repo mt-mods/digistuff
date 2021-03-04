@@ -33,5 +33,6 @@ if not http then
 	minetest.log("warning","digistuff is not allowed to use the HTTP API - digilines NIC will not be available!")
 	minetest.log("warning","If this functionality is desired, please add digistuff to your secure.http_mods setting")
 else
-	loadfile(string.format("%s%s%s.lua",minetest.get_modpath(minetest.get_current_modname()),DIR_DELIM,"nic"))(http)
+	local qos_http = QoS and QoS(http, 2) or http
+	loadfile(string.format("%s%s%s.lua",minetest.get_modpath(minetest.get_current_modname()),DIR_DELIM,"nic"))(qos_http)
 end
