@@ -479,7 +479,7 @@ local function runcommand(pos,meta,command)
 					packeddata = packeddata..packpixel(buffer[y][x])
 				end
 			end
-			digilines.receptor_send(pos,digiline.rules.default,command.channel,packeddata)
+			digilines.receptor_send(pos,digilines.rules.default,command.channel,packeddata)
 		end
 	elseif command.command == "loadpacked" then
 		if type(command.buffer) ~= "number" or type(command.data) ~= "string" then return end
