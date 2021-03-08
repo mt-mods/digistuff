@@ -276,7 +276,7 @@ local function runcommand(pos,meta,command)
 				tempbuf[dsty][dstx] = buffer[y][x]
 			end
 		end
-		digilines:receptor_send(pos,digilines.rules.default,command.channel,tempbuf)
+		digilines.receptor_send(pos,digilines.rules.default,command.channel,tempbuf)
 	elseif command.command == "drawrect" then
 		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
 		local bufnum = math.floor(command.buffer)
@@ -479,7 +479,7 @@ local function runcommand(pos,meta,command)
 					packeddata = packeddata..packpixel(buffer[y][x])
 				end
 			end
-			digiline:receptor_send(pos,digiline.rules.default,command.channel,packeddata)
+			digilines.receptor_send(pos,digiline.rules.default,command.channel,packeddata)
 		end
 	elseif command.command == "loadpacked" then
 		if type(command.buffer) ~= "number" or type(command.data) ~= "string" then return end
