@@ -71,6 +71,7 @@ minetest.register_node("digistuff:button", {
 	"digistuff_digibutton_sides.png",
 	"digistuff_digibutton_off.png"
 	},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
@@ -133,6 +134,7 @@ minetest.register_node("digistuff:button_off", {
 	"digistuff_digibutton_sides.png",
 	"digistuff_digibutton_off.png"
 	},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
@@ -178,6 +180,7 @@ minetest.register_node("digistuff:button_off_pushed", {
 	"digistuff_digibutton_sides.png",
 	"digistuff_digibutton_off.png"
 	},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
@@ -222,7 +225,8 @@ minetest.register_node("digistuff:button_on", {
 		"digistuff_digibutton_sides.png",
 		"digistuff_digibutton_sides.png",
 		"digistuff_digibutton_on.png"
-		},
+	},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
@@ -269,7 +273,8 @@ minetest.register_node("digistuff:button_on_pushed", {
 		"digistuff_digibutton_sides.png",
 		"digistuff_digibutton_sides.png",
 		"digistuff_digibutton_on.png"
-		},
+	},
+	use_texture_alpha = "clip",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	legacy_wallmounted = true,
