@@ -15,21 +15,6 @@ event.msg = {
 }
 ```
 
-## GET request with headers
-```lua
--- request
-digiline_send("nic", {
-	url = "http://example.com",
-	headers = {"Accept: text/plain"}
-})
--- response
-event.msg = {
-	code = 200,
-	succeeded = true,
-	data = "blah"
-}
-```
-
 ## GET request with parsed json response
 ```lua
 -- request

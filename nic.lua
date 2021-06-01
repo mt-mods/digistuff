@@ -49,7 +49,6 @@ minetest.register_node("digistuff:nic", {
 					local meta = minetest.get_meta(pos)
 					if meta:get_string("channel") ~= channel then return end
 					local url
-					local headers
 					local parse_json = false
 					-- parse message
 					if type(msg) == "string" then
@@ -58,7 +57,6 @@ minetest.register_node("digistuff:nic", {
 					elseif type(msg) == "table" and type(msg.url) == "string" then
 						-- config object
 						url = msg.url
-						headers = msg.headers
 						parse_json = msg.parse_json
 					else
 						-- not supported
@@ -67,8 +65,7 @@ minetest.register_node("digistuff:nic", {
 					http.fetch({
 							url = url,
 							timeout = 5,
-							user_agent = "Minetest Digilines Modem",
-							extra_headers = headers
+							user_agent = "Minetest Digilines Modem"
 						},
 						function(res)
 							if type(res.data) == "string" and parse_json then
