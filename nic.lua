@@ -62,6 +62,8 @@ minetest.register_node("digistuff:nic", {
 						-- not supported
 						return
 					end
+					-- sanitize url
+					url = string.gsub(url, "%s", "%%20")
 					http.fetch({
 							url = url,
 							timeout = 5,
