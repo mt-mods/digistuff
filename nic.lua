@@ -1,4 +1,18 @@
 local http = ...
+
+local function char_to_hex(c)
+	return string.format("%%%02X", string.byte(c))
+end
+
+local function safe_url(url)
+	url = url:gsub("%s+", "%%20")  -- space characters
+	url = url:gsub("%%$", "%%25")  -- percent at the end of the url
+	url = url:gsub("%%(%x?%X)", "%%25%1")  -- percents that are not escapes
+	url = url:gsub("\\", "/")  -- backslash to forward slash
+	url = url:gsub("[^%w:/%?#%[%]@!%$&'%(%)%*%+,;=%-%._~%%]", char_to_hex)  -- everything else unsafe
+	return url
+end
+
 minetest.register_node("digistuff:nic", {
 	description = "Digilines NIC",
 	groups = {cracky=3},
@@ -63,7 +77,7 @@ minetest.register_node("digistuff:nic", {
 						return
 					end
 					-- sanitize url
-					url = string.gsub(url, "%s", "%%20")
+					url = safe_url(url)
 					http.fetch({
 							url = url,
 							timeout = 5,
