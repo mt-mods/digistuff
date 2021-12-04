@@ -4,6 +4,11 @@ if not minetest.get_modpath("mesecons_noteblock") then
 end
 
 local validnbsounds = dofile(minetest.get_modpath(minetest.get_current_modname())..DIR_DELIM.."nbsounds.lua")
+
+function digistuff.register_nb_sound(name,filename)
+	validnbsounds[name] = filename
+end
+
 minetest.register_node("digistuff:noteblock", {
 	description = "Digilines Noteblock",
 	groups = {cracky=3},
