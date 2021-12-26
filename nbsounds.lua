@@ -33,6 +33,7 @@ local valid_sounds = {
 	digistuff_piezo_long = "digistuff_piezo_long_single",
 	digistuff_piston_extend = "digistuff_piston_extend",
 	digistuff_piston_retract = "digistuff_piston_retract",
+	sine = "digistuff_sine",
 }
 
 local mod_sounds = {

@@ -4,6 +4,11 @@ if not minetest.get_modpath("mesecons_noteblock") then
 end
 
 local validnbsounds = dofile(minetest.get_modpath(minetest.get_current_modname())..DIR_DELIM.."nbsounds.lua")
+
+function digistuff.register_nb_sound(name,filename)
+	validnbsounds[name] = filename
+end
+
 minetest.register_node("digistuff:noteblock", {
 	description = "Digilines Noteblock",
 	groups = {cracky=3},
@@ -68,7 +73,18 @@ minetest.register_node("digistuff:noteblock", {
 						if type(msg.pitch) == "number" then
 							pitch = math.max(0.05,math.min(10,msg.pitch))
 						end
-						if sound then minetest.sound_play({name = sound,gain = volume,},{pos = pos,pitch = pitch,},true) end
+						if sound then
+							if type(msg.cut) == "number" and msg.cut >= 0 then
+								msg.cut = math.min(msg.cut,10)
+								local handle = minetest.sound_play({name = sound,gain = volume,},{pos = pos,pitch = pitch,},false)
+								minetest.after(msg.cut,minetest.sound_stop,handle)
+							elseif type(msg.fadestep) == "number" and type(msg.fadegain) == "number" and msg.fadegain >= 0 and type(msg.fadestart) == "number" and msg.fadestart >= 0 then
+								local handle = minetest.sound_play({name = sound,gain = volume,},{pos = pos,pitch = pitch,},false)
+								minetest.after(msg.fadestart,minetest.sound_fade,handle,msg.fadestep,msg.fadegain)
+							else
+								minetest.sound_play({name = sound,gain = volume,},{pos = pos,pitch = pitch,},true)
+							end
+						end
 					end
 				end
 		},
