@@ -83,7 +83,7 @@ local formspec_elements = {
 		{num, num, num, num, str}
 	},
 	background = {
-		"background[<X>,<Y>;<W>,<H>;<texture name>;<auto_clip>]",
+		"background[%s,%s;%s,%s;%s;%s]",
 		{"X", "Y", "W", "H", "texture_name", "auto_clip"},
 		{"0", "0", "0", "0", "digistuff_ts_bg.png", "true"},
 		{num, num, num, num, str, bool}
@@ -185,7 +185,7 @@ local formspec_elements = {
 		{num, num, num, num, str, list, num, bool}
 	},
 	checkbox = {
-		"checkbox[<X>,<Y>;<name>;<label>;<selected>]",
+		"checkbox[%s,%s;%s;%s;%s]",
 		{"X", "Y", "name", "label", "selected"},
 		{"0", "0", "checkbox", "checkbox", "false"},
 		{num, num, str, str, bool}
