@@ -71,9 +71,9 @@ local formspec_elements = {
 		{num, num, num, num, str, str, num, num, num}
 	},
 	model = {
-		"model[%s,%s;%s,%s;%s;%s;%s;%s,%s;%s;%s;]",
+		"model[%s,%s;%s,%s;%s;%s;%s;%s,%s;%s;%s;0,0]",
 		{"X", "Y", "W", "H", "name", "mesh", "textures", "rotation_x", "rotation_y", "continuous", "mouse_control"},
-		{"0", "0", "2", "2", "model", "torch_floor.obj", "default_torch_on_floor.png", "0", "0", "", ""},
+		{"0", "0", "2", "2", "model", "character.b3d", "character.png", "0", "0", "", ""},
 		{num, num, num, num, str, str, list, num, num, bool, bool}
 	},
 	item_image = {
