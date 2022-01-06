@@ -192,4 +192,25 @@ local formspec_elements = {
 	},
 }
 
+local function middle(value, default_value)
+	local t = type(value)
+	if t == "number" then
+		return string.format("%i", value)
+	elseif t ~= "string" then
+		return default_value
+	end
+	if value:match("^%-?%d+$") or value:match("^%-?%d+,%-?%d+$")
+			or value:match("^%-?%d+,%-?%d+,%-?%d+,%-?%d+$") then
+		return value
+	end
+	return default_value
+end
+
+formspec_elements.background9 = {
+	"background9[%s,%s;%s,%s;%s;%s;%s]",
+	{"X", "Y", "W", "H", "texture_name", "auto_clip", "middle"},
+	{"0", "0", "0", "0", "digistuff_ts_bg.png", "true", "3"},
+	{num, num, num, num, str, bool, middle}
+}
+
 return formspec_elements
