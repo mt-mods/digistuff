@@ -80,6 +80,9 @@ local function process_command(meta, data, msg)
 		if msg.locked ~= nil then
 			meta:set_int("locked", msg.locked == false and 0 or 1)
 		end
+		if msg.no_prepend ~= nil then
+			meta:set_int("no_prepend", msg.no_prepend == false and 0 or 1)
+		end
 		if msg.real_coordinates ~= nil then
 			meta:set_int("real_coordinates", msg.real_coordinates == false and 0 or 1)
 		end
@@ -110,6 +113,9 @@ local function create_formspec(meta, data)
 		fs = fs.."size["..width..","..height..",true]"
 	else
 		fs = fs.."size["..width..","..height.."]"
+	end
+	if meta:get_int("no_prepend") == 1 then
+		fs = fs.."no_prepend[]"
 	end
 	if not meta:get("real_coordinates") and not meta:get("realcoordinates") then
 		fs = fs.."real_coordinates[false]"
