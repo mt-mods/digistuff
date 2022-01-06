@@ -213,4 +213,22 @@ formspec_elements.background9 = {
 	{num, num, num, num, str, bool, middle}
 }
 
+local function fullscreen(value, default_value)
+	if type(value) == "boolean" then
+		return value and "true" or "false"
+	end
+	if value == "true" or value == "false"
+			or value == "both" or value == "neither" then
+		return value
+	end
+	return default_value
+end
+
+formspec_elements.bgcolor = {
+	"bgcolor[%s;%s;%s]",
+	{"bgcolor", "fullscreen", "fbgcolor"},
+	{"#ffffff", "", ""},
+	{str, fullscreen, str}
+}
+
 return formspec_elements
