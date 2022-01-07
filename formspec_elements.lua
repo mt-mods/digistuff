@@ -14,25 +14,19 @@ local function str(value, default_value)
 end
 
 local function list(value, default_value)
-	if type(value) ~= "table" then
-		if type(value) == "string" then
-			return minetest.formspec_escape(value)
-		end
-		return default_value
-	end
-	if #value < 1 then
+	if type(value) ~= "table" or #value < 1 then
 		return default_value
 	end
 	local new_list = {}
 	for _,v in ipairs(value) do
 		if type(v) == "string" then
-			new_list:insert(minetest.formspec_escape(v))
+			table.insert(new_list, minetest.formspec_escape(v))
 		end
 	end
 	if #new_list < 1 then
 		return default_value
 	end
-	return new_list:concat(",")
+	return table.concat(new_list, ",")
 end
 
 local function bool(value, default_value)
