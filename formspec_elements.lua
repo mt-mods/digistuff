@@ -225,4 +225,39 @@ formspec_elements.bgcolor = {
 	{str, fullscreen, str}
 }
 
+local function prop(value, default_value)
+	if type(value) ~= "table" or next(value) == nil then
+		return default_value
+	end
+	local new_prop = ""
+	for k,v in pairs(value) do
+		if type(k) == "string" then
+			k = minetest.formspec_escape(k).."="
+			local t = type(v)
+			if t == "string" then
+				table.insert(new_prop, k..minetest.formspec_escape(v))
+			elseif t == "number" then
+				table.insert(new_prop, k..string.format("%.4g", v))
+			elseif t == "boolean" then
+				table.insert(new_prop, k..(v and "true" or "false"))
+			end
+		end
+	end
+	return table.concat(new_prop, ";")
+end
+
+formspec_elements.style = {
+	"style[%s;%s]",
+	{"selectors", "properties"},
+	{"", ""},
+	{list, prop}
+}
+
+formspec_elements.style_type = {
+	"style_type[%s;%s]",
+	{"selectors", "properties"},
+	{"", ""},
+	{list, prop}
+}
+
 return formspec_elements
