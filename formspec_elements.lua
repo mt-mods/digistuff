@@ -39,6 +39,53 @@ local function bool(value, default_value)
 	return value and "true" or "false"
 end
 
+local function middle(value, default_value)  -- Only for `background9`
+	local t = type(value)
+	if t == "number" then
+		return string.format("%i", value)
+	elseif t ~= "string" then
+		return default_value
+	end
+	if value:match("^%-?%d+$") or value:match("^%-?%d+,%-?%d+$")
+			or value:match("^%-?%d+,%-?%d+,%-?%d+,%-?%d+$") then
+		return value
+	end
+	return default_value
+end
+
+local function fullscreen(value, default_value)  -- Only for `bgcolor`
+	if type(value) == "boolean" then
+		return value and "true" or "false"
+	end
+	if value == "true" or value == "false"
+			or value == "both" or value == "neither" then
+		return value
+	end
+	return default_value
+end
+
+local function prop(value, default_value)  -- Only for `stlye` and `style_type`
+	if type(value) ~= "table" or next(value) == nil then
+		return default_value
+	end
+	local new_prop = ""
+	for k,v in pairs(value) do
+		if type(k) == "string" then
+			k = minetest.formspec_escape(k).."="
+			local t = type(v)
+			if t == "string" then
+				table.insert(new_prop, k..minetest.formspec_escape(v))
+			elseif t == "number" then
+				table.insert(new_prop, k..string.format("%.4g", v))
+			elseif t == "boolean" then
+				table.insert(new_prop, k..(v and "true" or "false"))
+			end
+		end
+	end
+	return table.concat(new_prop, ";")
+end
+
+
 local formspec_elements = {
 	tooltip = {
 		"tooltip[%s;%s;%s;%s]",
@@ -76,11 +123,23 @@ local formspec_elements = {
 		{"0", "0", "1", "1", "default:dirt_with_grass"},
 		{num, num, num, num, str}
 	},
+	bgcolor = {
+		"bgcolor[%s;%s;%s]",
+		{"bgcolor", "fullscreen", "fbgcolor"},
+		{"#ffffff", "", ""},
+		{str, fullscreen, str}
+	},
 	background = {
 		"background[%s,%s;%s,%s;%s;%s]",
 		{"X", "Y", "W", "H", "texture_name", "auto_clip"},
 		{"0", "0", "0", "0", "digistuff_ts_bg.png", "true"},
 		{num, num, num, num, str, bool}
+	},
+	background9 = {
+		"background9[%s,%s;%s,%s;%s;%s;%s]",
+		{"X", "Y", "W", "H", "texture_name", "auto_clip", "middle"},
+		{"0", "0", "0", "0", "digistuff_ts_bg.png", "true", "3"},
+		{num, num, num, num, str, bool, middle}
 	},
 	pwdfield = {
 		"field[%s,%s;%s,%s;%s;%s]",
@@ -184,80 +243,18 @@ local formspec_elements = {
 		{"0", "0", "checkbox", "checkbox", "false"},
 		{num, num, str, str, bool}
 	},
-}
-
-local function middle(value, default_value)
-	local t = type(value)
-	if t == "number" then
-		return string.format("%i", value)
-	elseif t ~= "string" then
-		return default_value
-	end
-	if value:match("^%-?%d+$") or value:match("^%-?%d+,%-?%d+$")
-			or value:match("^%-?%d+,%-?%d+,%-?%d+,%-?%d+$") then
-		return value
-	end
-	return default_value
-end
-
-formspec_elements.background9 = {
-	"background9[%s,%s;%s,%s;%s;%s;%s]",
-	{"X", "Y", "W", "H", "texture_name", "auto_clip", "middle"},
-	{"0", "0", "0", "0", "digistuff_ts_bg.png", "true", "3"},
-	{num, num, num, num, str, bool, middle}
-}
-
-local function fullscreen(value, default_value)
-	if type(value) == "boolean" then
-		return value and "true" or "false"
-	end
-	if value == "true" or value == "false"
-			or value == "both" or value == "neither" then
-		return value
-	end
-	return default_value
-end
-
-formspec_elements.bgcolor = {
-	"bgcolor[%s;%s;%s]",
-	{"bgcolor", "fullscreen", "fbgcolor"},
-	{"#ffffff", "", ""},
-	{str, fullscreen, str}
-}
-
-local function prop(value, default_value)
-	if type(value) ~= "table" or next(value) == nil then
-		return default_value
-	end
-	local new_prop = ""
-	for k,v in pairs(value) do
-		if type(k) == "string" then
-			k = minetest.formspec_escape(k).."="
-			local t = type(v)
-			if t == "string" then
-				table.insert(new_prop, k..minetest.formspec_escape(v))
-			elseif t == "number" then
-				table.insert(new_prop, k..string.format("%.4g", v))
-			elseif t == "boolean" then
-				table.insert(new_prop, k..(v and "true" or "false"))
-			end
-		end
-	end
-	return table.concat(new_prop, ";")
-end
-
-formspec_elements.style = {
-	"style[%s;%s]",
-	{"selectors", "properties"},
-	{"", ""},
-	{list, prop}
-}
-
-formspec_elements.style_type = {
-	"style_type[%s;%s]",
-	{"selectors", "properties"},
-	{"", ""},
-	{list, prop}
+	style = {
+		"style[%s;%s]",
+		{"selectors", "properties"},
+		{"", ""},
+		{list, prop}
+	},
+	style_type = {
+		"style_type[%s;%s]",
+		{"selectors", "properties"},
+		{"", ""},
+		{list, prop}
+	},
 }
 
 return formspec_elements
