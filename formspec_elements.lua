@@ -13,6 +13,13 @@ local function str(value, default_value)
 	return minetest.formspec_escape(value)
 end
 
+local function bool(value, default_value)
+	if type(value) ~= "boolean" then
+		return default_value
+	end
+	return value and "true" or "false"
+end
+
 local function list(value, default_value)
 	if type(value) ~= "table" or #value < 1 then
 		return default_value
@@ -27,16 +34,6 @@ local function list(value, default_value)
 		return default_value
 	end
 	return table.concat(new_list, ",")
-end
-
-local function bool(value, default_value)
-	if type(value) ~= "boolean" then
-		if value == "true" or value == "false" then
-			return value
-		end
-		return default_value
-	end
-	return value and "true" or "false"
 end
 
 local function middle(value, default_value)  -- Only for `background9`
@@ -196,7 +193,7 @@ local formspec_elements = {
 		{num, num, num, num, str, str, str, bool, bool, str}
 	},
 	item_image_button = {
-		"image_button[%s,%s;%s,%s;%s;%s;%s]",
+		"item_image_button[%s,%s;%s,%s;%s;%s;%s]",
 		{"X", "Y", "W", "H", "item_name", "name", "label"},
 		{"0", "0", "1", "1", "default:stone_block", "item_image_button", ""},
 		{num, num, num, num, str, str, str}
