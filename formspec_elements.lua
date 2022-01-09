@@ -254,4 +254,43 @@ local formspec_elements = {
 	},
 }
 
+formspec_elements.item_grid = function(values)
+	if values.interactable ~= false then
+		if type(values.name) ~= "string" then
+			values.name = "grid"
+		end
+		values.name = values.name.."_"
+	end
+	for v,d in pairs({X = 0, Y = 0, W = 1, H = 1, spacing = 0, size = 1, offset = 1}) do
+		if type(values[v]) ~= "number" then
+			values[v] = d
+		end
+	end
+	local items = type(values.items) == "table" and values.items or {}
+	local offset = math.max(1, math.floor(values.offset)) - 1
+	local x, y, n, item = values.X, values.Y, 1
+	local grid = {}
+	for _=1, values.H do
+		for _=1, values.W do
+			item = items[n + offset]
+			if type(item) ~= "string" then
+				return table.concat(grid)
+			end
+			item = item:match("^[^ %[%]\\,;]* ?%d* ?%d*")
+			if values.interactable ~= false then
+				grid[n] = string.format("item_image_button[%s,%s;%s,%s;%s;%s;]",
+					x, y, values.size, values.size, item, values.name..n)
+			else
+				grid[n] = string.format("item_image[%s,%s;%s,%s;%s]",
+					x, y, values.size, values.size, item)
+			end
+			n = n + 1
+			x = x + values.size + values.spacing
+		end
+		x = values.X
+		y = y + values.size + values.spacing
+	end
+	return table.concat(grid)
+end
+
 return formspec_elements
