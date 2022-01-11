@@ -254,6 +254,67 @@ local formspec_elements = {
 	},
 }
 
+
+local valid_options = {
+	color = str,
+	background = str,
+	border = bool,
+	highlight = str,
+	highlight_text = str,
+	open_depth = num
+}
+
+local function column(value)
+	local t = str(value.type)
+	if not t then return end
+	local c = {t}
+	for k,v in pairs(value) do
+		if k ~= "type" then
+			if type(v) == "number" then
+				c[#c+1] = k.."="..num(v, "")
+			elseif type(v) == "string" then
+				c[#c+1] = k.."="..str(v, "")
+			end
+		end
+	end
+	return table.concat(c, ",")
+end
+
+formspec_elements.table = function(values)
+	local tbl = ""
+	local name = str(values.name, "table")
+	local cells = list(values.cells, "a,b,c")
+	for v,d in pairs({X = 0, Y = 0, W = 4, H = 3, selected_id = 0}) do
+		if type(values[v]) ~= "number" then
+			values[v] = d
+		end
+	end
+	local options = {}
+	for v,f in pairs(valid_options) do
+		local value = f(values[v])
+		if value ~= nil then
+			options[#options+1] = v.."="..value
+		end
+	end
+	if #options > 0 then
+		tbl = tbl.."tableoptions["..table.concat(options, ";").."]"
+	end
+	local columns = {}
+	if type(values.columns) == "table" then
+		for _,c in ipairs(values.columns) do
+			if type(c) == "table" then
+				columns[#columns+1] = column(c)
+			end
+		end
+	end
+	if #columns > 0 then
+		tbl = tbl.."tablecolumns["..table.concat(columns, ";").."]"
+	end
+	return tbl..string.format("table[%s,%s;%s,%s;%s;%s;%s]",
+		values.X, values.Y, values.W, values.H, name, cells, values.selected_id)
+end
+
+
 formspec_elements.item_grid = function(values)
 	if values.interactable ~= false then
 		values.name = str(values.name, "grid").."_"
