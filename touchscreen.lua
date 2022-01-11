@@ -5,7 +5,6 @@ local formspec_elements = dofile(minetest.get_modpath("digistuff").."/formspec_e
 
 local formspec_version = 4
 
-
 local function create_element_string(element, values)
 	if type(element) == "function" then
 		return element(values)
@@ -191,7 +190,6 @@ local function on_receive_fields(pos, _, fields, player)
 	end
 end
 
-
 minetest.register_node("digistuff:touchscreen", {
 	description = "Digilines Touchscreen",
 	groups = {cracky = 3},
@@ -230,3 +228,14 @@ minetest.register_node("digistuff:touchscreen", {
 		update_formspec(pos, meta)
 	end,
 })
+
+minetest.register_craft({
+	output = "digistuff:touchscreen",
+	recipe = {
+		{"mesecons_luacontroller:luacontroller0000", "default:glass", "default:glass"},
+		{"default:glass", "digilines:lcd", "default:glass"},
+		{"default:glass", "default:glass", "default:glass"}
+	}
+})
+
+minetest.register_alias("digistuff:advtouchscreen", "digistuff:touchscreen")
