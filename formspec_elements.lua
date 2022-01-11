@@ -1,4 +1,18 @@
 
+-- `minetest.formspec_escape` with option to not escape commas
+local function fs_escape(text, is_list)
+	if text ~= nil then
+		text = text:gsub("\\", "\\\\")
+		text = text:gsub("%]", "\\]")
+		text = text:gsub("%[", "\\[")
+		text = text:gsub(";", "\\;")
+		if not is_list then
+			text = text:gsub(",", "\\,")
+		end
+	end
+	return text
+end
+
 local function num(value, default_value)
 	if type(value) ~= "number" then
 		return default_value
@@ -10,7 +24,7 @@ local function str(value, default_value)
 	if type(value) ~= "string" then
 		return default_value
 	end
-	return minetest.formspec_escape(value)
+	return fs_escape(value)
 end
 
 local function bool(value, default_value)
@@ -21,13 +35,16 @@ local function bool(value, default_value)
 end
 
 local function list(value, default_value)
+	if type(value) == "string" then
+		return fs_escape(value, true)
+	end
 	if type(value) ~= "table" or #value < 1 then
 		return default_value
 	end
 	local new_list = {}
 	for _,v in ipairs(value) do
 		if type(v) == "string" then
-			table.insert(new_list, minetest.formspec_escape(v))
+			new_list[#new_list+1] = fs_escape(v)
 		end
 	end
 	if #new_list < 1 then
@@ -37,10 +54,10 @@ local function list(value, default_value)
 end
 
 local function middle(value, default_value)  -- Only for `background9`
-	local t = type(value)
-	if t == "number" then
+	if type(value) == "number" then
 		return string.format("%i", value)
-	elseif t ~= "string" then
+	end
+	if type(value) ~= "string" then
 		return default_value
 	end
 	if value:match("^%-?%d+$") or value:match("^%-?%d+,%-?%d+$")
@@ -65,17 +82,16 @@ local function prop(value, default_value)  -- Only for `stlye` and `style_type`
 	if type(value) ~= "table" or next(value) == nil then
 		return default_value
 	end
-	local new_prop = ""
+	local new_prop = {}
 	for k,v in pairs(value) do
 		if type(k) == "string" then
-			k = minetest.formspec_escape(k).."="
-			local t = type(v)
-			if t == "string" then
-				table.insert(new_prop, k..minetest.formspec_escape(v))
-			elseif t == "number" then
-				table.insert(new_prop, k..string.format("%.4g", v))
-			elseif t == "boolean" then
-				table.insert(new_prop, k..(v and "true" or "false"))
+			k = fs_escape(k).."="
+			if type(v) == "string" then
+				new_prop[#new_prop+1] = k..fs_escape(v, true)
+			elseif type(v) == "number" then
+				new_prop[#new_prop+1] = k..string.format("%.4g", v)
+			elseif type(v) == "boolean" then
+				new_prop[#new_prop+1] = k..(v and "true" or "false")
 			end
 		end
 	end
@@ -255,7 +271,7 @@ local formspec_elements = {
 }
 
 
-local valid_options = {
+local table_options = {
 	color = str,
 	background = str,
 	border = bool,
@@ -265,15 +281,20 @@ local valid_options = {
 }
 
 local function column(value)
-	local t = str(value.type)
-	if not t then return end
-	local c = {t}
+	if type(value) == "string" then
+		return fs_escape(value, true)
+	end
+	if type(value) ~= "table" or type(value.type) ~= "string" then
+		return
+	end
+	local c = {str(value.type)}
 	for k,v in pairs(value) do
-		if k ~= "type" then
-			if type(v) == "number" then
-				c[#c+1] = k.."="..num(v, "")
-			elseif type(v) == "string" then
-				c[#c+1] = k.."="..str(v, "")
+		if type(k) == "string" and k ~= "type" then
+			k = fs_escape(k).."="
+			if type(v) == "string" then
+				c[#c+1] = k..fs_escape(v, true)
+			elseif type(v) == "number" then
+				c[#c+1] = k..string.format("%.4g", v)
 			end
 		end
 	end
@@ -290,7 +311,7 @@ formspec_elements.table = function(values)
 		end
 	end
 	local options = {}
-	for v,f in pairs(valid_options) do
+	for v,f in pairs(table_options) do
 		local value = f(values[v])
 		if value ~= nil then
 			options[#options+1] = v.."="..value
@@ -301,10 +322,8 @@ formspec_elements.table = function(values)
 	end
 	local columns = {}
 	if type(values.columns) == "table" then
-		for _,c in ipairs(values.columns) do
-			if type(c) == "table" then
-				columns[#columns+1] = column(c)
-			end
+		for _,v in ipairs(values.columns) do
+			columns[#columns+1] = column(v, true)
 		end
 	end
 	if #columns > 0 then
