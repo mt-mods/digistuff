@@ -218,6 +218,7 @@ minetest.register_node("digistuff:touchscreen", {
 	end,
 	on_receive_fields = on_receive_fields,
 	digilines = {
+		receptor = {},
 		effector = {
 			action = on_digiline
 		}
