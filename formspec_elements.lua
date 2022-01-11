@@ -256,10 +256,7 @@ local formspec_elements = {
 
 formspec_elements.item_grid = function(values)
 	if values.interactable ~= false then
-		if type(values.name) ~= "string" then
-			values.name = "grid"
-		end
-		values.name = values.name.."_"
+		values.name = str(values.name, "grid").."_"
 	end
 	for v,d in pairs({X = 0, Y = 0, W = 1, H = 1, spacing = 0, size = 1, offset = 1}) do
 		if type(values[v]) ~= "number" then
