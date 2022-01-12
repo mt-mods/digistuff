@@ -8,6 +8,21 @@ The touchscreen is designed to be a customizable interface for input and display
 
 ## Commands
 
+**`set`** - Changes settings.
+
+```lua
+digiline_send("touchscreen", {
+	command = "set",
+	locked = false,
+	no_prepend = false,
+	real_coordinates = false,
+	fixed_size = false,
+	width = 10,
+	height = 8,
+	focus = "<name>",
+})
+```
+
 **`add`** - Adds an element, appending it after other elements.
 
 ```lua
@@ -46,18 +61,11 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`set`** - Changes settings.
+**`clear`** - Removes all elements, but keeps settings.
 
 ```lua
 digiline_send("touchscreen", {
-	command = "set",
-	locked = false,
-	no_prepend = false,
-	real_coordinates = false,
-	fixed_size = false,
-	width = 10,
-	height = 8,
-	focus = "<name>",
+	command = "clear",
 })
 ```
 
