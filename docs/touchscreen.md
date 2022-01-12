@@ -587,12 +587,12 @@ digiline_send("touchscreen", {
 
 **`item_grid`**
 
-`W` and `H` are the size of the grid in number of items.
-`name` is a prefix for the buttons, which are numbered with their index. (e.g. `grid_1`, `grid_2`, ...)
-`size` is the size of the buttons. Used for width and height.
-`spacing` is the space between buttons. Used for vertical and horizontal spacing.
-`interactable` determines whether buttons or images are used.
-`offset` is for paginating the list of items.
+- `W` and `H` are the size of the grid in number of items.
+- `name` is a prefix for the buttons, which are numbered with their index. (e.g. `grid_1`, `grid_2`, ...)
+- `size` is the size of the buttons. Used for width and height.
+- `spacing` is the space between buttons. Used for vertical and horizontal spacing.
+- `interactable` determines whether buttons or images are used.
+- `offset` is for paginating the list of items.
 
 ```lua
 digiline_send("touchscreen", {
