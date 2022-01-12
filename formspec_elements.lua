@@ -115,7 +115,7 @@ local formspec_elements = {
 	image = {
 		"image[%s,%s;%s,%s;%s]",
 		{"X", "Y", "W", "H", "texture_name"},
-		{"0", "0", "1", "1", "default_dirt.png^default_grass_side.png"},
+		{"0", "0", "1", "1", "default_dirt.png"},
 		{num, num, num, num, str}
 	},
 	animated_image = {
@@ -269,7 +269,6 @@ local formspec_elements = {
 		{list, prop}
 	},
 }
-
 
 local table_options = {
 	color = str,
