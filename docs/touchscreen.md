@@ -209,7 +209,7 @@ digiline_send("touchscreen", {
 	H = 2,
 	name = "model",
 	mesh = "character.b3d",
-	textures = character.png,
+	textures = {character.png},
 	rotation_x = 0,
 	rotation_y = 0,
 	continuous = false,
@@ -355,7 +355,7 @@ digiline_send("touchscreen", {
 	W = 4,
 	H = 3,
 	name = "hypertext",
-	text = "<b>hypertext</b>",
+	text = "<i>hypertext</i>",
 })
 ```
 
@@ -578,7 +578,7 @@ digiline_send("touchscreen", {
 	border = true,
 	highlight = "#466432",
 	highlight_text = "#ffffff",
-	open_depth = 0,
+	opendepth = 0,
 	columns = {
 		{type = "text", align = "center"},
 	},

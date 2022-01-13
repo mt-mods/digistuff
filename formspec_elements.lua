@@ -107,7 +107,7 @@ local formspec_elements = {
 		{str, str, str, str},
 	},
 	tooltip_area = {
-		"tooltip[%s;%s;%s;%s]",
+		"tooltip[%s,%s;%s,%s;%s;%s;%s]",
 		{"X", "Y", "W", "H", "tooltip_text", "bgcolor", "fontcolor"},
 		{"0", "0", "100", "100", "tooltip area", "#303030", "#ffffff"},
 		{num, num, num, num, str, str, str},
@@ -155,7 +155,7 @@ local formspec_elements = {
 		{num, num, num, num, str, bool, middle}
 	},
 	pwdfield = {
-		"field[%s,%s;%s,%s;%s;%s]",
+		"pwdfield[%s,%s;%s,%s;%s;%s]",
 		{"X", "Y", "W", "H", "name", "label"},
 		{"0", "0", "3", "0.8", "pwdfield", ""},
 		{num, num, num, num, str, str}
@@ -187,7 +187,7 @@ local formspec_elements = {
 	hypertext = {
 		"hypertext[%s,%s;%s,%s;%s;%s]",
 		{"X", "Y", "W", "H", "name", "text"},
-		{"0", "0", "4", "3", "hypertext", "hypertext"},
+		{"0", "0", "4", "3", "hypertext", "<i>hypertext</i>"},
 		{num, num, num, num, str, str}
 	},
 	vertlabel = {
@@ -245,7 +245,7 @@ local formspec_elements = {
 		{num, num, num, num, str}
 	},
 	dropdown = {
-		"dropdown[%s,%s;%s,%s;%s;%s,%s;%s;%s]",
+		"dropdown[%s,%s;%s,%s;%s;%s;%s;%s]",
 		{"X", "Y", "W", "H", "name", "listelements", "selected_id", "index_event"},
 		{"0", "0", "3", "0.8", "dropdown", "a,b,c", "0", "false"},
 		{num, num, num, num, str, list, num, bool}
@@ -276,7 +276,7 @@ local table_options = {
 	border = bool,
 	highlight = str,
 	highlight_text = str,
-	open_depth = num
+	opendepth = num
 }
 
 local function column(value)
