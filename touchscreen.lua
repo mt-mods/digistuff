@@ -104,6 +104,18 @@ local function process_command(meta, data, msg)
 	return data
 end
 
+local function get_data(meta)
+	local data = minetest.deserialize(meta:get("data"))
+	if data and type(data[1]) == "table" then
+		-- Old data, convert to new format
+		for i,v in ipairs(data) do
+			local element = formspec_elements[v.type]
+			data[i] = create_element_string(element, v)
+		end
+	end
+	return data
+end
+
 local function create_formspec(meta, data)
 	local fs = "formspec_version["..formspec_version.."]"
 	local width = tonumber(meta:get_string("width")) or 10
@@ -127,7 +139,7 @@ local function create_formspec(meta, data)
 end
 
 local function update_formspec(pos, meta, data)
-	data = data or minetest.deserialize(meta:get("data"))
+	data = data or get_data(meta)
 	if not meta:get("init") then
 		meta:set_string("formspec", "field[channel;Channel;]")
 	elseif not data then
@@ -135,16 +147,6 @@ local function update_formspec(pos, meta, data)
 	else
 		meta:set_string("formspec", create_formspec(meta, data))
 	end
-end
-
-local function convert_old_data(data)
-	local new_data = {}
-	for _,v in pairs(data) do
-		local element = formspec_elements[v.type]
-		local s = create_element_string(element, v)
-		table.insert(new_data, s)
-	end
-	return new_data
 end
 
 local function on_digiline(pos, node, channel, msg)
@@ -155,10 +157,7 @@ local function on_digiline(pos, node, channel, msg)
 	if channel ~= meta:get_string("channel") then
 		return
 	end
-	local data = minetest.deserialize(meta:get_string("data")) or {}
-	if next(data) == "table" then
-		data = convert_old_data(data)
-	end
+	local data = get_data(meta) or {}
 	if msg.command then
 		data = process_command(meta, data, msg)
 	else
