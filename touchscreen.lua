@@ -26,7 +26,7 @@ local function check_old_command(msg)
 		return {command = "set", locked = false}
 	end
 	if cmd == "realcoordinates" then
-		return {command = "set", real_coordinates = true}
+		return {command = "set", real_coordinates = msg.enabled}
 	end
 	if string.match(cmd, "^add%a+") then
 		msg.element = string.sub(cmd, 4)
@@ -158,11 +158,11 @@ local function on_digiline(pos, node, channel, msg)
 		return
 	end
 	local data = get_data(meta) or {}
-	if msg.command then
+	if type(msg.command) == "string" then
 		data = process_command(meta, data, msg)
 	else
 		for _,v in ipairs(msg) do
-			if type(v) == "table" and v.command then
+			if type(v) == "table" and type(v.command) == "string" then
 				data = process_command(meta, data, v)
 			end
 		end

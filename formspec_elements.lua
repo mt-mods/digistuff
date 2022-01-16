@@ -2,12 +2,12 @@
 -- `minetest.formspec_escape` with option to not escape commas
 local function fs_escape(text, is_list)
 	if text ~= nil then
-		text = text:gsub("\\", "\\\\")
-		text = text:gsub("%]", "\\]")
-		text = text:gsub("%[", "\\[")
-		text = text:gsub(";", "\\;")
+		text = string.gsub(text, "\\", "\\\\")
+		text = string.gsub(text, "%]", "\\]")
+		text = string.gsub(text, "%[", "\\[")
+		text = string.gsub(text, ";", "\\;")
 		if not is_list then
-			text = text:gsub(",", "\\,")
+			text = string.gsub(text, ",", "\\,")
 		end
 	end
 	return text
@@ -44,7 +44,7 @@ local function list(value, default_value)
 	local new_list = {}
 	for _,v in ipairs(value) do
 		if type(v) == "string" then
-			new_list[#new_list+1] = fs_escape(v)
+			table.insert(new_list, fs_escape(v))
 		end
 	end
 	if #new_list < 1 then
@@ -60,8 +60,8 @@ local function middle(value, default_value)  -- Only for `background9`
 	if type(value) ~= "string" then
 		return default_value
 	end
-	if value:match("^%-?%d+$") or value:match("^%-?%d+,%-?%d+$")
-			or value:match("^%-?%d+,%-?%d+,%-?%d+,%-?%d+$") then
+	if string.match(value, "^%-?%d+$") or string.match(value, "^%-?%d+,%-?%d+$")
+			or string.match(value, "^%-?%d+,%-?%d+,%-?%d+,%-?%d+$") then
 		return value
 	end
 	return default_value
@@ -87,11 +87,11 @@ local function prop(value, default_value)  -- Only for `stlye` and `style_type`
 		if type(k) == "string" then
 			k = fs_escape(k).."="
 			if type(v) == "string" then
-				new_prop[#new_prop+1] = k..fs_escape(v, true)
+				table.insert(new_prop, k..fs_escape(v, true))
 			elseif type(v) == "number" then
-				new_prop[#new_prop+1] = k..string.format("%.4g", v)
+				table.insert(new_prop, k..string.format("%.4g", v))
 			elseif type(v) == "boolean" then
-				new_prop[#new_prop+1] = k..(v and "true" or "false")
+				table.insert(new_prop, k..(v and "true" or "false"))
 			end
 		end
 	end
@@ -286,18 +286,18 @@ local function column(value)
 	if type(value) ~= "table" or type(value.type) ~= "string" then
 		return
 	end
-	local c = {str(value.type)}
+	local new_column = {str(value.type)}
 	for k,v in pairs(value) do
 		if type(k) == "string" and k ~= "type" then
 			k = fs_escape(k).."="
 			if type(v) == "string" then
-				c[#c+1] = k..fs_escape(v, true)
+				table.insert(new_column, k..fs_escape(v, true))
 			elseif type(v) == "number" then
-				c[#c+1] = k..string.format("%.4g", v)
+				table.insert(new_column, k..string.format("%.4g", v))
 			end
 		end
 	end
-	return table.concat(c, ",")
+	return table.concat(new_column, ",")
 end
 
 formspec_elements.table = function(values)
@@ -313,7 +313,7 @@ formspec_elements.table = function(values)
 	for v,f in pairs(table_options) do
 		local value = f(values[v])
 		if value ~= nil then
-			options[#options+1] = v.."="..value
+			table.insert(options, v.."="..value)
 		end
 	end
 	if #options > 0 then
@@ -322,7 +322,7 @@ formspec_elements.table = function(values)
 	local columns = {}
 	if type(values.columns) == "table" then
 		for _,v in ipairs(values.columns) do
-			columns[#columns+1] = column(v, true)
+			table.insert(columns, column(v, true))
 		end
 	end
 	if #columns > 0 then
@@ -352,7 +352,7 @@ formspec_elements.item_grid = function(values)
 			if type(item) ~= "string" then
 				return table.concat(grid)
 			end
-			item = item:match("^[^ %[%]\\,;]* ?%d* ?%d*")
+			item = string.match(item, "^[^ %[%]\\,;]* ?%d* ?%d*")
 			if values.interactable ~= false then
 				grid[n] = string.format("item_image_button[%s,%s;%s,%s;%s;%s;]",
 					x, y, values.size, values.size, item, values.name..n)
