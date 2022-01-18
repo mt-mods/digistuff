@@ -4,9 +4,6 @@ minetest.register_node("digistuff:ram", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec","field[channel;Channel;${channel}")
-		for i=0,31,1 do
-			meta:set_string(string.format("data%02d",i),"")
-		end
 	end,
 	tiles = {
 		"digistuff_ram_top.png",
@@ -67,6 +64,10 @@ minetest.register_node("digistuff:ram", {
 minetest.register_node("digistuff:eeprom", {
 	description = "Digilines 128Kbit EEPROM",
 	groups = {cracky=3},
+	on_construct = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec","field[channel;Channel;${channel}")
+	end,
 	after_place_node = function(pos,_,istack)
 		local meta = minetest.get_meta(pos)
 		local smeta = istack:get_meta()
@@ -74,7 +75,6 @@ minetest.register_node("digistuff:eeprom", {
 			meta:set_string(string.format("data%02d",i),smeta:get_string(string.format("data%02d",i)))
 		end
 		meta:set_string("channel",smeta:get_string("channel"))
-		meta:set_string("formspec","field[channel;Channel;${channel}")
 	end,
 	on_dig = function(pos,node,player)
 		local name = player:get_player_name()
