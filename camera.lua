@@ -7,8 +7,7 @@ minetest.register_node("digistuff:camera", {
 		"digistuff_camera_back.png",
 		"digistuff_camera_front.png",
 	},
-	digiline = 
-	{
+	digiline = {
 		receptor = {}
 	},
 	_digistuff_channelcopier_fieldname = "channel",
@@ -75,7 +74,6 @@ minetest.register_abm({
 			local players_found = {}
 			local objs = minetest.get_objects_inside_radius(spot,radius)
 			if objs then
-				local _,obj
 				for _,obj in ipairs(objs) do
 					if obj:is_player() then
 						table.insert(players_found,obj:get_player_name())
@@ -83,7 +81,7 @@ minetest.register_abm({
 					end
 				end
 				if found_any then
-					digiline:receptor_send({x=pos.x,y=pos.y-1,z=pos.z}, digiline.rules.default, channel, players_found)
+					digilines.receptor_send({x=pos.x,y=pos.y-1,z=pos.z}, digilines.rules.default, channel, players_found)
 				end
 			end
 		end

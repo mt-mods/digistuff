@@ -4,9 +4,6 @@ minetest.register_node("digistuff:ram", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec","field[channel;Channel;${channel}")
-		for i=0,31,1 do
-			meta:set_string(string.format("data%02d",i),"")
-		end
 	end,
 	tiles = {
 		"digistuff_ram_top.png",
@@ -44,8 +41,7 @@ minetest.register_node("digistuff:ram", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -53,7 +49,7 @@ minetest.register_node("digistuff:ram", {
 				if meta:get_string("channel") ~= channel or type(msg) ~= "table" then return end
 				if msg.command == "read" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 then
-						digiline:receptor_send(pos,digiline.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))					
+						digilines.receptor_send(pos,digilines.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))
 					end
 				elseif msg.command == "write" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 and type(msg.data) == "string" then
@@ -68,6 +64,10 @@ minetest.register_node("digistuff:ram", {
 minetest.register_node("digistuff:eeprom", {
 	description = "Digilines 128Kbit EEPROM",
 	groups = {cracky=3},
+	on_construct = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec","field[channel;Channel;${channel}")
+	end,
 	after_place_node = function(pos,_,istack)
 		local meta = minetest.get_meta(pos)
 		local smeta = istack:get_meta()
@@ -75,7 +75,6 @@ minetest.register_node("digistuff:eeprom", {
 			meta:set_string(string.format("data%02d",i),smeta:get_string(string.format("data%02d",i)))
 		end
 		meta:set_string("channel",smeta:get_string("channel"))
-		meta:set_string("formspec","field[channel;Channel;${channel}")
 	end,
 	on_dig = function(pos,node,player)
 		local name = player:get_player_name()
@@ -136,8 +135,7 @@ minetest.register_node("digistuff:eeprom", {
 		local meta = minetest.get_meta(pos)
 		if fields.channel then meta:set_string("channel",fields.channel) end
 	end,
-	digiline = 
-	{
+	digiline = {
 		receptor = {},
 		effector = {
 			action = function(pos,node,channel,msg)
@@ -145,7 +143,7 @@ minetest.register_node("digistuff:eeprom", {
 				if meta:get_string("channel") ~= channel or type(msg) ~= "table" then return end
 				if msg.command == "read" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 then
-						digiline:receptor_send(pos,digiline.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))					
+						digilines.receptor_send(pos,digilines.rules.default,channel,meta:get_string(string.format("data%02i",math.floor(msg.address))))
 					end
 				elseif msg.command == "write" then
 					if type(msg.address) == "number" and msg.address >= 0 and msg.address <= 31 and type(msg.data) == "string" then

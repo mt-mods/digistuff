@@ -1,0 +1,22 @@
+
+name: mineunit
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - id: mineunit
+      uses: mt-mods/mineunit-actions@master
+      with:
+        badge-label: Test coverage
+# Uncomment to add coverage badge for regression tests
+#    - uses: RubbaBoy/BYOB@v1.2.0
+#      with:
+#        NAME: "${{ steps.mineunit.outputs.badge-name }}"
+#        LABEL: "${{ steps.mineunit.outputs.badge-label }}"
+#        STATUS: "${{ steps.mineunit.outputs.badge-status }}"
+#        COLOR: "${{ steps.mineunit.outputs.badge-color }}"
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
