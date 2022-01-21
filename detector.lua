@@ -1,55 +1,68 @@
+
+local formspec = "size[8,4]"..
+	"field[1.3,1;6,1;channel;Channel;${channel}]"..
+	"field[1.3,2;6,1.3;radius;Radius;${radius}]"..
+	"button_exit[2.5,3;3,1;submit;Save]"
+
 minetest.register_node("digistuff:detector", {
-	tiles = {
-	"digistuff_digidetector.png"
-	},
-	digiline = {
-		receptor = {}
-	},
-	groups = {cracky=2},
 	description = "Digilines Player Detector",
+	tiles = {
+		"digistuff_digidetector.png"
+	},
+	sounds = default and default.node_sound_stone_defaults(),
+	groups = {cracky = 2},
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec","size[8,4;]field[1,1;6,2;channel;Channel;${channel}]field[1,2;6,2;radius;Radius;${radius}]button_exit[2.25,3;3,1;submit;Save]")
+		meta:set_string("formspec", formspec)
+		meta:set_int("radius", 6)
+		minetest.get_node_timer(pos):start(1)
 	end,
-	_digistuff_channelcopier_fieldname = "channel",
-	on_receive_fields = function(pos, formname, fields, sender)
-		local name = sender:get_player_name()
-		if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then
-			minetest.record_protection_violation(pos,name)
+	on_receive_fields = function(pos, _, fields, player)
+		if minetest.is_protected(pos, player:get_player_name()) then
 			return
 		end
 		local meta = minetest.get_meta(pos)
-		if fields.channel then meta:set_string("channel",fields.channel) end
-		if fields.msg then meta:set_string("msg",fields.msg) end
-		if fields.radius then meta:set_string("radius",fields.radius) end
+		if fields.channel then
+			meta:set_string("channel", fields.channel)
+		end
+		if fields.radius then
+			local value = math.max(1, math.min(10, tonumber(fields.radius) or 6))
+			meta:set_int("radius", value)
+		end
 	end,
-	sounds = default and default.node_sound_stone_defaults()
-})
-
-minetest.register_abm({
-	nodenames = {"digistuff:detector"},
-	interval = 1.0,
-	chance = 1,
-	action = function(pos)
-			local meta = minetest.get_meta(pos)
-			local channel = meta:get_string("channel")
-			local radius = meta:get_string("radius")
-			local found_any = false
-			local players_found = {}
-			if not radius or not tonumber(radius) or tonumber(radius) < 1 or tonumber(radius) > 10 then radius = 6 end
-			local objs = minetest.get_objects_inside_radius(pos, radius)
-			if objs then
-				for _,obj in ipairs(objs) do
-					if obj:is_player() then
-						table.insert(players_found,obj:get_player_name())
-						found_any = true
-					end
-				end
-				if found_any then
-					digilines.receptor_send(pos, digilines.rules.default, channel, players_found)
-				end
+	on_timer = function(pos)
+		local meta = minetest.get_meta(pos)
+		local radius = meta:get_int("radius")
+		local found = {}
+		for _,player in pairs(minetest.get_connected_players()) do
+			if vector.distance(pos, player:get_pos()) <= radius then
+				table.insert(found, player:get_player_name())
 			end
 		end
+		if #found > 0 then
+			local channel = meta:get_string("channel")
+			digilines.receptor_send(pos, digilines.rules.default, channel, found)
+		end
+		return true
+	end,
+	digiline = {
+		receptor = {}
+	},
+	_digistuff_channelcopier_fieldname = "channel",
+})
+
+minetest.register_lbm({
+	label = "Digistuff detector update",
+	name = "digistuff:detector_update",
+	nodenames = {"digistuff:detector"},
+	run_at_every_load = false,
+	action = function(pos)
+		local meta = minetest.get_meta(pos)
+		if not meta:get("radius") then
+			meta:set_int("radius", 6)
+		end
+		minetest.get_node_timer(pos):start(1)
+	end,
 })
 
 minetest.register_craft({
