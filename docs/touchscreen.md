@@ -512,7 +512,7 @@ digiline_send("touchscreen", {
 	W = 3,
 	H = 0.8,
 	name = "dropdown",
-	listelements = {"a", "b", "c"},
+	choices = {"a", "b", "c"},
 	selected_id = 0,
 	index_event = false,
 })
