@@ -246,7 +246,7 @@ local formspec_elements = {
 	},
 	dropdown = {
 		"dropdown[%s,%s;%s,%s;%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "name", "listelements", "selected_id", "index_event"},
+		{"X", "Y", "W", "H", "name", "choices", "selected_id", "index_event"},
 		{"0", "0", "3", "0.8", "dropdown", "a,b,c", "0", "false"},
 		{num, num, num, num, str, list, num, bool}
 	},
