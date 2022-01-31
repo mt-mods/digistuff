@@ -177,7 +177,7 @@ digiline_send("touchscreen", {
 	Y = 0,
 	W = 1,
 	H = 1,
-	texture_name = "default_dirt.png",
+	image = "default_dirt.png",
 })
 ```
 
@@ -192,7 +192,7 @@ digiline_send("touchscreen", {
 	W = 1,
 	H = 1,
 	name = "animated_image",
-	texture_name = "default_lava_flowing_animated.png",
+	image = "default_lava_flowing_animated.png",
 	frame_count = 16,
 	frame_duration = 200,
 	frame_start = 1,
@@ -255,7 +255,7 @@ digiline_send("touchscreen", {
 	Y = 0,
 	W = 0,
 	H = 0,
-	texture_name = "digistuff_ts_bg.png",
+	image = "digistuff_ts_bg.png",
 	auto_clip = true,
 })
 ```
@@ -270,7 +270,7 @@ digiline_send("touchscreen", {
 	Y = 0,
 	W = 0,
 	H = 0,
-	texture_name = "digistuff_ts_bg.png",
+	image = "digistuff_ts_bg.png",
 	auto_clip = true,
 	middle = 3,
 })
@@ -398,12 +398,12 @@ digiline_send("touchscreen", {
 	Y = 0,
 	W = 1,
 	H = 1,
-	texture_name = "default_stone_block.png",
+	image = "default_stone_block.png",
 	name = "image_button",
 	label = "button",
 	noclip = true,
 	drawborder = true,
-	pressed_texture_name = "",
+	pressed_image = "",
 })
 ```
 
@@ -448,7 +448,7 @@ digiline_send("touchscreen", {
 	Y = 0,
 	W = 1,
 	H = 1,
-	texture_name = "default_mese_block.png",
+	image = "default_mese_block.png",
 	name = "image_button_exit",
 	label = "button",
 })

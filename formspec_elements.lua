@@ -114,13 +114,13 @@ local formspec_elements = {
 	},
 	image = {
 		"image[%s,%s;%s,%s;%s]",
-		{"X", "Y", "W", "H", "texture_name"},
+		{"X", "Y", "W", "H", "image"},
 		{"0", "0", "1", "1", "default_dirt.png"},
 		{num, num, num, num, str}
 	},
 	animated_image = {
 		"animated_image[%s,%s;%s,%s;%s;%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "name", "texture_name", "frame_count", "frame_duration", "frame_start"},
+		{"X", "Y", "W", "H", "name", "image", "frame_count", "frame_duration", "frame_start"},
 		{"0", "0", "1", "1", "animated_image", "default_lava_flowing_animated.png", "16", "200", "1"},
 		{num, num, num, num, str, str, num, num, num}
 	},
@@ -144,13 +144,13 @@ local formspec_elements = {
 	},
 	background = {
 		"background[%s,%s;%s,%s;%s;%s]",
-		{"X", "Y", "W", "H", "texture_name", "auto_clip"},
+		{"X", "Y", "W", "H", "image", "auto_clip"},
 		{"0", "0", "0", "0", "digistuff_ts_bg.png", "true"},
 		{num, num, num, num, str, bool}
 	},
 	background9 = {
 		"background9[%s,%s;%s,%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "texture_name", "auto_clip", "middle"},
+		{"X", "Y", "W", "H", "image", "auto_clip", "middle"},
 		{"0", "0", "0", "0", "digistuff_ts_bg.png", "true", "3"},
 		{num, num, num, num, str, bool, middle}
 	},
@@ -204,7 +204,7 @@ local formspec_elements = {
 	},
 	image_button = {
 		"image_button[%s,%s;%s,%s;%s;%s;%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "texture_name", "name", "label", "noclip", "drawborder", "pressed_texture_name"},
+		{"X", "Y", "W", "H", "image", "name", "label", "noclip", "drawborder", "pressed_image"},
 		{"0", "0", "1", "1", "default_stone_block.png", "image_button", "button", "", "", ""},
 		{num, num, num, num, str, str, str, bool, bool, str}
 	},
@@ -222,7 +222,7 @@ local formspec_elements = {
 	},
 	image_button_exit = {
 		"image_button_exit[%s,%s;%s,%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "texture_name", "name", "label"},
+		{"X", "Y", "W", "H", "image", "name", "label"},
 		{"0", "0", "1", "1", "default_mese_block.png", "image_button_exit", "button"},
 		{num, num, num, num, str, str, str}
 	},
