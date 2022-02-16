@@ -7,7 +7,7 @@ local function extend(pos, node, max_push, sound)
 	local dir = vector.multiply(minetest.facedir_to_dir(node.param2), -1)
 	local pusher_pos = vector.add(pos, dir)
 	local owner = minetest.get_meta(pos):get_string("owner")
-	local success, stack, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push, owner)
+	local success, _, oldstack = mesecon.mvps_push(pusher_pos, dir, max_push, owner)
 	if not success then return end
 	if sound == "digilines" then
 		minetest.sound_play("digistuff_piston_extend", {pos = pos, max_hear_distance = 20, gain = 0.6})
@@ -16,7 +16,6 @@ local function extend(pos, node, max_push, sound)
 	end
 	minetest.swap_node(pos, {name = "digistuff:piston_ext", param2 = node.param2})
 	minetest.set_node(pusher_pos, {name = "digistuff:piston_pusher", param2 = node.param2})
-	mesecon.mvps_process_stack(stack)
 	mesecon.mvps_move_objects(pusher_pos, dir, oldstack)
 end
 
