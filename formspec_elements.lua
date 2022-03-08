@@ -334,14 +334,12 @@ end
 
 
 formspec_elements.item_grid = function(values)
-	if values.interactable ~= false then
-		values.name = str(values.name, "grid").."_"
-	end
 	for v,d in pairs({X = 0, Y = 0, W = 1, H = 1, spacing = 0, size = 1, offset = 1}) do
 		if type(values[v]) ~= "number" then
 			values[v] = d
 		end
 	end
+	local name = str(values.name, "grid").."_"
 	local items = type(values.items) == "table" and values.items or {}
 	local offset = math.max(1, math.floor(values.offset)) - 1
 	local x, y, n, item = values.X, values.Y, 1
@@ -355,7 +353,7 @@ formspec_elements.item_grid = function(values)
 			item = string.match(item, "^[^ %[%]\\,;]* ?%d* ?%d*")
 			if values.interactable ~= false then
 				grid[n] = string.format("item_image_button[%s,%s;%s,%s;%s;%s;]",
-					x, y, values.size, values.size, item, values.name..n)
+					x, y, values.size, values.size, item, name..n)
 			else
 				grid[n] = string.format("item_image[%s,%s;%s,%s;%s]",
 					x, y, values.size, values.size, item)
