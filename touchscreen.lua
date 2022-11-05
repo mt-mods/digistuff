@@ -31,6 +31,10 @@ local function check_old_command(msg)
 	if string.match(cmd, "^add%a+") then
 		msg.element = string.sub(cmd, 4)
 		msg.command = "add"
+		if msg.image then
+			-- Compatibility for old name
+			msg.texture_name = msg.image
+		end
 	end
 	return msg
 end
