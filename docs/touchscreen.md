@@ -3,6 +3,7 @@
 The touchscreen is designed to be a customizable interface for input and display, it allows creating a custom formspec using a series of digiline commands, usually from a Luacontroller.
 
 - [Commands](#commands)
+- [Combining commands](#combining-commands)
 - [Supported formspec elements](#supported-formspec-elements)
 - [Unsupported formspec elements](#unsupported-formspec-elements)
 - [Formspec element reference](#formspec-element-reference)
@@ -68,6 +69,20 @@ digiline_send("touchscreen", {
 digiline_send("touchscreen", {
 	command = "clear",
 })
+```
+
+## Combining commands
+
+To save sending multiple digiline messages, commands can be combined into one message by sending them inside a table, like so:
+
+```lua
+digiline_send("touchscreen", {
+	{command = "clear"},
+	{command = "set", width = 3, height = 2},
+	{command = "add", element = "label", X = 0.1, Y = 0.2, label = "Hello world!"},
+	{command = "add", element = "button_exit", Y = 1.3, label = "Hello LUA!"},
+})
+
 ```
 
 ## Supported formspec elements
