@@ -17,6 +17,23 @@ local function create_element_string(element, values)
 	return string.format(element[1], unpack(new_values))
 end
 
+local function modify_element_string(old, values)
+	local t = minetest.get_us_time()
+	local e = string.match(old, "^(.+)%[")
+	local element = formspec_elements[e]
+	if type(element) == "function" then
+		return old  -- No-op for special elements, as there is no format string
+	end
+	local old_values = {string.match(old, element[5])}
+	local new_values = {}
+	for i,name in ipairs(element[2]) do
+		local value = element[4][i](values[name], old_values[i] or element[3][i])
+		table.insert(new_values, value)
+	end
+	print("time = "..(minetest.get_us_time() - t))
+	return string.format(element[1], unpack(new_values))
+end
+
 local function check_old_command(msg)
 	local cmd = msg.command
 	if cmd == "lock" then
@@ -70,6 +87,13 @@ local function process_command(meta, data, msg)
 		local index = tonumber(msg.index)
 		if element and index and data[index] then
 			local str = create_element_string(element, msg)
+			data[index] = str
+		end
+
+	elseif cmd == "modify" then
+		local index = tonumber(msg.index)
+		if index and data[index] then
+			local str = modify_element_string(data[index], msg)
 			data[index] = str
 		end
 

@@ -270,6 +270,15 @@ local formspec_elements = {
 	},
 }
 
+-- Create un-format strings for modifying elements
+for _,element in pairs(formspec_elements) do
+	local s = string.gsub(element[1], "%%s", "(.*)")
+	s = string.gsub(s, "%[", "%%[")
+	s = string.gsub(s, "%]", "%%]")
+	element[5] = "^"..s.."$"
+end
+
+
 local table_options = {
 	color = str,
 	background = str,
