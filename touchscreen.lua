@@ -18,7 +18,6 @@ local function create_element_string(element, values)
 end
 
 local function modify_element_string(old, values)
-	local t = minetest.get_us_time()
 	local e = string.match(old, "^(.+)%[")
 	local element = formspec_elements[e]
 	if type(element) == "function" then
@@ -30,7 +29,6 @@ local function modify_element_string(old, values)
 		local value = element[4][i](values[name], old_values[i] or element[3][i])
 		table.insert(new_values, value)
 	end
-	print("time = "..(minetest.get_us_time() - t))
 	return string.format(element[1], unpack(new_values))
 end
 
