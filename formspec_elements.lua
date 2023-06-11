@@ -17,7 +17,7 @@ local function num(value, default_value)
 	if type(value) ~= "number" then
 		return default_value
 	end
-	return string.format("%.4g", value)
+	return string.format("%s", math.floor(value * 1000) / 1000)
 end
 
 local function str(value, default_value)
@@ -89,9 +89,9 @@ local function prop(value, default_value)  -- Only for `stlye` and `style_type`
 			if type(v) == "string" then
 				table.insert(new_prop, k..fs_escape(v, true))
 			elseif type(v) == "number" then
-				table.insert(new_prop, k..string.format("%.4g", v))
+				table.insert(new_prop, k..num(v))
 			elseif type(v) == "boolean" then
-				table.insert(new_prop, k..(v and "true" or "false"))
+				table.insert(new_prop, k..bool(v))
 			end
 		end
 	end
