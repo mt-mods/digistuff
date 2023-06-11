@@ -14,6 +14,9 @@ local function fs_escape(text, is_list)
 end
 
 local function num(value, default_value)
+	if type(value) == "string" then
+		value = tonumber(value)
+	end
 	if type(value) ~= "number" then
 		return default_value
 	end
@@ -28,6 +31,9 @@ local function str(value, default_value)
 end
 
 local function bool(value, default_value)
+	if value == "true" or value == "false" then
+		return value
+	end
 	if type(value) ~= "boolean" then
 		return default_value
 	end
