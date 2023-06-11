@@ -3,7 +3,7 @@ local unpack = table.unpack or unpack
 
 local formspec_elements = dofile(minetest.get_modpath("digistuff").."/formspec_elements.lua")
 
-local formspec_version = 4
+local formspec_version = 6
 
 local function create_element_string(element, values)
 	if type(element) == "function" then

@@ -113,16 +113,16 @@ local formspec_elements = {
 		{num, num, num, num, str, str, str},
 	},
 	image = {
-		"image[%s,%s;%s,%s;%s]",
-		{"X", "Y", "W", "H", "texture_name"},
-		{"0", "0", "1", "1", "default_dirt.png"},
-		{num, num, num, num, str}
+		"image[%s,%s;%s,%s;%s;%s]",
+		{"X", "Y", "W", "H", "texture_name", "middle"},
+		{"0", "0", "1", "1", "default_dirt.png", ""},
+		{num, num, num, num, str, middle}
 	},
 	animated_image = {
-		"animated_image[%s,%s;%s,%s;%s;%s;%s;%s;%s]",
-		{"X", "Y", "W", "H", "name", "texture_name", "frame_count", "frame_duration", "frame_start"},
-		{"0", "0", "1", "1", "animated_image", "default_lava_flowing_animated.png", "16", "200", "1"},
-		{num, num, num, num, str, str, num, num, num}
+		"animated_image[%s,%s;%s,%s;%s;%s;%s;%s;%s;%s]",
+		{"X", "Y", "W", "H", "name", "texture_name", "frame_count", "frame_duration", "frame_start", "middle"},
+		{"0", "0", "1", "1", "animated_image", "default_lava_flowing_animated.png", "16", "200", "1", ""},
+		{num, num, num, num, str, str, num, num, num, middle}
 	},
 	model = {
 		"model[%s,%s;%s,%s;%s;%s;%s;%s,%s;%s;%s;0,0]",
