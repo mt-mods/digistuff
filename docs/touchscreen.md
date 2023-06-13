@@ -54,6 +54,15 @@ digiline_send("touchscreen", {
 })
 ```
 
+**`modify`** - Replaces specified values of an existing element.
+
+```lua
+digiline_send("touchscreen", {
+	command = "modify",
+	index = 1,
+})
+```
+
 **`remove`** - Removes an element.
 
 ```lua
@@ -86,6 +95,8 @@ digiline_send("touchscreen", {
 ```
 
 ## Supported formspec elements
+
+The touchscreen uses formspec version 6 (Minetest 5.6.0+).
 
 **Standard elements:**
 
@@ -137,6 +148,7 @@ These elements, for design or other reasons, are not supported by the touchscree
 - `formspec_version`
 - `position`
 - `anchor`
+- `padding`
 - `container`
 - `container_end`
 - `scroll_container`
@@ -193,6 +205,7 @@ digiline_send("touchscreen", {
 	W = 1,
 	H = 1,
 	texture_name = "default_dirt.png",
+	middle = "",
 })
 ```
 
@@ -211,6 +224,7 @@ digiline_send("touchscreen", {
 	frame_count = 16,
 	frame_duration = 200,
 	frame_start = 1,
+	middle = "",
 })
 ```
 
