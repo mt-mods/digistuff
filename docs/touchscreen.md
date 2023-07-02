@@ -161,7 +161,7 @@ These elements, for design or other reasons, are not supported by the touchscree
 
 ## Formspec element reference
 
-Example code for each of the supported formspec elements. For more details see the [Minetest Lua API](https://github.com/minetest/minetest/blob/master/doc/lua_api.txt).
+Example code for each of the supported formspec elements. For more details see the [Minetest Lua API](https://github.com/minetest/minetest/blob/master/doc/lua_api.md#elements).
 
 All values except `command` and `element` are optional, with default values being used when a value is nil or invalid.
 
