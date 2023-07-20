@@ -8,7 +8,7 @@ Example:
 Up to 32 commands may be sent at once by placing all of the tables into one.
 Example:
 	{
-		{command="createbuffer",buffer=0,xsize=16,ysize=16,color="aaaaaa"},
+		{command="createbuffer",buffer=0,xsize=16,ysize=16,fill="aaaaaa"},
 		{command="send",buffer=0,channel="example"}
 	}
 	
