@@ -97,6 +97,12 @@ local function process_command(meta, data, msg)
 			table.remove(data, index)
 		end
 
+	elseif cmd == "remove_without_resize" then
+		local index = tonumber(msg.index)
+		if index and data[index] then
+			data[index] = nil
+		end
+
 	elseif cmd == "set" then
 		if msg.locked ~= nil then
 			meta:set_int("locked", msg.locked == false and 0 or 1)
@@ -157,7 +163,14 @@ local function create_formspec(meta, data)
 	if focus then
 		fs = fs.."set_focus["..focus.."]"
 	end
-	return fs..table.concat(data)
+
+	local formspec_result = fs
+	for idx = 1, #data, 1 do -- ipairs not used because ipairs halts when it sees a gap (nil).
+		if data[idx] ~= nil then
+			formspec_result = formspec_result .. data[idx]
+		end 
+	end
+	return formspec_result
 end
 
 local function update_formspec(pos, meta, data)
