@@ -93,7 +93,7 @@ local function process_command(meta, data, msg)
 
 	elseif cmd == "remove" then
 		local index = tonumber(msg.index)
-		if index and data[index] then
+		if index and data[index] ~= nil then
 			table.remove(data, index)
 		end
 
