@@ -164,7 +164,21 @@ local function create_formspec(meta, data)
 		fs = fs.."set_focus["..focus.."]"
 	end
 
-	return fs..table.concat(data)
+	local data_size = 0
+	for idx, val in pairs(data) do
+		if idx > data_size then
+			data_size = idx
+		end
+	end
+	
+	local formspec_result = fs
+	for i = 1, data_size, 1 do
+		if data[i] then
+			formspec_result = formspec_result..data[i]
+		end
+	end
+	
+	return formspec_result
 end
 
 local function update_formspec(pos, meta, data)
