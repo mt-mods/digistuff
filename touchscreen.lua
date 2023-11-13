@@ -163,22 +163,18 @@ local function create_formspec(meta, data)
 	if focus then
 		fs = fs.."set_focus["..focus.."]"
 	end
-
 	local data_size = 0
-	for idx, val in pairs(data) do
-		if idx > data_size then
-			data_size = idx
+	for i in pairs(data) do
+		if i > data_size then
+			data_size = i
 		end
 	end
-	
-	local formspec_result = fs
-	for i = 1, data_size, 1 do
+	for i=1, data_size do
 		if data[i] then
-			formspec_result = formspec_result..data[i]
+			fs = fs..data[i]
 		end
 	end
-	
-	return formspec_result
+	return fs
 end
 
 local function update_formspec(pos, meta, data)
