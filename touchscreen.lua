@@ -97,10 +97,10 @@ local function process_command(meta, data, msg)
 			table.remove(data, index)
 		end
 
-	elseif cmd == "remove_without_resize" then
+	elseif cmd == "delete" then
 		local index = tonumber(msg.index)
 		if index and data[index] then
-			data[index] = ""
+			data[index] = nil
 		end
 
 	elseif cmd == "set" then
