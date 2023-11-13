@@ -73,11 +73,7 @@ local function process_command(meta, data, msg)
 		local index = tonumber(msg.index)
 		if element and index and index > 0 then
 			local str = create_element_string(element, msg)
-			if index > #data then
-				table.insert(data, str)
-			else
-				table.insert(data, index, str)
-			end
+			table.insert(data, index, str)
 		end
 
 	elseif cmd == "replace" then
