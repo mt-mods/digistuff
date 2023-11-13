@@ -63,11 +63,20 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`remove`** - Removes an element.
+**`remove`** - Removes an element and resizes the formspec array to fill the gaps.
 
 ```lua
 digiline_send("touchscreen", {
 	command = "remove",
+	index = 1,
+})
+```
+
+**`delete`** - Removes an element but it **doesn't** resizes the fromspec array.
+
+```lua
+digiline_send("touchscreen", {
+	command = "delete",
 	index = 1,
 })
 ```
