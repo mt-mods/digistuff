@@ -68,9 +68,14 @@ minetest.register_node("digistuff:nic", {
 							user_agent = "Minetest Digilines Modem"
 						},
 						function(res)
-							if type(res.data) == "string" and parse_json then
-								-- parse json data and replace payload
-								res.data = minetest.parse_json(res.data)
+							if type(res.data) == "string" then
+								if parse_json then
+									-- parse json data and replace payload
+									res.data = minetest.parse_json(res.data)
+								else
+									local max_length = minetest.settings:get("digistuff_max_nic_length") or 5000
+									res.data = res.data:sub(-max_length)
+								end
 							end
 							digilines.receptor_send(pos, digilines.rules.default, channel, res)
 						end)
