@@ -40,7 +40,7 @@ local function process_inputs(pos)
 	local name = players_on_controller[hash]
 	local player = minetest.get_player_by_name(name)
 	if not player then
-		digiline:receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
+		digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 		minetest.get_meta(pos):set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 		players_on_controller[hash] = nil
 		return
@@ -62,10 +62,10 @@ local function process_inputs(pos)
 	last_seen_inputs[name] = inputs
 	if send_needed then
 		local channel = meta:get_string("channel")
-		local inputs = table.copy(inputs)
+		inputs = table.copy(inputs)
 		inputs.look_vector = player:get_look_dir()
 		inputs.name = name
-		digiline:receptor_send(pos,digiline_rules,channel,inputs)
+		digilines.receptor_send(pos,digiline_rules,channel,inputs)
 	end
 end
 
@@ -74,7 +74,6 @@ local function release_player(pos)
 	local player = minetest.get_player_by_name(players_on_controller[hash])
 	if player and player:get_properties()._is_gamecontroller then
 		local parent = player:get_attach()
-		print(dump(parent:get_properties()))
 		if parent then
 			player:set_detach()
 		end
@@ -85,7 +84,7 @@ local function release_player(pos)
 	meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 	last_seen_inputs[players_on_controller[hash]] = nil
 	players_on_controller[hash] = nil
-	digiline:receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
+	digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 end
 
 local function trap_player(pos,player)
@@ -186,7 +185,6 @@ minetest.register_node("digistuff:controller_programmed", {
 			toggle_trap_player(pos,clicker)
 		end
 	end,
-	_digistuff_channelcopier_fieldname = "channel",
 	digiline = {
 		receptor = {},
 		wire = {
@@ -237,7 +235,7 @@ minetest.register_lbm({
 	action = function(pos)
 		if not players_on_controller[minetest.hash_node_position(pos)] then
 			local meta = minetest.get_meta(pos)
-			digiline:receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
+			digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 			meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 		end
 	end,

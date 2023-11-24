@@ -65,7 +65,7 @@ local ioexp_digiline_send = function(pos)
 	}
 	local outstate = explode_port_states(meta:get_int("outstate"))
 	for k,v in pairs(outstate) do port[k] = port[k] or v end
-	digiline:receptor_send(pos,digiline.rules.default,channel,port)
+	digilines.receptor_send(pos,digilines.rules.default,channel,port)
 end
 
 local ioexp_handle_digilines = function(pos,node,channel,msg)
@@ -99,7 +99,6 @@ local ioexp_handle_mesecons = function(pos,_,rule,state)
 	local meta = minetest.get_meta(pos)
 	local port = ioexp_rule_to_port(rule)
 	if not port then return end
-	local meta = minetest.get_meta(pos)
 	meta:set_int(port.."on",state == "on" and 1 or 0)
 	ioexp_digiline_send(pos)
 end

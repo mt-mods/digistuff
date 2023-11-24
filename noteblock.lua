@@ -49,7 +49,7 @@ minetest.register_node("digistuff:noteblock", {
 						for i in pairs(validnbsounds) do
 							table.insert(soundnames,i)
 						end
-						digiline:receptor_send(pos, digiline.rules.default, channel, soundnames)
+						digilines.receptor_send(pos, digilines.rules.default, channel, soundnames)
 						return
 					end
 					if type(msg) == "string" then

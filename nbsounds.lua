@@ -73,7 +73,7 @@ local mod_sounds = {
 		homedecor_book_close = "homedecor_book_close",
 		homedecor_door_close = "homedecor_door_close",
 		homedecor_door_open = "homedecor_door_open",
-		homedecor_gate = "homedecor_gate_open_close",		
+		homedecor_gate = "homedecor_gate_open_close",
 	},
 	homedecor_bathroom = {
 		homedecor_shower = "homedecor_shower",
