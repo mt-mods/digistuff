@@ -34,7 +34,7 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`insert`** - Adds an element at a specific index.
+**`insert`** - Adds an element at a specific index. The index can be any positive number.
 
 ```lua
 digiline_send("touchscreen", {
@@ -63,7 +63,7 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`remove`** - Removes an element and **reorders** indexes of elements.
+**`remove`** - Removes an element, shifting elements to fill the space.
 
 ```lua
 digiline_send("touchscreen", {
@@ -72,7 +72,7 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`delete`** - Removes an element but **keeps** the indexes of elements.
+**`delete`** - Removes an element without changing element indexes.
 
 ```lua
 digiline_send("touchscreen", {
@@ -81,7 +81,7 @@ digiline_send("touchscreen", {
 })
 ```
 
-**`clear`** - Removes all elements, but keeps settings.
+**`clear`** - Removes all elements.
 
 ```lua
 digiline_send("touchscreen", {
