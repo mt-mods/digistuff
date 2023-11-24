@@ -73,11 +73,7 @@ local function process_command(meta, data, msg)
 		local index = tonumber(msg.index)
 		if element and index and index > 0 then
 			local str = create_element_string(element, msg)
-			if index > #data then
-				table.insert(data, str)
-			else
-				table.insert(data, index, str)
-			end
+			table.insert(data, index, str)
 		end
 
 	elseif cmd == "replace" then
@@ -99,6 +95,12 @@ local function process_command(meta, data, msg)
 		local index = tonumber(msg.index)
 		if index and data[index] then
 			table.remove(data, index)
+		end
+
+	elseif cmd == "delete" then
+		local index = tonumber(msg.index)
+		if index and data[index] then
+			data[index] = nil
 		end
 
 	elseif cmd == "set" then
@@ -161,7 +163,18 @@ local function create_formspec(meta, data)
 	if focus then
 		fs = fs.."set_focus["..focus.."]"
 	end
-	return fs..table.concat(data)
+	local data_size = 0
+	for i in pairs(data) do
+		if i > data_size then
+			data_size = i
+		end
+	end
+	for i=1, data_size do
+		if data[i] then
+			fs = fs..data[i]
+		end
+	end
+	return fs
 end
 
 local function update_formspec(pos, meta, data)
