@@ -18,7 +18,7 @@ local function create_element_string(element, values)
 end
 
 local function modify_element_string(old, values)
-	local e = string.match(old, "^(.+)%[")
+	local e = string.match(old, "^(.-)%[")
 	local element = formspec_elements[e]
 	if type(element) == "function" then
 		return old  -- No-op for special elements, as there is no format string
