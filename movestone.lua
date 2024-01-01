@@ -235,9 +235,9 @@ minetest.register_node("digistuff:movestone", {
 						if type(msg.x) ~= "number" then msg.x = 0 end
 						if type(msg.y) ~= "number" then msg.y = 0 end
 						if type(msg.z) ~= "number" then msg.z = 0 end
-						msg.x = pos.x+math.max(0,math.min(50,math.floor(msg.x)))
-						msg.y = pos.y+math.max(0,math.min(50,math.floor(msg.y)))
-						msg.z = pos.z+math.max(0,math.min(50,math.floor(msg.z)))
+						msg.x = pos.x+math.max(-50,math.min(50,math.floor(msg.x)))
+						msg.y = pos.y+math.max(-50,math.min(50,math.floor(msg.y)))
+						msg.z = pos.z+math.max(-50,math.min(50,math.floor(msg.z)))
 						local firstaxis
 						if msg.x ~= pos.x then firstaxis = "x"
 						elseif msg.y ~= pos.y then firstaxis = "y"
