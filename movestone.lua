@@ -184,68 +184,43 @@ minetest.register_node("digistuff:movestone", {
 						ret.targetpos = vector.new(state.targetx,state.targety,state.targetz)
 						ret.moveaxis = state.moveaxis
 						digilines.receptor_send(pos,rules,channel,ret)
-					elseif msg.command == "absmove" then
+					elseif msg.command == "absmove" or msg.command == "relmove" then
 						local state = meta:get_string("state")
 						if state ~= "" then state = minetest.deserialize(state) else state = {} end
 						if not state then
 							minetest.log("error",string.format("Invalid state information for digilines movestone at %d,%d,%d: %s",pos.x,pos.y,pos.z,meta:get_string("state")))
 							return
 						end
-						if type(msg.sound) == "string" then state.sound = msg.sound end
-						if type(msg.x) ~= "number" then msg.x = pos.x end
-						if type(msg.y) ~= "number" then msg.y = pos.y end
-						if type(msg.z) ~= "number" then msg.z = pos.z end
-						msg.x = math.max(pos.x-50,math.min(pos.x+50,math.floor(msg.x)))
-						msg.y = math.max(pos.y-50,math.min(pos.y+50,math.floor(msg.y)))
-						msg.z = math.max(pos.z-50,math.min(pos.z+50,math.floor(msg.z)))
-						local firstaxis
-						if msg.x ~= pos.x then firstaxis = "x"
-						elseif msg.y ~= pos.y then firstaxis = "y"
-						elseif msg.z ~= pos.z then firstaxis = "z" end
-						if firstaxis then
-							state.targetx = msg.x
-							state.targety = msg.y
-							state.targetz = msg.z
-							state.moveaxis = firstaxis
-							if msg.sticky then
-								state.sticky = true
-							elseif msg.sticky == false then
-								state.sticky = false
-							end
-							if msg.allsticky then
-								state.allsticky = true
-							elseif msg.allsticky == false then
-								state.allsticky = false
-							end
-							if type(msg.maxstack) == "number" and msg.maxstack >= 0 and msg.maxstack <= 50 then
-								state.maxstack = math.floor(msg.maxstack)
-							end
-							meta:set_string("state",minetest.serialize(state))
-							meta:set_int("active",1)
-							minetest.get_node_timer(pos):start(0.1)
+
+						local targetpos
+						if msg.command == "absmove" then
+							targetpos = vector.copy(pos)
+						elseif msg.command == "relmove" then
+							targetpos = vector.zero()
 						end
-					elseif msg.command == "relmove" then
-						local state = meta:get_string("state")
-						if state ~= "" then state = minetest.deserialize(state) else state = {} end
-						if not state then
-							minetest.log("error",string.format("Invalid state information for digilines movestone at %d,%d,%d: %s",pos.x,pos.y,pos.z,meta:get_string("state")))
-							return
-						end
+
 						if type(msg.sound) == "string" then state.sound = msg.sound end
-						if type(msg.x) ~= "number" then msg.x = 0 end
-						if type(msg.y) ~= "number" then msg.y = 0 end
-						if type(msg.z) ~= "number" then msg.z = 0 end
-						msg.x = pos.x+math.max(-50,math.min(50,math.floor(msg.x)))
-						msg.y = pos.y+math.max(-50,math.min(50,math.floor(msg.y)))
-						msg.z = pos.z+math.max(-50,math.min(50,math.floor(msg.z)))
+						if type(msg.x) == "number" then targetpos.x = msg.x end
+						if type(msg.y) == "number" then targetpos.y = msg.y end
+						if type(msg.z) == "number" then targetpos.z = msg.z end
+
+						if msg.command == "relmove" then
+							targetpos = vector.add(targetpos, pos)
+						end
+
+						targetpos.x = math.max(pos.x-50,math.min(pos.x+50,math.floor(targetpos.x)))
+						targetpos.y = math.max(pos.y-50,math.min(pos.y+50,math.floor(targetpos.y)))
+						targetpos.z = math.max(pos.z-50,math.min(pos.z+50,math.floor(targetpos.z)))
+
 						local firstaxis
-						if msg.x ~= pos.x then firstaxis = "x"
-						elseif msg.y ~= pos.y then firstaxis = "y"
-						elseif msg.z ~= pos.z then firstaxis = "z" end
+						if targetpos.x ~= pos.x then firstaxis = "x"
+						elseif targetpos.y ~= pos.y then firstaxis = "y"
+						elseif targetpos.z ~= pos.z then firstaxis = "z" end
+
 						if firstaxis then
-							state.targetx = msg.x
-							state.targety = msg.y
-							state.targetz = msg.z
+							state.targetx = targetpos.x
+							state.targety = targetpos.y
+							state.targetz = targetpos.z
 							state.moveaxis = firstaxis
 							if msg.sticky then
 								state.sticky = true
