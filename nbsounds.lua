@@ -34,6 +34,19 @@ local valid_sounds = {
 	digistuff_piston_extend = "digistuff_piston_extend",
 	digistuff_piston_retract = "digistuff_piston_retract",
 	sine = "digistuff_sine",
+	square = "digistuff_square",
+	saw = "digistuff_saw",
+	noise = "digistuff_noise",
+	triangle = "digistuff_triangle",
+	pulse5 = "digistuff_pulse5",
+	pulse10 = "digistuff_pulse10",
+	pulse15 = "digistuff_pulse15",
+	pulse20 = "digistuff_pulse20",
+	pulse25 = "digistuff_pulse25",
+	pulse30 = "digistuff_pulse30",
+	pulse35 = "digistuff_pulse35",
+	pulse40 = "digistuff_pulse40",
+	pulse45 = "digistuff_pulse45",
 }
 
 local mod_sounds = {
