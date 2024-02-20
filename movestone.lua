@@ -85,7 +85,7 @@ minetest.register_node("digistuff:movestone", {
 			targety = pos.y,
 			targetz = pos.z,
 			sound = "mesecons",
-			maxstack = 0,
+			maxstack = 1,
 			allsticky = false,
 		}
 		meta:set_int("active",0)
@@ -232,7 +232,7 @@ minetest.register_node("digistuff:movestone", {
 							elseif msg.allsticky == false then
 								state.allsticky = false
 							end
-							if type(msg.maxstack) == "number" and msg.maxstack >= 0 and msg.maxstack <= 50 then
+							if type(msg.maxstack) == "number" and msg.maxstack >= 1 and msg.maxstack <= 50 then
 								state.maxstack = math.floor(msg.maxstack)
 							end
 							meta:set_string("state",minetest.serialize(state))
