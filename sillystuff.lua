@@ -17,6 +17,7 @@ end
 minetest.register_node("digistuff:heatsink", {
 	description = "Heatsink (decorative)",
 	groups = {cracky=3},
+	is_ground_content = false,
 	tiles = {
 		"digistuff_piezo_sides.png"
 	},
@@ -56,6 +57,7 @@ minetest.register_node("digistuff:heatsink_onic", {
 	drop = "digistuff:heatsink",
 	description = "Heatsink (decorative, placed on IC - you hacker you!)",
 	groups = {cracky=3,not_in_creative_inventory=1,},
+	is_ground_content = false,
 	tiles = {
 		"digistuff_piezo_sides.png"
 	},
