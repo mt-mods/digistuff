@@ -231,6 +231,7 @@ end
 minetest.register_node("digistuff:touchscreen", {
 	description = "Digilines Touchscreen",
 	groups = {cracky = 3},
+	is_ground_content = false,
 	tiles = {
 		"digistuff_panel_back.png",
 		"digistuff_panel_back.png",
