@@ -45,6 +45,7 @@ end
 minetest.register_node("digistuff:piston", {
 	description = "Digilines Piston",
 	groups = {cracky = 3},
+	is_ground_content = false,
 	paramtype2 = "facedir",
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -98,6 +99,7 @@ minetest.register_node("digistuff:piston", {
 minetest.register_node("digistuff:piston_ext", {
 	description = "Digilines Piston Extended (you hacker you!)",
 	groups = {cracky = 3, not_in_creative_inventory = 1},
+	is_ground_content = false,
 	paramtype2 = "facedir",
 	tiles = {
 		"digistuff_piston_sides.png^[transformR180",
@@ -175,6 +177,7 @@ minetest.register_node("digistuff:piston_ext", {
 minetest.register_node("digistuff:piston_pusher", {
 	description = "Digilines Piston Pusher (you hacker you!)",
 	groups = {not_in_creative_inventory = 1},
+	is_ground_content = false,
 	paramtype = "light",
 	sunlight_propagates = true,
 	paramtype2 = "facedir",
