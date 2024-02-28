@@ -42,6 +42,7 @@ minetest.register_craftitem("digistuff:card",{
 minetest.register_node("digistuff:card_reader",{
 	description = "Digilines Magnetic Card Reader/Writer",
 	groups = {cracky = 3,digiline_receiver = 1,},
+	is_ground_content = false,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec","field[channel;Channel;${channel}")

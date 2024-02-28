@@ -97,6 +97,7 @@ minetest.register_node("digistuff:button", {
 	},
 	_digistuff_channelcopier_fieldname = "channel",
 	groups = {dig_immediate = 2,digiline_receiver = 1,},
+	is_ground_content = false,
 	description = "Digilines Button",
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -163,6 +164,7 @@ minetest.register_node("digistuff:button_off", {
 	},
 	_digistuff_channelcopier_fieldname = "channel",
 	groups = {dig_immediate = 2,not_in_creative_inventory = 1,digiline_receiver = 1,},
+	is_ground_content = false,
 	drop = "digistuff:button",
 	after_destruct = digistuff.remove_receiver,
 	description = "Digilines Button (off state - you hacker you!)",
@@ -209,6 +211,7 @@ minetest.register_node("digistuff:button_off_pushed", {
 	_digistuff_channelcopier_fieldname = "channel",
 	on_timer = digistuff.button_turnoff,
 	groups = {dig_immediate = 2,not_in_creative_inventory = 1,digiline_receiver = 1,},
+	is_ground_content = false,
 	drop = "digistuff:button",
 	after_destruct = digistuff.remove_receiver,
 	description = "Digilines Button (off, pushed state - you hacker you!)",
@@ -257,6 +260,7 @@ minetest.register_node("digistuff:button_on", {
 	},
 	on_timer = digistuff.button_turnoff,
 	groups = {dig_immediate = 2,not_in_creative_inventory = 1,digiline_receiver = 1,},
+	is_ground_content = false,
 	drop = 'digistuff:button',
 	after_destruct = digistuff.remove_receiver,
 	on_rightclick = digistuff.button_push,
@@ -304,6 +308,7 @@ minetest.register_node("digistuff:button_on_pushed", {
 	},
 	on_timer = digistuff.button_turnoff,
 	groups = {dig_immediate = 2,not_in_creative_inventory = 1,digiline_receiver = 1,},
+	is_ground_content = false,
 	drop = 'digistuff:button',
 	after_destruct = digistuff.remove_receiver,
 	on_rightclick = digistuff.button_push,
@@ -346,6 +351,7 @@ minetest.register_node("digistuff:wall_knob", {
 	},
 	_digistuff_channelcopier_fieldname = "channel",
 	groups = {dig_immediate = 2,digiline_receiver = 1,},
+	is_ground_content = false,
 	description = "Digilines Wall Knob",
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)

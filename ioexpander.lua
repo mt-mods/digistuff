@@ -108,6 +108,7 @@ for i=0,15,1 do
 	minetest.register_node("digistuff:ioexpander_"..i, {
 		description = offstate and "Digilines I/O Expander" or string.format("Digilines I/O Expander (on state %X - you hacker you!)",i),
 		groups = offstate and {cracky = 3,} or {cracky = 3,not_in_creative_inventory = 1,},
+		is_ground_content = false,
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)
 			meta:set_string("formspec","field[channel;Channel;${channel}")

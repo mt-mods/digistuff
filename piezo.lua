@@ -20,6 +20,7 @@ end
 minetest.register_node("digistuff:piezo", {
 	description = "Digilines Piezoelectric Beeper",
 	groups = {cracky = 3},
+	is_ground_content = false,
 	on_construct = function(pos)
 		minetest.get_meta(pos):set_string("formspec", "field[channel;Channel;${channel}")
 	end,
