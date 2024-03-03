@@ -412,6 +412,7 @@ minetest.register_node("digistuff:wall_knob_configured", {
 	},
 	_digistuff_channelcopier_fieldname = "channel",
 	groups = {dig_immediate = 2,digiline_receiver = 1,not_in_creative_inventory = 1,},
+	is_ground_content = false,
 	description = "Digilines Wall Knob (configured state - you hacker you!)",
 	drop = "digistuff:wall_knob",
 	after_place_node = digistuff.place_receiver,
