@@ -463,14 +463,11 @@ local function runcommand(pos, meta, command)
 		if xstart+xsize-1 > buffer.xsize or ystart+ysize-1 > buffer.ysize then return end
 		for y = 1, ysize do
 			if type(command.data[y]) == "table" then
-					local color = command.data[y][x]
-					if type(color) == "string" then
-						if string.len(color) == 7 then color = string.sub(color,2,7) end
-						if tonumber(color,16) then
-							buffer[ystart+y-1][xstart+x-1] = color
-						end
-					end
 				for x = 1, xsize do
+					-- slightly different behaviour from before refactor:
+					-- illegal values are now set to '000000' instead of being skipped
+					buffer[y1 + y - 1][x1 + x - 1] = validate_color(
+						command.data[y][x])
 				end
 			end
 		end
