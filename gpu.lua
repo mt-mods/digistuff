@@ -323,7 +323,7 @@ local function runcommand(pos, meta, command)
 
 	local buffer
 	if command.command ~= "createbuffer" then
-		buffer = read_buffer(bufnum)
+		buffer = read_buffer(meta, bufnum)
 		if not buffer then
 			return
 		end
@@ -461,8 +461,8 @@ local function runcommand(pos, meta, command)
 			return
 		end
 
-		local sourcebuffer = read_buffer(src)
-		local destbuffer = read_buffer(dst)
+		local sourcebuffer = read_buffer(meta, src)
+		local destbuffer = read_buffer(meta, dst)
 		if not (sourcebuffer and destbuffer) then
 			return
 		end
