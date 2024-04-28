@@ -412,7 +412,7 @@ local function runcommand(pos, meta, command)
 		color = validate_color(command.color)
 		local p1 = vector.new(x1, y1, 0)
 		local p2 = vector.new(x2, y2, 0)
-		local length = vector.distance(p1, p2)
+		local length = 1 + vector.distance(p1, p2)
 		local dir = vector.direction(p1, p2)
 		if length <= 0 then
 			return
