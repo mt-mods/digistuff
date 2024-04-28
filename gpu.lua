@@ -1,4 +1,5 @@
 local font = dofile(minetest.get_modpath("digistuff") .. "/gpu-font.lua")
+local MAX_BUFFERS = 8
 
 local function explodebits(input, count)
 	local output = {}
@@ -242,7 +243,36 @@ local function blend(src, dst, mode, transparent)
 
 	return src
 end
+
+local function validate_area(buffer, x1, y1, x2, y2)
+	if not (buffer and buffer.xsize and buffer.ysize)
+		or type(x1) ~= "number"
+		or type(x2) ~= "number"
+		or type(y1) ~= "number"
+		or type(y2) ~= "number"
+	then
+		return
 	end
+
+	x1 = math.max(1, math.min(buffer.xsize, math.floor(x1)))
+	x2 = math.max(1, math.min(buffer.xsize, math.floor(x2)))
+	y1 = math.max(1, math.min(buffer.ysize, math.floor(y1)))
+	y2 = math.max(1, math.min(buffer.ysize, math.floor(y2)))
+	if x1 > x2 then
+		x1, x2 = x2, x1
+	end
+	if y1 > y2 then
+		y1, y2 = y2, y1
+	end
+	return x1, y1, x2, y2
+end
+
+local function validate_size(size)
+	if type(size) ~= "number" then
+		return 1
+	end
+	return math.max(1, math.min(64, math.floor(math.abs(size))))
+end
 
 local function validate_color(fillcolor, fallback)
 	fallback = fallback or "000000"
@@ -261,6 +291,15 @@ local function validate_color(fillcolor, fallback)
 	return fillcolor
 end
 
+local function validate_buffer_address(bufnum)
+	if type(bufnum) ~= "number" then
+		return
+	end
+
+	bufnum = math.floor(math.abs(bufnum))
+	return MAX_BUFFERS > bufnum and bufnum or nil
+end
+
 local function read_buffer(meta, bufnum)
 	local buffer = minetest.deserialize(meta:get_string("buffer" .. bufnum))
 	return type(buffer) == "table" and buffer or nil
@@ -272,17 +311,29 @@ end
 
 local function runcommand(pos, meta, command)
 	if type(command) ~= "table"
+		or type(command.buffer) ~= "number"
 	then
 		return
 	end
+
+	local bufnum = validate_buffer_address(command.buffer)
+	if not bufnum then
+		return
+	end
+
+	local buffer
+	if command.command ~= "createbuffer" then
 		buffer = read_buffer(bufnum)
+		if not buffer then
+			return
+		end
+	end
+
+	local xsize, ysize, x1, x2, y1, y2
+	local color, fillcolor, edgecolor
 	if command.command == "createbuffer" then
-		if type(command.buffer) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local xsize = math.min(64,math.floor(command.xsize))
-		local ysize = math.min(64,math.floor(command.ysize))
-		if xsize < 1 or ysize < 1 then return end
+		xsize = validate_size(command.xsize)
+		ysize = validate_size(command.ysize)
 		fillcolor = validate_color(command.fill)
 		buffer = { xsize = xsize, ysize = ysize }
 		for y = 1, ysize do
@@ -293,32 +344,25 @@ local function runcommand(pos, meta, command)
 		end
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "send" then
-		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) == "table" then
-			digilines.receptor_send(pos,digilines.rules.default,command.channel,buffer)
+		if type(command.channel) ~= "string" then
+			return
 		end
+
+		digilines.receptor_send(pos, digilines.rules.default,
+			command.channel, buffer)
+
 	elseif command.command == "sendregion" then
-		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		if type(command.x1) ~= "number" or type(command.x2) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" then return end
-		local x1 = math.min(64,math.floor(command.x1))
-		local y1 = math.min(64,math.floor(command.y1))
-		local x2 = math.min(64,math.floor(command.x2))
-		local y2 = math.min(64,math.floor(command.y2))
-		if x1 < 1 or y1 < 1 or x2 < 1 or y2 < 1 then return end
-		x2 = math.min(x2,buffer.xsize)
-		y2 = math.min(y2,buffer.ysize)
-		if x1 > x2 or y1 > y2 then return end
+		if type(command.channel) ~= "string" then
+			return
+		end
+
+		x1, y1, x2, y2 = validate_area(buffer,
+			command.x1, command.y1, command.x2, command.y2)
+
+		if not x1 then
+			return
+		end
+
 		local tempbuf, dstx, dsty = {}
 		for y = y1, y2 do
 			dsty = y - y1 + 1
@@ -332,21 +376,13 @@ local function runcommand(pos, meta, command)
 			command.channel, tempbuf)
 
 	elseif command.command == "drawrect" then
-		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local x1 = math.min(64,math.floor(command.x1))
-		local y1 = math.min(64,math.floor(command.y1))
-		local x2 = math.min(64,math.floor(command.x2))
-		local y2 = math.min(64,math.floor(command.y2))
-		if x1 < 1 or y1 < 1 or x2 < 1 or y2 < 1 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		x2 = math.min(x2,buffer.xsize)
-		y2 = math.min(y2,buffer.ysize)
-		if x1 > x2 or y1 > y2 then return end
+		x1, y1, x2, y2 = validate_area(buffer,
+			command.x1, command.y1, command.x2, command.y2)
+
+		if not x1 then
+			return
+		end
+
 		fillcolor = validate_color(command.fill)
 		edgecolor = validate_color(command.edge, fillcolor)
 		for y = y1, y2 do
@@ -366,26 +402,23 @@ local function runcommand(pos, meta, command)
 		end
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawline" then
-		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local x1 = math.min(64,math.floor(command.x1))
-		local y1 = math.min(64,math.floor(command.y1))
-		local x2 = math.min(64,math.floor(command.x2))
-		local y2 = math.min(64,math.floor(command.y2))
-		if x1 < 1 or y1 < 1 or x2 < 1 or y2 < 1 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		x2 = math.min(x2,buffer.xsize)
-		y2 = math.min(y2,buffer.ysize)
-		if length > 0 then
+		x1, y1, x2, y2 = validate_area(buffer,
+			command.x1, command.y1, command.x2, command.y2)
+
+		if not x1 then
+			return
+		end
+
 		color = validate_color(command.color)
 		local p1 = vector.new(x1, y1, 0)
 		local p2 = vector.new(x2, y2, 0)
 		local length = vector.distance(p1, p2)
 		local dir = vector.direction(p1, p2)
+		if length <= 0 then
+			return
+		end
+
+		local point
 		for i = 0, length, 0.3 do
 			point = vector.add(p1, vector.multiply(dir, i))
 			point = vector.floor(point)
@@ -398,42 +431,49 @@ local function runcommand(pos, meta, command)
 		end
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawpoint" then
-		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local x = math.floor(command.x)
-		local y = math.floor(command.y)
-		if x < 1 or y < 1 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		if x > buffer.xsize or y > buffer.ysize then return end
+		x1, y1 = validate_area(buffer, command.x, command.y, command.x, command.y)
+		if not x1 then
+			return
+		end
+
 		buffer[y1][x1] = validate_color(command.color)
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "copy" then
-		if type(command.src) ~= "number" or type(command.dst) ~= "number" or type(command.srcx) ~= "number" or type(command.srcy) ~= "number" or type(command.dstx) ~= "number" or type(command.dsty) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
-		local src = math.floor(command.src)
-		if src < 0 or src > 7 then return end
-		local dst = math.floor(command.dst)
-		if dst < 0 or dst > 7 then return end
-		local srcx = math.floor(command.srcx)
-		local srcy = math.floor(command.srcy)
-		local dstx = math.floor(command.dstx)
-		local dsty = math.floor(command.dsty)
-		local xsize = math.floor(command.xsize)
-		local ysize = math.floor(command.ysize)
-		if srcx < 1 or srcy < 1 or dstx < 1 or dsty < 1 or xsize < 1 or ysize < 1 then return end
-		local sourcebuffer = meta:get_string("buffer"..src)
-		local destbuffer = meta:get_string("buffer"..dst)
-		if string.len(sourcebuffer) == 0 then return end
-		sourcebuffer = minetest.deserialize(sourcebuffer)
-		if type(sourcebuffer) ~= "table" then return end
-		if string.len(destbuffer) == 0 then return end
-		destbuffer = minetest.deserialize(destbuffer)
-		if type(destbuffer) ~= "table" then return end
-		if srcx + xsize-1 > sourcebuffer.xsize or srcy + ysize-1 > sourcebuffer.ysize then return end
-		if dstx + xsize-1 > destbuffer.xsize or dsty + ysize-1 > destbuffer.ysize then return end
+		if type(command.xsize) ~= "number"
+			or type(command.ysize) ~= "number"
+		then
+			return
+		end
+
+		x1, y1 = validate_area(buffer,
+			command.srcx, command.srcy, command.srcx, command.srcy)
+
+		x2, y2 = validate_area(buffer,
+			command.dstx, command.dsty, command.dstx, command.dsty)
+
+		if not (x1 and x2) then
+			return
+		end
+
+		local src = validate_buffer_address(command.src)
+		local dst = validate_buffer_address(command.dst)
+		if not (src and dst) then
+			return
+		end
+
+		local sourcebuffer = read_buffer(src)
+		local destbuffer = read_buffer(dst)
+		if not (sourcebuffer and destbuffer) then
+			return
+		end
+
+		-- clamp size to source and offset
+		xsize = math.min(sourcebuffer.xsize - x1 + 1, validate_size(command.xsize))
+		ysize = math.min(sourcebuffer.ysize - y1 + 1, validate_size(command.ysize))
+		-- clamp size to destination and offset
+		xsize = math.min(destbuffer.xsize - x2 + 1, xsize)
+		ysize = math.min(destbuffer.ysize - y2 + 1, ysize)
+
 		local transparent = validate_color(command.transparent)
 		local px1, px2
 		for y = 0, ysize - 1 do
@@ -446,21 +486,17 @@ local function runcommand(pos, meta, command)
 		end
 		write_buffer(meta, dst, destbuffer)
 	elseif command.command == "load" then
-		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" or type(command.data) ~= "table" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local xstart = math.floor(command.x)
-		local ystart = math.floor(command.y)
-		if xstart < 1 or ystart < 1 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		if type(command.data[1]) ~= "table" then return end
-		if #command.data[1] < 1 then return end
-		local ysize = #command.data
-		local xsize = #command.data[1]
-		if xstart+xsize-1 > buffer.xsize or ystart+ysize-1 > buffer.ysize then return end
+		x1, y1 = validate_area(buffer, command.x, command.y, command.x, command.y)
+		if not x1
+			or type(command.data) ~= "table"
+			or type(command.data[1]) ~= "table"
+			or #command.data[1] < 1
+		then
+			return
+		end
+
+		ysize = math.min(buffer.ysize - y1 + 1, validate_size(#command.data))
+		xsize = math.min(buffer.xsize - x1 + 1, validate_size(#command.data[1]))
 		for y = 1, ysize do
 			if type(command.data[y]) == "table" then
 				for x = 1, xsize do
@@ -473,41 +509,39 @@ local function runcommand(pos, meta, command)
 		end
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "text" then
-		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" or type(command.text) ~= "string" or string.len(command.text) < 1 then return end
-		command.text = string.sub(command.text,1,16)
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local x = math.floor(command.x)
-		local y = math.floor(command.y)
-		if x < 1 or y < 1 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) ~= "table" then return end
-		if x > buffer.xsize or y > buffer.ysize then return end
-					local startx = x + (i*6-6)
-					if char[chary][charx] and y+chary-1 <= buffer.ysize and startx+charx-1 <= buffer.xsize then
-						local dstpx = buffer[y+chary-1][startx+charx-1]
-						buffer[y+chary-1][startx+charx-1] = blend(color,dstpx,command.mode,"")
+		x1, y1 = validate_area(buffer, command.x, command.y, command.x, command.y)
+		if not x1
+			or x1 > buffer.xsize
+			or y1 > buffer.ysize
+			or type(command.text) ~= "string"
+			or string.len(command.text) < 1
+		then
+			return
+		end
+
+		command.text = string.sub(command.text, 1, 16)
 		color = validate_color(command.color, "ff6600")
 		local char, px
 		for i = 1, string.len(command.text) do
 			char = font[string.byte(string.sub(command.text, i, i))]
 			for chary = 1, 12 do
 				for charx = 1, 5 do
+					x2 = x1 + (i * 6 - 6)
+					if char[chary][charx] and y1 + chary - 1 <= buffer.ysize
+						and x2 + charx - 1 <= buffer.xsize
+					then
+						px = buffer[y1 + chary - 1][x2 + charx - 1]
+						buffer[y1 + chary - 1][x2 + charx - 1] = blend(
+							color, px, command.mode, "")
 					end
 				end
 			end
 		end
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "sendpacked" then
-		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) == "table" then
+		if type(command.channel) ~= "string" then
+			return
+		end
 		local packeddata = ""
 		for y = 1, buffer.ysize do
 			for x = 1, buffer.xsize do
@@ -517,29 +551,24 @@ local function runcommand(pos, meta, command)
 		digilines.receptor_send(pos, digilines.rules.default,
 			command.channel, packeddata)
 	elseif command.command == "loadpacked" then
-		if type(command.buffer) ~= "number" or type(command.data) ~= "string" then return end
-		if type(command.x) ~= "number" or type(command.y) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
-		command.x = math.floor(command.x)
-		command.y = math.floor(command.y)
-		command.xsize = math.floor(command.xsize)
-		command.ysize = math.floor(command.ysize)
-		if command.x < 1 or command.y < 1 or command.xsize < 1 or command.ysize < 1 then return end
-		local bufnum = math.floor(command.buffer)
-		if bufnum < 0 or bufnum > 7 then return end
-		local buffer = meta:get_string("buffer"..bufnum)
-		if string.len(buffer) == 0 then return end
-		buffer = minetest.deserialize(buffer)
-		if type(buffer) == "table" then
-			if command.x + command.xsize - 1 > buffer.xsize then return end
-			if command.y + command.ysize - 1 > buffer.ysize then return end
-			for y=0,command.ysize-1,1 do
-				local dsty = command.y+y
-				for x=0,command.xsize-1,1 do
-					local dstx = command.x+x
-					local packidx = (y*command.xsize+x)*4+1
-					local packeddata = string.sub(command.data,packidx,packidx+3)
-					buffer[dsty][dstx] = unpackpixel(packeddata)
-				end
+		x1, y1 = validate_area(buffer, command.x, command.y, command.x, command.y)
+		if not x1
+			or type(command.data) ~= "string"
+		then
+			return
+		end
+
+		-- clamp size to buffer size
+		xsize = math.min(buffer.xsize - x1 + 1, validate_size(command.xsize))
+		ysize = math.min(buffer.ysize - y1 + 1, validate_size(command.ysize))
+		local packidx, packeddata
+		for y = 0, ysize - 1 do
+			y2 = y1 + y
+			for x = 0, xsize - 1 do
+				x2 = x1 + x
+				packidx = (y * xsize + x) * 4 + 1
+				packeddata = string.sub(command.data, packidx, packidx + 3)
+				buffer[y2][x2] = unpackpixel(packeddata)
 			end
 		end
 		write_buffer(meta, bufnum, buffer)
