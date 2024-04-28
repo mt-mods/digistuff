@@ -1,4 +1,4 @@
-local font = dofile(minetest.get_modpath("digistuff")..DIR_DELIM.."gpu-font.lua")
+local font = dofile(minetest.get_modpath("digistuff") .. "/gpu-font.lua")
 
 local function explodebits(input, count)
 	local output = {}
