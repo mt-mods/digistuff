@@ -590,6 +590,11 @@ minetest.register_node("digistuff:gpu", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	on_receive_fields = function(pos, formname, fields, sender)
+		-- TODO: add formname check
+		if not fields.channel then
+			return
+		end
+
 		local name = sender:get_player_name()
 		if minetest.is_protected(pos, name)
 			and not minetest.check_player_privs(name, { protection_bypass = true })
@@ -599,7 +604,7 @@ minetest.register_node("digistuff:gpu", {
 		end
 
 		local meta = minetest.get_meta(pos)
-		if fields.channel then meta:set_string("channel",fields.channel) end
+		meta:set_string("channel", fields.channel)
 	end,
 	digiline = {
 		receptor = {},
