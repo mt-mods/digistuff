@@ -414,10 +414,6 @@ local function runcommand(pos, meta, command)
 		local p2 = vector.new(x2, y2, 0)
 		local length = 1 + vector.distance(p1, p2)
 		local dir = vector.direction(p1, p2)
-		if length <= 0 then
-			return
-		end
-
 		local point
 		for i = 0, length, 0.3 do
 			point = vector.add(p1, vector.multiply(dir, i))
