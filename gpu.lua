@@ -243,6 +243,14 @@ local function blend(src, dst, mode, transparent)
 	return src
 end
 	end
+
+local function read_buffer(meta, bufnum)
+	local buffer = minetest.deserialize(meta:get_string("buffer" .. bufnum))
+	return type(buffer) == "table" and buffer or nil
+end
+
+local function write_buffer(meta, bufnum, buffer)
+	meta:set_string("buffer" .. bufnum, minetest.serialize(buffer))
 end
 
 local function runcommand(pos, meta, command)
@@ -250,6 +258,7 @@ local function runcommand(pos, meta, command)
 	then
 		return
 	end
+		buffer = read_buffer(bufnum)
 	if command.command == "createbuffer" then
 		if type(command.buffer) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
 		local bufnum = math.floor(command.buffer)
@@ -261,16 +270,14 @@ local function runcommand(pos, meta, command)
 		if type(fillcolor) ~= "string" or string.len(fillcolor) > 7 or string.len(fillcolor) < 6 then fillcolor = "000000" end
 		if string.sub(fillcolor,1,1) == "#" then fillcolor = string.sub(fillcolor,2,7) end
 		if not tonumber(fillcolor,16) then fillcolor = "000000" end
-		local buffer = {}
-		buffer.xsize = xsize
-		buffer.ysize = ysize
-		for y=1,ysize,1 do
+		buffer = { xsize = xsize, ysize = ysize }
+		for y = 1, ysize do
 			buffer[y] = {}
 			for x = 1, xsize do
 				buffer[y][x] = fillcolor
 			end
 		end
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "send" then
 		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
 		local bufnum = math.floor(command.buffer)
@@ -349,7 +356,7 @@ local function runcommand(pos, meta, command)
 				buffer[y][x2] = edgecolor
 			end
 		end
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawline" then
 		if type(command.buffer) ~= "number" or type(command.x1) ~= "number" or type(command.y1) ~= "number" or type(command.x2) ~= "number" or type(command.y2) ~= "number" then return end
 		local bufnum = math.floor(command.buffer)
@@ -384,7 +391,7 @@ local function runcommand(pos, meta, command)
 				buffer[point.y][point.x] = color
 			end
 		end
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawpoint" then
 		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" then return end
 		local bufnum = math.floor(command.buffer)
@@ -402,7 +409,7 @@ local function runcommand(pos, meta, command)
 		if string.sub(color,1,1) == "#" then color = string.sub(color,2,7) end
 		if not tonumber(color,16) then color = "000000" end
 		buffer[y][x] = color
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "copy" then
 		if type(command.src) ~= "number" or type(command.dst) ~= "number" or type(command.srcx) ~= "number" or type(command.srcy) ~= "number" or type(command.dstx) ~= "number" or type(command.dsty) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
 		local src = math.floor(command.src)
@@ -439,7 +446,7 @@ local function runcommand(pos, meta, command)
 					px1, px2, command.mode, transparent)
 			end
 		end
-		meta:set_string("buffer"..dst,minetest.serialize(destbuffer))
+		write_buffer(meta, dst, destbuffer)
 	elseif command.command == "load" then
 		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" or type(command.data) ~= "table" then return end
 		local bufnum = math.floor(command.buffer)
@@ -469,7 +476,7 @@ local function runcommand(pos, meta, command)
 				end
 			end
 		end
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "text" then
 		if type(command.buffer) ~= "number" or type(command.x) ~= "number" or type(command.y) ~= "number" or type(command.text) ~= "string" or string.len(command.text) < 1 then return end
 		command.text = string.sub(command.text,1,16)
@@ -500,7 +507,7 @@ local function runcommand(pos, meta, command)
 				end
 			end
 		end
-		meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
+		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "sendpacked" then
 		if type(command.buffer) ~= "number" or type(command.channel) ~= "string" then return end
 		local bufnum = math.floor(command.buffer)
@@ -542,8 +549,8 @@ local function runcommand(pos, meta, command)
 					buffer[dsty][dstx] = unpackpixel(packeddata)
 				end
 			end
-			meta:set_string("buffer"..bufnum,minetest.serialize(buffer))
 		end
+		write_buffer(meta, bufnum, buffer)
 	end
 end
 
