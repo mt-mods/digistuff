@@ -244,6 +244,23 @@ local function blend(src, dst, mode, transparent)
 end
 	end
 
+local function validate_color(fillcolor, fallback)
+	fallback = fallback or "000000"
+	if type(fillcolor) ~= "string"
+		or string.len(fillcolor) > 7
+		or string.len(fillcolor) < 6
+	then
+		fillcolor = fallback
+	end
+	if string.sub(fillcolor, 1, 1) == "#" then
+		fillcolor = string.sub(fillcolor, 2, 7)
+	end
+	if not tonumber(fillcolor, 16) then
+		fillcolor = fallback
+	end
+	return fillcolor
+end
+
 local function read_buffer(meta, bufnum)
 	local buffer = minetest.deserialize(meta:get_string("buffer" .. bufnum))
 	return type(buffer) == "table" and buffer or nil
@@ -266,10 +283,7 @@ local function runcommand(pos, meta, command)
 		local xsize = math.min(64,math.floor(command.xsize))
 		local ysize = math.min(64,math.floor(command.ysize))
 		if xsize < 1 or ysize < 1 then return end
-		local fillcolor = command.fill
-		if type(fillcolor) ~= "string" or string.len(fillcolor) > 7 or string.len(fillcolor) < 6 then fillcolor = "000000" end
-		if string.sub(fillcolor,1,1) == "#" then fillcolor = string.sub(fillcolor,2,7) end
-		if not tonumber(fillcolor,16) then fillcolor = "000000" end
+		fillcolor = validate_color(command.fill)
 		buffer = { xsize = xsize, ysize = ysize }
 		for y = 1, ysize do
 			buffer[y] = {}
@@ -333,14 +347,8 @@ local function runcommand(pos, meta, command)
 		x2 = math.min(x2,buffer.xsize)
 		y2 = math.min(y2,buffer.ysize)
 		if x1 > x2 or y1 > y2 then return end
-		local fillcolor = command.fill
-		if type(fillcolor) ~= "string" or string.len(fillcolor) > 7 or string.len(fillcolor) < 6 then fillcolor = "000000" end
-		if string.sub(fillcolor,1,1) == "#" then fillcolor = string.sub(fillcolor,2,7) end
-		if not tonumber(fillcolor,16) then fillcolor = "000000" end
-		local edgecolor = command.edge
-		if type(edgecolor) ~= "string" or string.len(edgecolor) > 7 or string.len(edgecolor) < 6 then edgecolor = fillcolor end
-		if string.sub(edgecolor,1,1) == "#" then edgecolor = string.sub(edgecolor,2,7) end
-		if not tonumber(edgecolor,16) then edgecolor = fillcolor end
+		fillcolor = validate_color(command.fill)
+		edgecolor = validate_color(command.edge, fillcolor)
 		for y = y1, y2 do
 			for x = x1, x2 do
 				buffer[y][x] = fillcolor
@@ -372,11 +380,8 @@ local function runcommand(pos, meta, command)
 		if type(buffer) ~= "table" then return end
 		x2 = math.min(x2,buffer.xsize)
 		y2 = math.min(y2,buffer.ysize)
-		local color = command.color
-		if type(color) ~= "string" or string.len(color) > 7 or string.len(color) < 6 then color = "000000" end
-		if string.sub(color,1,1) == "#" then color = string.sub(color,2,7) end
-		if not tonumber(color,16) then color = "000000" end
 		if length > 0 then
+		color = validate_color(command.color)
 		local p1 = vector.new(x1, y1, 0)
 		local p2 = vector.new(x2, y2, 0)
 		local length = vector.distance(p1, p2)
@@ -404,11 +409,7 @@ local function runcommand(pos, meta, command)
 		buffer = minetest.deserialize(buffer)
 		if type(buffer) ~= "table" then return end
 		if x > buffer.xsize or y > buffer.ysize then return end
-		local color = command.color
-		if type(color) ~= "string" or string.len(color) > 7 or string.len(color) < 6 then color = "000000" end
-		if string.sub(color,1,1) == "#" then color = string.sub(color,2,7) end
-		if not tonumber(color,16) then color = "000000" end
-		buffer[y][x] = color
+		buffer[y1][x1] = validate_color(command.color)
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "copy" then
 		if type(command.src) ~= "number" or type(command.dst) ~= "number" or type(command.srcx) ~= "number" or type(command.srcy) ~= "number" or type(command.dstx) ~= "number" or type(command.dsty) ~= "number" or type(command.xsize) ~= "number" or type(command.ysize) ~= "number" then return end
@@ -433,10 +434,7 @@ local function runcommand(pos, meta, command)
 		if type(destbuffer) ~= "table" then return end
 		if srcx + xsize-1 > sourcebuffer.xsize or srcy + ysize-1 > sourcebuffer.ysize then return end
 		if dstx + xsize-1 > destbuffer.xsize or dsty + ysize-1 > destbuffer.ysize then return end
-		local transparent = command.transparent
-		if type(transparent) ~= "string" or string.len(transparent) > 7 or string.len(transparent) < 6 then transparent = "000000" end
-		if string.sub(transparent,1,1) == "#" then transparent = string.sub(transparent,2,7) end
-		if not tonumber(transparent,16) then transparent = "000000" end
+		local transparent = validate_color(command.transparent)
 		local px1, px2
 		for y = 0, ysize - 1 do
 			for x = 0, xsize - 1 do
@@ -490,14 +488,11 @@ local function runcommand(pos, meta, command)
 		buffer = minetest.deserialize(buffer)
 		if type(buffer) ~= "table" then return end
 		if x > buffer.xsize or y > buffer.ysize then return end
-		local color = command.color
-		if type(color) ~= "string" or string.len(color) > 7 or string.len(color) < 6 then color = "ff6600" end
-		if string.sub(color,1,1) == "#" then color = string.sub(color,2,7) end
-		if not tonumber(color,16) then color = "ff6600" end
 					local startx = x + (i*6-6)
 					if char[chary][charx] and y+chary-1 <= buffer.ysize and startx+charx-1 <= buffer.xsize then
 						local dstpx = buffer[y+chary-1][startx+charx-1]
 						buffer[y+chary-1][startx+charx-1] = blend(color,dstpx,command.mode,"")
+		color = validate_color(command.color, "ff6600")
 		local char, px
 		for i = 1, string.len(command.text) do
 			char = font[string.byte(string.sub(command.text, i, i))]
