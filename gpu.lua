@@ -609,7 +609,8 @@ minetest.register_node("digistuff:gpu", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	on_receive_fields = function(pos, formname, fields, sender)
-		-- TODO: add formname check
+		-- Below link to lua_api.md says: not to check formname
+		-- https://github.com/minetest/minetest/blob/2efd0996e61fe82a4922224fa8c039116281d345/doc/lua_api.md?plain=1#L9674
 		if not fields.channel then
 			return
 		end
