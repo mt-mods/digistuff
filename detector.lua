@@ -28,6 +28,15 @@ local function search_for_players(pos, send_empty)
 	return true
 end
 
+local function show_area(pos, node, player)
+	if not player or player:get_wielded_item():get_name() ~= "" then
+		-- Only show area when using an empty hand
+		return
+	end
+	local radius = minetest.get_meta(pos):get_int("radius")
+	vizlib.draw_sphere(pos, radius, {player = player})
+end
+
 minetest.register_node("digistuff:detector", {
 	description = "Digilines Player Detector",
 	tiles = {
@@ -63,6 +72,7 @@ minetest.register_node("digistuff:detector", {
 		end
 	end,
 	on_timer = search_for_players,
+	on_punch = minetest.get_modpath("vizlib") and show_area or nil,
 	digiline = {
 		receptor = {},
 		effector = {
