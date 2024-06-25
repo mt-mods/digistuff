@@ -120,7 +120,7 @@ local function process_command(meta, data, msg)
 			meta:set_string("focus", minetest.formspec_escape(msg.focus))
 		end
 		if type(msg.formspec) == "string" then
-			meta:set_string("formspec", msg.formspec)
+			meta:set_string("input_formspec", msg.formspec)
 		end
 	end
 
@@ -140,6 +140,10 @@ local function get_data(meta)
 end
 
 local function create_formspec(meta, data)
+	local input_formspec = meta:get_string("input_formspec") 
+	if input_formspec ~= nil and #input_formspec ~= 0 then
+		return input_formspec
+	end
 	local fs = "formspec_version[" .. formspec_version .. "]"
 	local width = tonumber(meta:get_string("width")) or 10
 	local height = tonumber(meta:get_string("height")) or 8

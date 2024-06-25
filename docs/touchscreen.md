@@ -22,7 +22,7 @@ digiline_send("touchscreen", {
 	width = 10,
 	height = 8,
 	focus = "<name>",
-	formspec = "something", -- advanced, allows complete control over the formspec, ignores almost all settings and elements you add
+	formspec = "", -- advanced, allows complete control over the formspec, ignores almost all settings and elements you add, by setting it to "" you disable it
 })
 ```
 
