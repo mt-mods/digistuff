@@ -1,7 +1,6 @@
-
 local unpack = table.unpack or unpack
 
-local formspec_elements = dofile(minetest.get_modpath("digistuff").."/formspec_elements.lua")
+local formspec_elements = dofile(minetest.get_modpath("digistuff") .. "/formspec_elements.lua")
 
 local formspec_version = 6
 
@@ -10,7 +9,7 @@ local function create_element_string(element, values)
 		return element(values)
 	end
 	local new_values = {}
-	for i,name in ipairs(element[2]) do
+	for i, name in ipairs(element[2]) do
 		local value = element[4][i](values[name], element[3][i])
 		table.insert(new_values, value)
 	end
@@ -21,11 +20,11 @@ local function modify_element_string(old, values)
 	local e = string.match(old, "^(.-)%[")
 	local element = formspec_elements[e]
 	if type(element) == "function" then
-		return old  -- No-op for special elements, as there is no format string
+		return old -- No-op for special elements, as there is no format string
 	end
-	local old_values = {string.match(old, element[5])}
+	local old_values = { string.match(old, element[5]) }
 	local new_values = {}
-	for i,name in ipairs(element[2]) do
+	for i, name in ipairs(element[2]) do
 		local value = element[4][i](values[name], old_values[i] or element[3][i])
 		table.insert(new_values, value)
 	end
@@ -35,13 +34,13 @@ end
 local function check_old_command(msg)
 	local cmd = msg.command
 	if cmd == "lock" then
-		return {command = "set", locked = true}
+		return { command = "set", locked = true }
 	end
 	if cmd == "unlock" then
-		return {command = "set", locked = false}
+		return { command = "set", locked = false }
 	end
 	if cmd == "realcoordinates" then
-		return {command = "set", real_coordinates = msg.enabled}
+		return { command = "set", real_coordinates = msg.enabled }
 	end
 	if string.match(cmd, "^add%a+") then
 		msg.element = string.sub(cmd, 4)
@@ -60,14 +59,12 @@ local function process_command(meta, data, msg)
 
 	if cmd == "clear" then
 		data = {}
-
 	elseif cmd == "add" then
 		local element = formspec_elements[msg.element]
 		if element then
 			local str = create_element_string(element, msg)
 			table.insert(data, str)
 		end
-
 	elseif cmd == "insert" then
 		local element = formspec_elements[msg.element]
 		local index = tonumber(msg.index)
@@ -75,7 +72,6 @@ local function process_command(meta, data, msg)
 			local str = create_element_string(element, msg)
 			table.insert(data, index, str)
 		end
-
 	elseif cmd == "replace" then
 		local element = formspec_elements[msg.element]
 		local index = tonumber(msg.index)
@@ -83,26 +79,22 @@ local function process_command(meta, data, msg)
 			local str = create_element_string(element, msg)
 			data[index] = str
 		end
-
 	elseif cmd == "modify" then
 		local index = tonumber(msg.index)
 		if index and data[index] then
 			local str = modify_element_string(data[index], msg)
 			data[index] = str
 		end
-
 	elseif cmd == "remove" then
 		local index = tonumber(msg.index)
 		if index and data[index] then
 			table.remove(data, index)
 		end
-
 	elseif cmd == "delete" then
 		local index = tonumber(msg.index)
 		if index and data[index] then
 			data[index] = nil
 		end
-
 	elseif cmd == "set" then
 		if msg.locked ~= nil then
 			meta:set_int("locked", msg.locked == false and 0 or 1)
@@ -127,6 +119,9 @@ local function process_command(meta, data, msg)
 		if type(msg.focus) == "string" then
 			meta:set_string("focus", minetest.formspec_escape(msg.focus))
 		end
+		if type(msg.formspec) == "string" then
+			meta:set_string("formspec", msg.formspec)
+		end
 	end
 
 	return data
@@ -136,7 +131,7 @@ local function get_data(meta)
 	local data = minetest.deserialize(meta:get("data"))
 	if data and type(data[1]) == "table" then
 		-- Old data, convert to new format
-		for i,v in ipairs(data) do
+		for i, v in ipairs(data) do
 			local element = formspec_elements[v.type]
 			data[i] = create_element_string(element, v)
 		end
@@ -145,23 +140,23 @@ local function get_data(meta)
 end
 
 local function create_formspec(meta, data)
-	local fs = "formspec_version["..formspec_version.."]"
+	local fs = "formspec_version[" .. formspec_version .. "]"
 	local width = tonumber(meta:get_string("width")) or 10
 	local height = tonumber(meta:get_string("height")) or 8
 	if meta:get_int("fixed_size") == 1 then
-		fs = fs.."size["..width..","..height..",true]"
+		fs = fs .. "size[" .. width .. "," .. height .. ",true]"
 	else
-		fs = fs.."size["..width..","..height.."]"
+		fs = fs .. "size[" .. width .. "," .. height .. "]"
 	end
 	if meta:get_int("no_prepend") == 1 then
-		fs = fs.."no_prepend[]"
+		fs = fs .. "no_prepend[]"
 	end
 	if not meta:get("real_coordinates") and not meta:get("realcoordinates") then
-		fs = fs.."real_coordinates[false]"
+		fs = fs .. "real_coordinates[false]"
 	end
 	local focus = meta:get("focus")
 	if focus then
-		fs = fs.."set_focus["..focus.."]"
+		fs = fs .. "set_focus[" .. focus .. "]"
 	end
 	local data_size = 0
 	for i in pairs(data) do
@@ -169,9 +164,9 @@ local function create_formspec(meta, data)
 			data_size = i
 		end
 	end
-	for i=1, data_size do
+	for i = 1, data_size do
 		if data[i] then
-			fs = fs..data[i]
+			fs = fs .. data[i]
 		end
 	end
 	return fs
@@ -200,7 +195,7 @@ local function on_digiline(pos, node, channel, msg)
 	if type(msg.command) == "string" then
 		data = process_command(meta, data, msg)
 	else
-		for _,v in ipairs(msg) do
+		for _, v in ipairs(msg) do
 			if type(v) == "table" and type(v.command) == "string" then
 				data = process_command(meta, data, v)
 			end
@@ -230,7 +225,7 @@ end
 
 minetest.register_node("digistuff:touchscreen", {
 	description = "Digilines Touchscreen",
-	groups = {cracky = 3},
+	groups = { cracky = 3 },
 	is_ground_content = false,
 	tiles = {
 		"digistuff_panel_back.png",
@@ -246,7 +241,7 @@ minetest.register_node("digistuff:touchscreen", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-			{-0.5, -0.5, 0.4, 0.5, 0.5, 0.5}
+			{ -0.5, -0.5, 0.4, 0.5, 0.5, 0.5 }
 		}
 	},
 	on_construct = function(pos)
@@ -271,9 +266,9 @@ minetest.register_node("digistuff:touchscreen", {
 minetest.register_craft({
 	output = "digistuff:touchscreen",
 	recipe = {
-		{"mesecons_luacontroller:luacontroller0000", "default:glass", "default:glass"},
-		{"default:glass", "digilines:lcd", "default:glass"},
-		{"default:glass", "default:glass", "default:glass"}
+		{ "mesecons_luacontroller:luacontroller0000", "default:glass", "default:glass" },
+		{ "default:glass",                            "digilines:lcd", "default:glass" },
+		{ "default:glass",                            "default:glass", "default:glass" }
 	}
 })
 

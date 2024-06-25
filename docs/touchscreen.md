@@ -22,6 +22,7 @@ digiline_send("touchscreen", {
 	width = 10,
 	height = 8,
 	focus = "<name>",
+	formspec = "something", -- advanced, allows complete control over the formspec, ignores almost all settings and elements you add
 })
 ```
 
@@ -149,6 +150,7 @@ The touchscreen uses formspec version 6 (Minetest 5.6.0+).
 - `tooltip_area` - Separate element for the alternate syntax of `tooltip`.
 - `table` - Combination of `table`, `tableoptions` and `tablecolumns`.
 - `item_grid` - Helper for displaying a grid of item buttons or images.
+- `formspec` - just allows you to straight up add formspecs
 
 ## Unsupported formspec elements
 
@@ -173,6 +175,16 @@ These elements, for design or other reasons, are not supported by the touchscree
 Example code for each of the supported formspec elements. For more details see the [Minetest Lua API](https://github.com/minetest/minetest/blob/master/doc/lua_api.md#elements).
 
 All values except `command` and `element` are optional, with default values being used when a value is nil or invalid.
+
+**`formspec`**
+
+```lua
+digiline_send("touchscreen", {
+	command = "add",
+	element = "formspec",
+	formspec = "label[0,0;Hello world]", -- different from the set command, this just adds the formspec, doesn't ignore anything
+})
+```
 
 **`tooltip`**
 
