@@ -15,7 +15,13 @@ minetest.register_tool("digistuff:channelcopier",{
 					local stackmeta = itemstack:get_meta()
 					stackmeta:set_string("channel",channel)
 					stackmeta:set_string("description", 'Digilines Channel Copier, set to: "' .. channel .. '"')
-					if player and player:get_player_name() then minetest.chat_send_player(player:get_player_name(),"Digilines channel copier set to "..minetest.colorize("#00FFFF",channel)..". Click another node to paste this channel there.") end
+					if player and player:get_player_name() then
+						minetest.chat_send_player(player:get_player_name(),
+							'Digilines channel copier set to "'
+							.. minetest.colorize("#00FFFF", channel)
+							.. '". Click another node to paste this channel there.'
+						)
+					end
 				end
 			else
 				if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then
