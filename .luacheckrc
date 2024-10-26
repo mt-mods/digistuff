@@ -9,8 +9,7 @@ globals = {
 
 read_globals = {
 	-- Builtin
-	table = {fields = {"copy"}},
-
+	"table.copy",
 	"vector",
 	"ItemStack",
 	"DIR_DELIM",
@@ -19,7 +18,8 @@ read_globals = {
 	"default",
 	"mesecon",
 	"screwdriver",
-	"QoS"
+	"QoS",
+	"vizlib",
 }
 
 exclude_files = {
