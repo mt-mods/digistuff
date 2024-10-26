@@ -540,12 +540,13 @@ local function runcommand(pos, meta, command)
 		if type(command.channel) ~= "string" then
 			return
 		end
-		local packeddata = ""
+		local packedtable = {}
 		for y = 1, buffer.ysize do
 			for x = 1, buffer.xsize do
-				packeddata = packeddata .. packpixel(buffer[y][x])
+				table.insert(packedtable, packpixel(buffer[y][x]))
 			end
 		end
+		local packeddata = table.concat(packedtable, "")
 		digilines.receptor_send(pos, digilines.rules.default,
 			command.channel, packeddata)
 	elseif command.command == "loadpacked" then
