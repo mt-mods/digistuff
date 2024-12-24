@@ -14,6 +14,12 @@ local players_on_controller = {}
 
 local last_seen_inputs = {}
 
+-- TODO: can we remove this function now?
+--       This does still clean up stray entities from crashes
+--       or possibly from older versions?
+--       Disconnecting from the game while attached also leaves stray
+--       entities. Maybe we better handle those instead of using this
+--       somewhat expensive search every time some player detaches.
 local function removeEntity(pos)
 	local entitiesNearby = minetest.get_objects_inside_radius(pos,0.5)
 	for _,i in pairs(entitiesNearby) do
@@ -74,13 +80,16 @@ local function release_player(pos)
 	local hash = minetest.hash_node_position(pos)
 	local name = players_on_controller[hash]
 	local player = minetest.get_player_by_name(name)
-	if player and player:get_properties()._is_gamecontroller then
+	if player then
 		local parent = player:get_attach()
-		if parent then
-			player:set_detach()
+		local lua_entity = parent and parent:get_luaentity()
+		if lua_entity and lua_entity._is_gamecontroller then
+			-- Remove also detaches
+			parent:remove()
 		end
 		minetest.chat_send_player(name, "You are now free to move.")
 	end
+	-- Shouldn't find any more entities now that above code is fixed
 	removeEntity(pos)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
@@ -214,8 +223,8 @@ minetest.register_entity("digistuff:controller_entity",{
 		physical = false,
 		collisionbox = {0,0,0,0,0,0,},
 		textures = {"digistuff_transparent.png",},
-		_is_gamecontroller = true,
 	},
+	_is_gamecontroller = true,
 })
 
 local acc_dtime = 0
