@@ -72,18 +72,19 @@ end
 
 local function release_player(pos)
 	local hash = minetest.hash_node_position(pos)
-	local player = minetest.get_player_by_name(players_on_controller[hash])
+	local name = players_on_controller[hash]
+	local player = minetest.get_player_by_name(name)
 	if player and player:get_properties()._is_gamecontroller then
 		local parent = player:get_attach()
 		if parent then
 			player:set_detach()
 		end
-		minetest.chat_send_player(players_on_controller[hash],"You are now free to move.")
+		minetest.chat_send_player(name, "You are now free to move.")
 	end
 	removeEntity(pos)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
-	last_seen_inputs[players_on_controller[hash]] = nil
+	last_seen_inputs[name] = nil
 	players_on_controller[hash] = nil
 	digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 end
