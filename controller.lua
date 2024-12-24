@@ -26,25 +26,26 @@ end
 local function process_inputs(pos)
 	local meta = minetest.get_meta(pos)
 	local hash = minetest.hash_node_position(pos)
+	local name = players_on_controller[hash]
+	local player = minetest.get_player_by_name(name)
 	if minetest.get_node(pos).name ~= "digistuff:controller_programmed" then
-	local player = minetest.get_player_by_name(players_on_controller[hash])
 		if player then
 			player:set_physics_override({speed = 1,jump = 1,})
 			player:set_pos(vector.add(pos,vector.new(0.25,0,0.25)))
-			minetest.chat_send_player(players_on_controller[hash],"You are now free to move.")
+			minetest.chat_send_player(name, "You are now free to move.")
 		end
-		last_seen_inputs[players_on_controller[hash]] = nil
+		last_seen_inputs[name] = nil
 		players_on_controller[hash] = nil
 		return
 	end
-	local name = players_on_controller[hash]
-	local player = minetest.get_player_by_name(name)
+
 	if not player then
 		digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 		minetest.get_meta(pos):set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 		players_on_controller[hash] = nil
 		return
 	end
+
 	local inputs = player:get_player_control()
 	inputs.pitch = player:get_look_vertical()
 	inputs.yaw = player:get_look_horizontal()
@@ -92,7 +93,8 @@ local function trap_player(pos,player)
 	local oldname = players_on_controller[hash]
 	local newname = player:get_player_name()
 	if oldname and minetest.get_player_by_name(oldname) then
-			minetest.chat_send_player(player:get_player_name(),"Controller is already occupied by "..oldname)
+			minetest.chat_send_player(newname,
+				"Controller is already occupied by " .. oldname)
 			return
 	else
 		players_on_controller[hash] = newname
