@@ -317,8 +317,9 @@ core.register_craft({
 	},
 })
 
-core.register_on_leaveplayer(function(player)
-	-- 'Release' player when leaving, kinda works
+-- Used when player dies or leaves the game while trapped.
+-- Kinda works indirectly thanks to removeEntity()
+local function force_release_player(player)
 	local player_name = player:get_player_name()
 	for hash, name in pairs(players_on_controller) do
 		if name == player_name then
@@ -326,5 +327,8 @@ core.register_on_leaveplayer(function(player)
 			break
 		end
 	end
-end)
+end
+
+core.register_on_dieplayer(force_release_player)
+core.register_on_leaveplayer(force_release_player)
 
