@@ -18,12 +18,11 @@ local players_on_controller = {}
 -- Format: { [player_name] = input_table }
 local last_seen_inputs = {}
 
--- TODO: can we remove this function now?
---       This does still clean up stray entities from crashes
---       or possibly from older versions?
---       Disconnecting from the game while attached also leaves stray
---       entities. Maybe we better handle those instead of using this
---       somewhat expensive search every time some player detaches.
+-- This cleans up stray entities from crashes or possibly from older versions?
+-- (But only if a player uses the controller at the same location.)
+-- This also clears entities of players logging off while trapped.
+-- Maybe we can eventually better handle stray entities
+-- instead of using this somewhat expensive search every time a player detaches.
 local function removeEntity(pos)
 	local entitiesNearby = core.get_objects_inside_radius(pos, 0.5)
 	local l_ent
@@ -317,4 +316,15 @@ core.register_craft({
 		{ "", "digistuff:button", "" },
 	},
 })
+
+core.register_on_leaveplayer(function(player)
+	-- 'Release' player when leaving, kinda works
+	local player_name = player:get_player_name()
+	for hash, name in pairs(players_on_controller) do
+		if name == player_name then
+			release_player(core.get_position_from_hash(hash))
+			break
+		end
+	end
+end)
 
