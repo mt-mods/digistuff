@@ -107,33 +107,33 @@ local function release_player(pos)
 		meta:get_string("channel"), "player_left")
 end
 
+-- Assumes that no other player is trapped at this position
 local function trap_player(pos, player)
 	local hash = core.hash_node_position(pos)
-	local old_name = players_on_controller[hash]
-	local new_name = player:get_player_name()
-	if old_name and core.get_player_by_name(old_name) then
-		core.chat_send_player(new_name,
-			"Controller is already occupied by " .. old_name)
-		return
-
-	else
-		players_on_controller[hash] = new_name
-		local entity = core.add_entity(pos, "digistuff:controller_entity")
-		player:set_attach(entity, "", vector.new(0, 0, 0), vector.new(0, 0, 0))
-		core.chat_send_player(new_name,
-			"You are now using a digilines game controller. " ..
-			"Right-click the controller again to be released.")
-		local meta = core.get_meta(pos)
-		meta:set_string("infotext",
-			"Digilines Game Controller\nIn use by: " .. new_name)
-		process_inputs(pos)
-	end
+	local name = player:get_player_name()
+	players_on_controller[hash] = name
+	local entity = core.add_entity(pos, "digistuff:controller_entity")
+	player:set_attach(entity, "", vector.new(0, 0, 0), vector.new(0, 0, 0))
+	core.chat_send_player(name,
+		"You are now using a digilines game controller. " ..
+		"Right-click the controller again to be released.")
+	core.get_meta(pos):set_string("infotext",
+		"Digilines Game Controller\nIn use by: " .. name)
+	process_inputs(pos)
 end
 
 local function toggle_trap_player(pos, player)
-	if players_on_controller[core.hash_node_position(pos)] then
+	local new_name = player:get_player_name()
+	local old_name = players_on_controller[core.hash_node_position(pos)]
+	if old_name == new_name then
+		-- In use by same player -> release
 		release_player(pos)
+	elseif old_name then
+		-- In use by another player -> refuse
+		core.chat_send_player(new_name,
+			"Controller is already occupied by " .. old_name)
 	else
+		-- Not in use -> trap
 		trap_player(pos, player)
 	end
 end
