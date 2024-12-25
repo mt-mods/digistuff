@@ -308,15 +308,6 @@ core.register_lbm({
 	end,
 })
 
-core.register_craft({
-	output = "digistuff:controller",
-	recipe = {
-		{ "", "digistuff:button", "" },
-		{ "digistuff:button", "group:wool", "digistuff:button" },
-		{ "", "digistuff:button", "" },
-	},
-})
-
 -- Used when player dies or leaves the game while trapped.
 -- Kinda works indirectly thanks to removeEntity()
 local function force_release_player(player)
@@ -331,4 +322,13 @@ end
 
 core.register_on_dieplayer(force_release_player)
 core.register_on_leaveplayer(force_release_player)
+
+core.register_craft({
+	output = "digistuff:controller",
+	recipe = {
+		{ "", "digistuff:button", "" },
+		{ "digistuff:button", "group:wool", "digistuff:button" },
+		{ "", "digistuff:button", "" },
+	},
+})
 
