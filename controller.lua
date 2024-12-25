@@ -206,20 +206,13 @@ minetest.register_node("digistuff:controller_programmed", {
 			return
 		end
 
-		local cleanup = false
 		local player = core.get_player_by_name(name)
-		if not player then
-			-- Player has logged off -> cleanup
-			cleanup = true
-		end
 		local parent = player and player:get_attach()
 		local lua_entity = parent and parent:get_luaentity()
 		if not (lua_entity and lua_entity._is_gamecontroller) then
+			-- Player has logged off -> cleanup
 			-- Player is not attached or failed to get lua entity
 			-- or player is now attached to some other entity -> cleanup
-			cleanup = true
-		end
-		if cleanup then
 			removeEntity(from_pos)
 			players_on_controller[hashed_from_pos] = nil
 			last_seen_inputs[name] = nil
