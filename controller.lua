@@ -1,3 +1,6 @@
+
+local FR2D = -180 / math.pi
+
 local S, FS = digistuff.S, digistuff.FS
 local sFreeToMove = S("You are now free to move.")
 local sReady = S("Digilines Game Controller Ready\n(right-click to use)")
@@ -83,6 +86,9 @@ local function process_inputs(pos)
 		inputs_copy.look_vector = player:get_look_dir()
 		inputs_copy.name = name
 		digilines.receptor_send(pos, digiline_rules, channel, inputs_copy)
+		local entity, bone, position = player:get_attach()
+		player:set_attach(entity, bone, position,
+			vector.new(0, inputs.yaw * FR2D, 0))
 	end
 end
 
@@ -115,7 +121,8 @@ local function trap_player(pos, player)
 	local name = player:get_player_name()
 	players_on_controller[hash] = name
 	local entity = core.add_entity(pos, "digistuff:controller_entity")
-	player:set_attach(entity, "", vector.new(0, 0, 0), vector.new(0, 0, 0))
+	player:set_attach(entity, "", vector.zero(),
+		vector.new(0, player:get_look_horizontal() * FR2D, 0))
 	core.chat_send_player(name,
 		S("You are now using a digilines game controller. " ..
 		"Right-click the controller again to be released."))
