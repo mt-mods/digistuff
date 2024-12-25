@@ -1,3 +1,7 @@
+local S, FS = digistuff.S, digistuff.FS
+local sFreeToMove = S("You are now free to move.")
+local sReady = S("Digilines Game Controller Ready\n(right-click to use)")
+
 local digiline_rules = {
 	{ x =  1, y =  0, z =  0 },
 	{ x = -1, y =  0, z =  0 },
@@ -42,7 +46,7 @@ local function process_inputs(pos)
 		if player then
 			player:set_physics_override({ speed = 1, jump = 1 })
 			player:set_pos(vector.add(pos, vector.new(0.25, 0, 0.25)))
-			core.chat_send_player(name, "You are now free to move.")
+			core.chat_send_player(name, sFreeToMove)
 		end
 		last_seen_inputs[name] = nil
 		players_on_controller[hash] = nil
@@ -53,8 +57,7 @@ local function process_inputs(pos)
 	local channel = meta:get_string("channel")
 	if not player then
 		digilines.receptor_send(pos, digiline_rules, channel, "player_left")
-		meta:set_string("infotext",
-			"Digilines Game Controller Ready\n(right-click to use)")
+		meta:set_string("infotext", sReady)
 		last_seen_inputs[name] = nil
 		players_on_controller[hash] = nil
 		return
@@ -94,13 +97,12 @@ local function release_player(pos)
 			-- Remove also detaches
 			parent:remove()
 		end
-		core.chat_send_player(name, "You are now free to move.")
+		core.chat_send_player(name, sFreeToMove)
 	end
 	-- Shouldn't find any more entities now that above code is fixed
 	removeEntity(pos)
 	local meta = core.get_meta(pos)
-	meta:set_string("infotext",
-		"Digilines Game Controller Ready\n(right-click to use)")
+	meta:set_string("infotext", sReady)
 	last_seen_inputs[name] = nil
 	players_on_controller[hash] = nil
 	digilines.receptor_send(pos, digiline_rules,
@@ -115,10 +117,10 @@ local function trap_player(pos, player)
 	local entity = core.add_entity(pos, "digistuff:controller_entity")
 	player:set_attach(entity, "", vector.new(0, 0, 0), vector.new(0, 0, 0))
 	core.chat_send_player(name,
-		"You are now using a digilines game controller. " ..
-		"Right-click the controller again to be released.")
+		S("You are now using a digilines game controller. " ..
+		"Right-click the controller again to be released."))
 	core.get_meta(pos):set_string("infotext",
-		"Digilines Game Controller\nIn use by: " .. name)
+		S("Digilines Game Controller\nIn use by: @1", name))
 	process_inputs(pos)
 end
 
@@ -131,7 +133,7 @@ local function toggle_trap_player(pos, player)
 	elseif old_name then
 		-- In use by another player -> refuse
 		core.chat_send_player(new_name,
-			"Controller is already occupied by " .. old_name)
+			S("Controller is already occupied by @1", old_name))
 	else
 		-- Not in use -> trap
 		trap_player(pos, player)
@@ -139,7 +141,7 @@ local function toggle_trap_player(pos, player)
 end
 
 core.register_node("digistuff:controller", {
-	description = "Digilines Game Controller",
+	description = S("Digilines Game Controller"),
 	tiles = {
 		"digistuff_controller_top.png",
 		"digistuff_controller_sides.png",
@@ -156,15 +158,15 @@ core.register_node("digistuff:controller", {
 	_digistuff_channelcopier_onset = function(pos)
 		local meta = core.get_meta(pos)
 		meta:set_string("formspec", "")
-		meta:set_string("infotext",
-			"Digilines Game Controller Ready\n(right-click to use)")
+		meta:set_string("infotext", sReady)
 		core.swap_node(pos, { name = "digistuff:controller_programmed" })
 	end,
 	groups = { cracky = 1 },
 	is_ground_content = false,
 	on_construct = function(pos)
 		local meta = core.get_meta(pos)
-		meta:set_string("formspec", "field[channel;Channel;${channel}")
+		meta:set_string("formspec",
+			"field[channel;" .. FS("Channel") .. ";${channel}")
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		local name = sender:get_player_name()
@@ -178,8 +180,7 @@ core.register_node("digistuff:controller", {
 		if fields.channel then
 			meta:set_string("channel", fields.channel)
 			meta:set_string("formspec", "")
-			meta:set_string("infotext",
-				"Digilines Game Controller Ready\n(right-click to use)")
+			meta:set_string("infotext", sReady)
 			core.swap_node(pos, { name = "digistuff:controller_programmed" })
 		end
 	end,
@@ -302,8 +303,7 @@ core.register_lbm({
 			local meta = core.get_meta(pos)
 			digilines.receptor_send(pos, digiline_rules,
 				meta:get_string("channel"), "player_left")
-			meta:set_string("infotext",
-				"Digilines Game Controller Ready\n(right-click to use)")
+			meta:set_string("infotext", sReady)
 		end
 	end,
 })
