@@ -215,6 +215,10 @@ core.register_node("digistuff:controller_programmed", {
 			toggle_trap_player(pos, clicker)
 		end
 	end,
+	can_dig = function(pos)
+		-- Prevent digging of occupied controllers.
+		return not players_on_controller[core.hash_node_position(pos)]
+	end,
 	on_movenode = function(from_pos, to_pos)
 		local hashed_from_pos = core.hash_node_position(from_pos)
 		local hashed_to_pos = core.hash_node_position(to_pos)
