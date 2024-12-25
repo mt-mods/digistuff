@@ -1,6 +1,6 @@
 unused_args = false
 max_line_length = 300  -- TODO: fix line lengths
-std = "minetest+max"
+std = "luanti+max"
 
 globals = {
 	"digistuff",
