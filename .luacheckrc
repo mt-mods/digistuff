@@ -3,7 +3,6 @@ max_line_length = 300  -- TODO: fix line lengths
 --std = "luanti+max"
 
 globals = {
-    "minetest",
 	"digistuff",
 	"digilines",
 }
@@ -11,8 +10,8 @@ globals = {
 read_globals = {
 	-- Builtin
 	"core",
+	"minetest",
 	table = {fields = {"copy"}},
-
 	"vector",
 	"ItemStack",
 	"DIR_DELIM",
@@ -28,3 +27,4 @@ read_globals = {
 exclude_files = {
 	"**/spec/**",
 }
+
