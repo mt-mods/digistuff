@@ -1,5 +1,6 @@
 unused_args = false
 max_line_length = 300  -- TODO: fix line lengths
+--std = "luanti+max"
 
 globals = {
     "minetest",
@@ -9,7 +10,9 @@ globals = {
 
 read_globals = {
 	-- Builtin
-	"table.copy",
+	"core",
+	table = {fields = {"copy"}},
+
 	"vector",
 	"ItemStack",
 	"DIR_DELIM",

@@ -14,6 +14,12 @@ local players_on_controller = {}
 
 local last_seen_inputs = {}
 
+-- TODO: can we remove this function now?
+--       This does still clean up stray entities from crashes
+--       or possibly from older versions?
+--       Disconnecting from the game while attached also leaves stray
+--       entities. Maybe we better handle those instead of using this
+--       somewhat expensive search every time some player detaches.
 local function removeEntity(pos)
 	local entitiesNearby = minetest.get_objects_inside_radius(pos,0.5)
 	for _,i in pairs(entitiesNearby) do
@@ -26,25 +32,26 @@ end
 local function process_inputs(pos)
 	local meta = minetest.get_meta(pos)
 	local hash = minetest.hash_node_position(pos)
+	local name = players_on_controller[hash]
+	local player = minetest.get_player_by_name(name)
 	if minetest.get_node(pos).name ~= "digistuff:controller_programmed" then
-	local player = minetest.get_player_by_name(players_on_controller[hash])
 		if player then
 			player:set_physics_override({speed = 1,jump = 1,})
 			player:set_pos(vector.add(pos,vector.new(0.25,0,0.25)))
-			minetest.chat_send_player(players_on_controller[hash],"You are now free to move.")
+			minetest.chat_send_player(name, "You are now free to move.")
 		end
-		last_seen_inputs[players_on_controller[hash]] = nil
+		last_seen_inputs[name] = nil
 		players_on_controller[hash] = nil
 		return
 	end
-	local name = players_on_controller[hash]
-	local player = minetest.get_player_by_name(name)
+
 	if not player then
 		digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 		minetest.get_meta(pos):set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
 		players_on_controller[hash] = nil
 		return
 	end
+
 	local inputs = player:get_player_control()
 	inputs.pitch = player:get_look_vertical()
 	inputs.yaw = player:get_look_horizontal()
@@ -71,18 +78,22 @@ end
 
 local function release_player(pos)
 	local hash = minetest.hash_node_position(pos)
-	local player = minetest.get_player_by_name(players_on_controller[hash])
-	if player and player:get_properties()._is_gamecontroller then
+	local name = players_on_controller[hash]
+	local player = minetest.get_player_by_name(name)
+	if player then
 		local parent = player:get_attach()
-		if parent then
-			player:set_detach()
+		local lua_entity = parent and parent:get_luaentity()
+		if lua_entity and lua_entity._is_gamecontroller then
+			-- Remove also detaches
+			parent:remove()
 		end
-		minetest.chat_send_player(players_on_controller[hash],"You are now free to move.")
+		minetest.chat_send_player(name, "You are now free to move.")
 	end
+	-- Shouldn't find any more entities now that above code is fixed
 	removeEntity(pos)
 	local meta = minetest.get_meta(pos)
 	meta:set_string("infotext","Digilines Game Controller Ready\n(right-click to use)")
-	last_seen_inputs[players_on_controller[hash]] = nil
+	last_seen_inputs[name] = nil
 	players_on_controller[hash] = nil
 	digilines.receptor_send(pos,digiline_rules,meta:get_string("channel"),"player_left")
 end
@@ -92,7 +103,8 @@ local function trap_player(pos,player)
 	local oldname = players_on_controller[hash]
 	local newname = player:get_player_name()
 	if oldname and minetest.get_player_by_name(oldname) then
-			minetest.chat_send_player(player:get_player_name(),"Controller is already occupied by "..oldname)
+			minetest.chat_send_player(newname,
+				"Controller is already occupied by " .. oldname)
 			return
 	else
 		players_on_controller[hash] = newname
@@ -185,6 +197,36 @@ minetest.register_node("digistuff:controller_programmed", {
 			toggle_trap_player(pos,clicker)
 		end
 	end,
+	on_movenode = function(from_pos, to_pos)
+		local hashed_from_pos = core.hash_node_position(from_pos)
+		local hashed_to_pos = core.hash_node_position(to_pos)
+		local name = players_on_controller[hashed_from_pos]
+		if not name then
+			-- No player attached to this controller.
+			return
+		end
+
+		local player = core.get_player_by_name(name)
+		local parent = player and player:get_attach()
+		local lua_entity = parent and parent:get_luaentity()
+		if not (lua_entity and lua_entity._is_gamecontroller) then
+			-- Player has logged off -> cleanup
+			-- Player is not attached or failed to get lua entity
+			-- or player is now attached to some other entity -> cleanup
+			removeEntity(from_pos)
+			players_on_controller[hashed_from_pos] = nil
+			last_seen_inputs[name] = nil
+			return
+		end
+
+		-- Move entity to new location -> player moves along
+		-- Jumpdrive will then also attempt to move player and
+		-- delete entity at from_pos.
+		parent:set_pos(to_pos)
+		-- Update cache to new position
+		players_on_controller[hashed_to_pos] = name
+		players_on_controller[hashed_from_pos] = nil
+	end,
 	digiline = {
 		receptor = {},
 		wire = {
@@ -211,8 +253,8 @@ minetest.register_entity("digistuff:controller_entity",{
 		physical = false,
 		collisionbox = {0,0,0,0,0,0,},
 		textures = {"digistuff_transparent.png",},
-		_is_gamecontroller = true,
 	},
+	_is_gamecontroller = true,
 })
 
 local acc_dtime = 0
