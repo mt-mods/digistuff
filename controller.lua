@@ -338,4 +338,3 @@ core.register_craft({
 		{ "", "digistuff:button", "" },
 	},
 })
-
