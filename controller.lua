@@ -87,6 +87,11 @@ local function process_inputs(pos)
 		inputs_copy.name = name
 		digilines.receptor_send(pos, digiline_rules, channel, inputs_copy)
 		local entity, bone, position = player:get_attach()
+		if not entity then
+			return
+		end
+
+		-- Update direction player is looking.
 		player:set_attach(entity, bone, position,
 			vector.new(0, inputs.yaw * FR2D, 0))
 	end
