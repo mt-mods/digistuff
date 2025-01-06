@@ -41,6 +41,30 @@ local function removeEntity(pos)
 	end
 end
 
+
+local function release_player(pos)
+	local hash = core.hash_node_position(pos)
+	local name = players_on_controller[hash]
+	local player = core.get_player_by_name(name)
+	if player then
+		local parent = player:get_attach()
+		local lua_entity = parent and parent:get_luaentity()
+		if lua_entity and lua_entity._is_gamecontroller then
+			-- Remove also detaches
+			parent:remove()
+		end
+		core.chat_send_player(name, sFreeToMove)
+	end
+	-- Shouldn't find any more entities now that above code is fixed
+	removeEntity(pos)
+	local meta = core.get_meta(pos)
+	meta:set_string("infotext", sReady)
+	last_seen_inputs[name] = nil
+	players_on_controller[hash] = nil
+	digilines.receptor_send(pos, digiline_rules,
+		meta:get_string("channel"), "player_left")
+end
+
 local function process_inputs(pos)
 	local hash = core.hash_node_position(pos)
 	local name = players_on_controller[hash]
@@ -88,6 +112,7 @@ local function process_inputs(pos)
 		digilines.receptor_send(pos, digiline_rules, channel, inputs_copy)
 		local entity, bone, position = player:get_attach()
 		if not entity then
+			release_player(pos)
 			return
 		end
 
@@ -95,29 +120,6 @@ local function process_inputs(pos)
 		player:set_attach(entity, bone, position,
 			vector.new(0, inputs.yaw * FR2D, 0))
 	end
-end
-
-local function release_player(pos)
-	local hash = core.hash_node_position(pos)
-	local name = players_on_controller[hash]
-	local player = core.get_player_by_name(name)
-	if player then
-		local parent = player:get_attach()
-		local lua_entity = parent and parent:get_luaentity()
-		if lua_entity and lua_entity._is_gamecontroller then
-			-- Remove also detaches
-			parent:remove()
-		end
-		core.chat_send_player(name, sFreeToMove)
-	end
-	-- Shouldn't find any more entities now that above code is fixed
-	removeEntity(pos)
-	local meta = core.get_meta(pos)
-	meta:set_string("infotext", sReady)
-	last_seen_inputs[name] = nil
-	players_on_controller[hash] = nil
-	digilines.receptor_send(pos, digiline_rules,
-		meta:get_string("channel"), "player_left")
 end
 
 -- Assumes that no other player is trapped at this position
