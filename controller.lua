@@ -41,7 +41,6 @@ local function removeEntity(pos)
 	end
 end
 
-
 local function release_player(pos)
 	local hash = core.hash_node_position(pos)
 	local name = players_on_controller[hash]
