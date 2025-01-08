@@ -1,4 +1,7 @@
-digistuff = {}
+digistuff = {
+	S = core.get_translator("digistuff"),
+	FS = function(...) return core.formspec_escape(digistuff.S(...)) end,
+}
 
 local components = {
 	"internal",

@@ -1,16 +1,17 @@
 unused_args = false
 max_line_length = 300  -- TODO: fix line lengths
+--std = "luanti+max"
 
 globals = {
-    "minetest",
 	"digistuff",
 	"digilines",
 }
 
 read_globals = {
 	-- Builtin
+	"core",
+	"minetest",
 	table = {fields = {"copy"}},
-
 	"vector",
 	"ItemStack",
 	"DIR_DELIM",
@@ -19,9 +20,11 @@ read_globals = {
 	"default",
 	"mesecon",
 	"screwdriver",
-	"QoS"
+	"QoS",
+	"vizlib",
 }
 
 exclude_files = {
 	"**/spec/**",
 }
+

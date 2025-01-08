@@ -11,11 +11,17 @@ minetest.register_tool("digistuff:channelcopier",{
 		if minetest.registered_nodes[node.name]._digistuff_channelcopier_fieldname then
 			if player:get_player_control().sneak then
 				local channel = minetest.get_meta(pointed.under):get_string(minetest.registered_nodes[node.name]._digistuff_channelcopier_fieldname)
-				if type(channel) == "string" and channel ~= "" then
+				if type(channel) == "string" then
 					local stackmeta = itemstack:get_meta()
 					stackmeta:set_string("channel",channel)
-					stackmeta:set_string("description","Digilines Channel Copier, set to: "..channel)
-					if player and player:get_player_name() then minetest.chat_send_player(player:get_player_name(),"Digilines channel copier set to "..minetest.colorize("#00FFFF",channel)..". Click another node to paste this channel there.") end
+					stackmeta:set_string("description", 'Digilines Channel Copier, set to: "' .. channel .. '"')
+					if player and player:get_player_name() then
+						minetest.chat_send_player(player:get_player_name(),
+							'Digilines channel copier set to "'
+							.. minetest.colorize("#00FFFF", channel)
+							.. '". Click another node to paste this channel there.'
+						)
+					end
 				end
 			else
 				if minetest.is_protected(pos,name) and not minetest.check_player_privs(name,{protection_bypass=true}) then
@@ -24,20 +30,20 @@ minetest.register_tool("digistuff:channelcopier",{
 				end
 				if minetest.registered_nodes[node.name]._digistuff_channelcopier_fieldname then
 					local channel = itemstack:get_meta():get_string("channel")
-					if type(channel) ~= "string" or channel == "" then
+					if type(channel) ~= "string" then
 						minetest.chat_send_player(name,minetest.colorize("#FF5555","Error:").." No channel has been set yet. Sneak-click to copy one.")
 						return itemstack
 					end
 					local oldchannel = minetest.get_meta(pos):get_string(minetest.registered_nodes[node.name]._digistuff_channelcopier_fieldname)
 					minetest.get_meta(pos):set_string(minetest.registered_nodes[node.name]._digistuff_channelcopier_fieldname,channel)
-					if type(oldchannel) == "string" and oldchannel ~= "" then
+					if type(oldchannel) == "string" then
 						if channel == oldchannel then
-							minetest.chat_send_player(name,"Channel of target node is already "..minetest.colorize("#00FFFF",oldchannel)..".")
+							minetest.chat_send_player(name, 'Channel of target node is already "' .. minetest.colorize("#00FFFF", oldchannel) .. '".')
 						else
-							minetest.chat_send_player(name,string.format("Channel of target node changed from %s to %s.",minetest.colorize("#00FFFF",oldchannel),minetest.colorize("#00FFFF",channel)))
+							minetest.chat_send_player(name, string.format('Channel of target node changed from "%s" to "%s".', minetest.colorize("#00FFFF", oldchannel), minetest.colorize("#00FFFF", channel)))
 						end
 					else
-						minetest.chat_send_player(name,"Channel of target node set to "..minetest.colorize("#00FFFF",channel)..".")
+						minetest.chat_send_player(name, 'Channel of target node set to "' .. minetest.colorize("#00FFFF", channel) .. '".')
 					end
 					if type(minetest.registered_nodes[node.name]._digistuff_channelcopier_onset) == "function" then
 						minetest.registered_nodes[node.name]._digistuff_channelcopier_onset(pos,node,player,channel,oldchannel)

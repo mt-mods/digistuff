@@ -13,8 +13,7 @@ local function get_formspec(enabled)
 	end
 end
 
-local function search_for_players(pos, send_empty)
-	local meta = minetest.get_meta(pos)
+local function get_search_spot(pos, meta)
 	local distance = meta:get_int("distance")
 	local dir = minetest.facedir_to_dir(minetest.get_node(pos).param2)
 	local spot = vector.add(pos, vector.multiply(dir, -distance))
@@ -24,8 +23,15 @@ local function search_for_players(pos, send_empty)
 		node = minetest.get_node(spot)
 	end
 	if node.name == "air" or node.name == "ignore" then
-		return true
+		-- Default to directly in front of camera if ground is not found.
+		spot.y = pos.y
 	end
+	return spot
+end
+
+local function search_for_players(pos, send_empty)
+	local meta = minetest.get_meta(pos)
+	local spot = get_search_spot(pos, meta)
 	local radius = meta:get_int("radius")
 	local found = {}
 	for _,player in pairs(minetest.get_connected_players()) do
@@ -38,6 +44,17 @@ local function search_for_players(pos, send_empty)
 		digilines.receptor_send(pos, digilines.rules.default, channel, found)
 	end
 	return true
+end
+
+local function show_area(pos, node, player)
+	if not player or player:get_wielded_item():get_name() ~= "" then
+		-- Only show area when using an empty hand
+		return
+	end
+	local meta = minetest.get_meta(pos)
+	local spot = get_search_spot(pos, meta)
+	local radius = meta:get_int("radius")
+	vizlib.draw_sphere(spot, radius, {player = player})
 end
 
 minetest.register_node("digistuff:camera", {
@@ -102,6 +119,7 @@ minetest.register_node("digistuff:camera", {
 		end
 	end,
 	on_timer = search_for_players,
+	on_punch = minetest.get_modpath("vizlib") and show_area or nil,
 	digiline = {
 		receptor = {},
 		effector = {
