@@ -238,7 +238,7 @@ local function blend(src, dst, mode, transparent)
 	elseif op == "torgb"
 		or op == "hsvtorgb"
 	then
-		return string.format("%02X%02X%02X",hsvtorgb(srcr, srcg, srcb))
+		return string.format("%02X%02X%02X", hsvtorgb(srcr, srcg, srcb))
 	end
 
 	return src
@@ -310,19 +310,20 @@ local function write_buffer(meta, bufnum, buffer)
 end
 
 local function runcommand(pos, meta, command)
-	if type(command) ~= "table"
-		or type(command.buffer) ~= "number"
-	then
+	if type(command) ~= "table" then
 		return
 	end
 
-	local bufnum = validate_buffer_address(command.buffer)
-	if not bufnum then
-		return
+	local bufnum
+	if command.command ~= "copy" then
+		bufnum = validate_buffer_address(command.buffer)
+		if not bufnum then
+			return
+		end
 	end
 
 	local buffer
-	if command.command ~= "createbuffer" then
+	if command.command ~= "createbuffer" and command.command ~= "copy" then
 		buffer = read_buffer(meta, bufnum)
 		if not buffer then
 			return
@@ -443,16 +444,6 @@ local function runcommand(pos, meta, command)
 			return
 		end
 
-		x1, y1 = validate_area(buffer,
-			command.srcx, command.srcy, command.srcx, command.srcy)
-
-		x2, y2 = validate_area(buffer,
-			command.dstx, command.dsty, command.dstx, command.dsty)
-
-		if not (x1 and x2) then
-			return
-		end
-
 		local src = validate_buffer_address(command.src)
 		local dst = validate_buffer_address(command.dst)
 		if not (src and dst) then
@@ -462,6 +453,16 @@ local function runcommand(pos, meta, command)
 		local sourcebuffer = read_buffer(meta, src)
 		local destbuffer = read_buffer(meta, dst)
 		if not (sourcebuffer and destbuffer) then
+			return
+		end
+
+		x1, y1 = validate_area(sourcebuffer,
+			command.srcx, command.srcy, command.srcx, command.srcy)
+
+		x2, y2 = validate_area(destbuffer,
+			command.dstx, command.dsty, command.dstx, command.dsty)
+
+		if not (x1 and x2) then
 			return
 		end
 
@@ -664,3 +665,4 @@ minetest.register_craft({
 		{ "dye:red", "dye:green", "dye:blue" }
 	}
 })
+
