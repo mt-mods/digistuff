@@ -244,7 +244,7 @@ local function blend(src, dst, mode, transparent)
 	return src
 end
 
-local function validate_area(buffer, x1, y1, x2, y2)
+local function validate_area(buffer, x1, y1, x2, y2, keep_order)
 	if not (buffer and buffer.xsize and buffer.ysize)
 		or type(x1) ~= "number"
 		or type(x2) ~= "number"
@@ -258,6 +258,11 @@ local function validate_area(buffer, x1, y1, x2, y2)
 	x2 = math.max(1, math.min(buffer.xsize, math.floor(x2)))
 	y1 = math.max(1, math.min(buffer.ysize, math.floor(y1)))
 	y2 = math.max(1, math.min(buffer.ysize, math.floor(y2)))
+
+	if keep_order then
+		return x1, y1, x2, y2
+	end
+
 	if x1 > x2 then
 		x1, x2 = x2, x1
 	end
@@ -404,7 +409,7 @@ local function runcommand(pos, meta, command)
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawline" then
 		x1, y1, x2, y2 = validate_area(buffer,
-			command.x1, command.y1, command.x2, command.y2)
+			command.x1, command.y1, command.x2, command.y2, true)
 
 		if not x1 then
 			return
