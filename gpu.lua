@@ -421,11 +421,16 @@ local function runcommand(pos, meta, command)
 		local length = 1 + vector.distance(p1, p2)
 		local dir = vector.direction(p1, p2)
 		local point
-		-- not the most eficient process for horizontal, vertical
-		-- or 45 degree lines
+		-- Not the most efficient process for horizontal, vertical
+		-- or 45 degree lines.
 		for i = 0, length, 0.3 do
 			point = vector.add(p1, vector.multiply(dir, i))
 			point = vector.floor(point)
+			-- Underflow check needed so we don't need more complicated code to
+			-- calculate dir in negative direction. Overflows are already capped
+			-- by initiation.
+			if 1 > point.x then point.x = 1 end
+			if 1 > point.y then point.y = 1 end
 			if command.antialias then
 				buffer[point.y][point.x] = blend(
 					buffer[point.y][point.x], color, "average")
