@@ -238,13 +238,13 @@ local function blend(src, dst, mode, transparent)
 	elseif op == "torgb"
 		or op == "hsvtorgb"
 	then
-		return string.format("%02X%02X%02X",hsvtorgb(srcr, srcg, srcb))
+		return string.format("%02X%02X%02X", hsvtorgb(srcr, srcg, srcb))
 	end
 
 	return src
 end
 
-local function validate_area(buffer, x1, y1, x2, y2)
+local function validate_area(buffer, x1, y1, x2, y2, keep_order)
 	if not (buffer and buffer.xsize and buffer.ysize)
 		or type(x1) ~= "number"
 		or type(x2) ~= "number"
@@ -258,6 +258,11 @@ local function validate_area(buffer, x1, y1, x2, y2)
 	x2 = math.max(1, math.min(buffer.xsize, math.floor(x2)))
 	y1 = math.max(1, math.min(buffer.ysize, math.floor(y1)))
 	y2 = math.max(1, math.min(buffer.ysize, math.floor(y2)))
+
+	if keep_order then
+		return x1, y1, x2, y2
+	end
+
 	if x1 > x2 then
 		x1, x2 = x2, x1
 	end
@@ -310,19 +315,20 @@ local function write_buffer(meta, bufnum, buffer)
 end
 
 local function runcommand(pos, meta, command)
-	if type(command) ~= "table"
-		or type(command.buffer) ~= "number"
-	then
+	if type(command) ~= "table" then
 		return
 	end
 
-	local bufnum = validate_buffer_address(command.buffer)
-	if not bufnum then
-		return
+	local bufnum
+	if command.command ~= "copy" then
+		bufnum = validate_buffer_address(command.buffer)
+		if not bufnum then
+			return
+		end
 	end
 
 	local buffer
-	if command.command ~= "createbuffer" then
+	if command.command ~= "createbuffer" and command.command ~= "copy" then
 		buffer = read_buffer(meta, bufnum)
 		if not buffer then
 			return
@@ -403,7 +409,7 @@ local function runcommand(pos, meta, command)
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawline" then
 		x1, y1, x2, y2 = validate_area(buffer,
-			command.x1, command.y1, command.x2, command.y2)
+			command.x1, command.y1, command.x2, command.y2, true)
 
 		if not x1 then
 			return
@@ -415,11 +421,16 @@ local function runcommand(pos, meta, command)
 		local length = 1 + vector.distance(p1, p2)
 		local dir = vector.direction(p1, p2)
 		local point
-		-- not the most eficient process for horizontal, vertical
-		-- or 45 degree lines
+		-- Not the most efficient process for horizontal, vertical
+		-- or 45 degree lines.
 		for i = 0, length, 0.3 do
 			point = vector.add(p1, vector.multiply(dir, i))
 			point = vector.floor(point)
+			-- Underflow check needed so we don't need more complicated code to
+			-- calculate dir in negative direction. Overflows are already capped
+			-- by initiation.
+			if 1 > point.x then point.x = 1 end
+			if 1 > point.y then point.y = 1 end
 			if command.antialias then
 				buffer[point.y][point.x] = blend(
 					buffer[point.y][point.x], color, "average")
@@ -443,16 +454,6 @@ local function runcommand(pos, meta, command)
 			return
 		end
 
-		x1, y1 = validate_area(buffer,
-			command.srcx, command.srcy, command.srcx, command.srcy)
-
-		x2, y2 = validate_area(buffer,
-			command.dstx, command.dsty, command.dstx, command.dsty)
-
-		if not (x1 and x2) then
-			return
-		end
-
 		local src = validate_buffer_address(command.src)
 		local dst = validate_buffer_address(command.dst)
 		if not (src and dst) then
@@ -462,6 +463,16 @@ local function runcommand(pos, meta, command)
 		local sourcebuffer = read_buffer(meta, src)
 		local destbuffer = read_buffer(meta, dst)
 		if not (sourcebuffer and destbuffer) then
+			return
+		end
+
+		x1, y1 = validate_area(sourcebuffer,
+			command.srcx, command.srcy, command.srcx, command.srcy)
+
+		x2, y2 = validate_area(destbuffer,
+			command.dstx, command.dsty, command.dstx, command.dsty)
+
+		if not (x1 and x2) then
 			return
 		end
 
@@ -664,3 +675,4 @@ minetest.register_craft({
 		{ "dye:red", "dye:green", "dye:blue" }
 	}
 })
+
