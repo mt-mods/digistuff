@@ -20,7 +20,7 @@ end
 local function modify_element_string(old, values)
 	local e = string.match(old, "^(.-)%[")
 	local element = formspec_elements[e]
-	if type(element) == "function" then
+	if type(element) ~= "table" then
 		return old  -- No-op for special elements, as there is no format string
 	end
 	local old_values = {string.match(old, element[5])}
