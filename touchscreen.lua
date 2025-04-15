@@ -156,7 +156,10 @@ local function create_formspec(meta, data)
 	if meta:get_int("no_prepend") == 1 then
 		fs = fs.."no_prepend[]"
 	end
-	if meta:get_int("real_coordinates") == 0 then
+	if (
+		meta:contains("real_coordinates") and meta:get_int("real_coordinates")
+		or meta:get_int("realcoordinates") -- old screen
+	) == 0 then
 		fs = fs.."real_coordinates[false]"
 	end
 	local focus = meta:get("focus")
