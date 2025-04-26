@@ -416,28 +416,28 @@ local function runcommand(pos, meta, command)
 		end
 
 		color = validate_color(command.color)
-		local p1 = vector.new(x1, y1, 0)
-		local p2 = vector.new(x2, y2, 0)
-		local length = 1 + vector.distance(p1, p2)
-		local dir = vector.direction(p1, p2)
-		local point
-		-- Not the most efficient process for horizontal, vertical
-		-- or 45 degree lines.
-		for i = 0, length, 0.3 do
-			point = vector.add(p1, vector.multiply(dir, i))
-			point = vector.floor(point)
-			-- Underflow check needed so we don't need more complicated code to
-			-- calculate dir in negative direction. Overflows are already capped
-			-- by initiation.
-			if 1 > point.x then point.x = 1 end
-			if 1 > point.y then point.y = 1 end
-			if command.antialias then
-				buffer[point.y][point.x] = blend(
-					buffer[point.y][point.x], color, "average")
-			else
-				buffer[point.y][point.x] = color
+
+		-- Bresenham's line algorithm
+		local dx = math.abs(x2 - x1)
+		local slope_x = x1 < x2 and 1 or -1
+		local dy = -math.abs(y2 - y1)
+		local slope_y = y1 < y2 and 1 or -1
+		local err = dx + dy
+
+		while true do
+			buffer[y1][x1] = color
+			if err >= dy / 2 then
+				if x1 == x2 then break end
+				err = err + dy
+				x1 = x1 + slope_x
+			end
+			if err <= dx / 2 then
+				if y1 == y2 then break end
+				err = err + dx
+				y1 = y1 + slope_y
 			end
 		end
+
 		write_buffer(meta, bufnum, buffer)
 	elseif command.command == "drawpoint" then
 		x1, y1 = validate_area(buffer, command.x, command.y, command.x, command.y)
