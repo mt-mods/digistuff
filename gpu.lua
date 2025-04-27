@@ -176,13 +176,16 @@ local function bitwiseblend(srcr, dstr, srcg, dstg, srcb, dstb, mode)
 		implodebits(drbits), implodebits(dgbits), implodebits(dbbits))
 end
 
+local function unpack_color(color)
+	local r = tonumber(string.sub(color, 1, 2), 16)
+	local g = tonumber(string.sub(color, 3, 4), 16)
+	local b = tonumber(string.sub(color, 5, 6), 16)
+	return r, g, b
+end
+
 local function blend(src, dst, mode, transparent)
-	local srcr = tonumber(string.sub(src, 1, 2), 16)
-	local srcg = tonumber(string.sub(src, 3, 4), 16)
-	local srcb = tonumber(string.sub(src, 5, 6), 16)
-	local dstr = tonumber(string.sub(dst, 1, 2), 16)
-	local dstg = tonumber(string.sub(dst, 3, 4), 16)
-	local dstb = tonumber(string.sub(dst, 5, 6), 16)
+	local srcr, srcg, srcb = unpack_color(src)
+	local dstr, dstg, dstb = unpack_color(dst)
 	local op = "normal"
 	if type(mode) == "string" then
 		op = string.lower(mode)
@@ -417,24 +420,77 @@ local function runcommand(pos, meta, command)
 
 		color = validate_color(command.color)
 
-		-- Bresenham's line algorithm
-		local dx = math.abs(x2 - x1)
-		local slope_x = x1 < x2 and 1 or -1
-		local dy = -math.abs(y2 - y1)
-		local slope_y = y1 < y2 and 1 or -1
-		local err = dx + dy
-
-		while true do
+		-- Handle horizontal and vertical lines
+		if x1 == x2 and y1 == y2 then
 			buffer[y1][x1] = color
-			if err >= dy / 2 then
-				if x1 == x2 then break end
-				err = err + dy
-				x1 = x1 + slope_x
+		elseif x1 == x2 then
+			for y = y1, y2 do
+				buffer[y][x1] = color
 			end
-			if err <= dx / 2 then
-				if y1 == y2 then break end
-				err = err + dx
-				y1 = y1 + slope_y
+		elseif y1 == y2 then
+			for x = x1, x2 do
+				buffer[y1][x] = color
+			end
+		end
+
+		-- Use Bresenham's line algorithm
+		local dx = math.abs(x2 - x1)
+		local dy = math.abs(y2 - y1)
+		local slope_x = x1 < x2 and 1 or -1
+		local slope_y = y1 < y2 and 1 or -1
+		local err = dx - dy
+		local err2
+
+		if command.antialias then
+			local function plot(x, y, alpha)
+				local srcr, srcg, srcb = unpack_color(buffer[y][x])
+				local dstr, dstg, dstb = unpack_color(color)
+
+				local r = math.floor(srcr + (dstr - srcr) * (1 - alpha))
+				local g = math.floor(srcg + (dstg - srcg) * (1 - alpha))
+				local b = math.floor(srcb + (dstb - srcb) * (1 - alpha))
+
+				buffer[y][x] = string.format("%02X%02X%02X", r, g, b)
+			end
+
+			local x1_copy
+			local distance = dx + dy == 0 and 1 or math.sqrt(dx * dx + dy * dy)
+
+			-- Plot pixels according to perpendicular distance
+			while true do
+				plot(x1, y1, math.abs(err - dx + dy) / distance)
+				err2, x1_copy = err, x1
+				if 2 * err2 >= -dx then
+					if x1 == x2 then break end
+					if err2 + dy < distance then
+						plot(x1, y1 + slope_y, (err2 + dy) / distance)
+					end
+					err, x1 = err - dy, x1 + slope_x
+				end
+				if 2 * err2 <= dy then
+					if y1 == y2 then break end
+					if dx - err2 < distance then
+						plot(x1_copy + slope_x, y1, (dx - err2) / distance)
+					end
+					err, y1 = err + dx, y1 + slope_y
+				end
+			end
+		else
+			dy = -dy
+
+			while true do
+				buffer[y1][x1] = color
+				err2 = err * 2
+				if err2 >= dy then
+					if x1 == x2 then break end
+					err = err + dy
+					x1 = x1 + slope_x
+				end
+				if err2 <= dx then
+					if y1 == y2 then break end
+					err = err + dx
+					y1 = y1 + slope_y
+				end
 			end
 		end
 
