@@ -423,14 +423,20 @@ local function runcommand(pos, meta, command)
 		-- Handle horizontal and vertical lines
 		if x1 == x2 and y1 == y2 then
 			buffer[y1][x1] = color
+			write_buffer(meta, bufnum, buffer)
+			return
 		elseif x1 == x2 then
 			for y = y1, y2 do
 				buffer[y][x1] = color
 			end
+			write_buffer(meta, bufnum, buffer)
+			return
 		elseif y1 == y2 then
 			for x = x1, x2 do
 				buffer[y1][x] = color
 			end
+			write_buffer(meta, bufnum, buffer)
+			return
 		end
 
 		-- Use Bresenham's line algorithm
