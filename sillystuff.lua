@@ -11,6 +11,7 @@ for i=0,15,1 do
 	local bit2 = i%8>4 and "1" or "0"
 	local bit3 = i%16>8 and "1" or "0"
 	heatsinkable_nodes["mesecons_luacontroller:luacontroller"..bit0..bit1..bit2..bit3] = true
+	heatsinkable_nodes["mooncontroller:mooncontroller" .. bit0 .. bit1 .. bit2 .. bit3] = true
 	heatsinkable_nodes["digistuff:ioexpander_"..i] = true
 end
 
