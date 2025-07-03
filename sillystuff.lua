@@ -5,13 +5,14 @@ local heatsinkable_nodes = {
 	["digistuff:eeprom"] = true,
 }
 
-for i=0,15,1 do
-	local bit0 = i%2>0 and "1" or "0"
-	local bit1 = i%4>2 and "1" or "0"
-	local bit2 = i%8>4 and "1" or "0"
-	local bit3 = i%16>8 and "1" or "0"
-	heatsinkable_nodes["mesecons_luacontroller:luacontroller"..bit0..bit1..bit2..bit3] = true
-	heatsinkable_nodes["digistuff:ioexpander_"..i] = true
+for i = 0, 15, 1 do
+	local bit0 = i % 2 > 0 and "1" or "0"
+	local bit1 = i % 4 > 1 and "1" or "0"
+	local bit2 = i % 8 > 3 and "1" or "0"
+	local bit3 = i % 16 > 7 and "1" or "0"
+	heatsinkable_nodes["mesecons_luacontroller:luacontroller" .. bit0 .. bit1 .. bit2 .. bit3] = true
+	heatsinkable_nodes["mooncontroller:mooncontroller" .. bit0 .. bit1 .. bit2 .. bit3] = true
+	heatsinkable_nodes["digistuff:ioexpander_" .. i] = true
 end
 
 minetest.register_node("digistuff:heatsink", {
