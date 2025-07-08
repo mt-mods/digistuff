@@ -41,7 +41,7 @@ local function search_for_players(pos, send_empty)
 	end
 	if #found > 0 or send_empty == true then
 		local channel = meta:get_string("channel")
-		digilines.receptor_send(pos, digilines.rules.default, channel, found)
+		digilines.receptor_send({x=pos.x, y=pos.y-1,z=pos.z}, digilines.rules.default, channel, found)
 	end
 	return true
 end
