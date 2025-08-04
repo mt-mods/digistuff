@@ -1,3 +1,7 @@
+local rules = table.copy(digilines.rules.default)
+-- 0,-1,0 rule is to allow the camera to conduct down its pole
+-- and into digimese/streets mod poles/etc., such as for traffic signals
+table.insert(rules, vector.new(0,-1,0))
 
 local formspec = "size[8,4]"..
 	"field[1.3,1;6,1;channel;Channel;${channel}]"..
@@ -41,7 +45,7 @@ local function search_for_players(pos, send_empty)
 	end
 	if #found > 0 or send_empty == true then
 		local channel = meta:get_string("channel")
-		digilines.receptor_send(pos, digilines.rules.default, channel, found)
+		digilines.receptor_send(pos, rules, channel, found)
 	end
 	return true
 end
@@ -121,7 +125,9 @@ minetest.register_node("digistuff:camera", {
 	on_timer = search_for_players,
 	on_punch = minetest.get_modpath("vizlib") and show_area or nil,
 	digiline = {
-		receptor = {},
+		receptor = {
+			rules = rules,
+		},
 		effector = {
 			action = function(pos, node, channel, msg)
 				local meta = minetest.get_meta(pos)
