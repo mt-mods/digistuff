@@ -61,6 +61,7 @@ minetest.register_node("digistuff:timer", {
 						meta:set_int("loop",0)
 					else
 						local time = tonumber(msg)
+						-- condition should catch NaN too
 						if time and time >= 0.5 and time <= 3600 then
 							local timer = minetest.get_node_timer(pos)
 							timer:start(time)
