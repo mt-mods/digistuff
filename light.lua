@@ -55,7 +55,7 @@ for i=0,14,1 do
 						local meta = minetest.get_meta(pos)
 						if meta:get_string("channel") ~= channel then return end
 						local value = tonumber(msg)
-						if (not value) or value > 14 or value < 0 then return end
+						if not (value and value <= 14 and value >= 0) then return end
 						node.name = "digistuff:light_"..math.floor(value)
 						minetest.swap_node(pos,node)
 					end
