@@ -286,7 +286,6 @@ core.register_node("digistuff:controller_programmed", {
 core.register_entity("digistuff:controller_entity", {
 	initial_properties = {
 		visual = "sprite",
-		physical = false,
 		pointable = false,
 		collisionbox = { 0, 0, 0, 0, 0, 0 },
 		textures = { "digistuff_transparent.png" },
