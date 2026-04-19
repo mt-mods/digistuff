@@ -108,7 +108,7 @@ end
 
 minetest.register_node("digistuff:panel", {
 	description = "Digilines Control Panel",
-	groups = {cracky=3},
+	groups = {cracky=3,not_blocking_trains = 1},
 	is_ground_content = false,
 	on_construct = function(pos)
 		local helpmsg = "Please set a channel."

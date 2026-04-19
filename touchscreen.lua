@@ -230,7 +230,7 @@ end
 
 minetest.register_node("digistuff:touchscreen", {
 	description = "Digilines Touchscreen",
-	groups = {cracky = 3},
+	groups = {cracky = 3, not_blocking_trains = 1},
 	is_ground_content = false,
 	tiles = {
 		"digistuff_panel_back.png",

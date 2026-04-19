@@ -1,5 +1,16 @@
+local groups_base = {
+	cracky = 1,
+	not_blocking_trains = 1,
+}
+
 for i=0,14,1 do
 	local mult = 255 - ((14-i)*12)
+
+	local groups = table.copy(groups_base)
+	if i > 0 then
+		groups.not_in_creative_inventory = 1
+	end
+
 	minetest.register_node("digistuff:light_"..i, {
 		drop = "digistuff:light_0",
 		description = "Digilines Dimmable Light"..(i > 0 and " (on state - you hacker you!)" or ""),
@@ -14,7 +25,7 @@ for i=0,14,1 do
 				}
 		},
 		_digistuff_channelcopier_fieldname = "channel",
-		groups = i > 0 and {cracky = 1, not_in_creative_inventory = 1} or {cracky = 1},
+		groups = groups,
 		is_ground_content = false,
 		light_source = i,
 		color = {r = mult,g = mult,b = mult},

@@ -89,7 +89,7 @@ minetest.register_node("digistuff:camera", {
 		}
 	},
 	sounds = default and default.node_sound_stone_defaults(),
-	groups = {cracky = 2},
+	groups = {cracky = 2, not_blocking_trains = 1},
 	is_ground_content = false,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)

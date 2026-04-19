@@ -103,11 +103,22 @@ local ioexp_handle_mesecons = function(pos,_,rule,state)
 	ioexp_digiline_send(pos)
 end
 
+local groups_base = {
+	cracky = 3,
+	not_blocking_trains = 1,
+}
+
 for i=0,15,1 do
 	local offstate = i == 0
+
+	local groups = table.copy(groups_base)
+	if not offstate then
+		groups.not_in_creative_inventory = 1
+	end
+
 	minetest.register_node("digistuff:ioexpander_"..i, {
 		description = offstate and "Digilines I/O Expander" or string.format("Digilines I/O Expander (on state %X - you hacker you!)",i),
-		groups = offstate and {cracky = 3,} or {cracky = 3,not_in_creative_inventory = 1,},
+		groups = groups,
 		is_ground_content = false,
 		on_construct = function(pos)
 			local meta = minetest.get_meta(pos)

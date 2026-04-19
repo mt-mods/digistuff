@@ -935,7 +935,7 @@ end
 
 minetest.register_node("digistuff:gpu", {
 	description = "Digilines 2D Graphics Processor",
-	groups = { cracky = 3 },
+	groups = { cracky = 3, not_blocking_trains = 1 },
 	is_ground_content = false,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
