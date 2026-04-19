@@ -764,6 +764,8 @@ local function runcommand(pos, meta, command)
 
 		if command.code:find('"', 1, true) or command.code:find("%[=*%[") then
 			return false, "Cannot create strings in shader code"
+		elseif command.code:find("..", 1, true) then
+			return false, "Cannot concatenate strings in shader code"
 		end
 
 		local ok, f, errmsg
