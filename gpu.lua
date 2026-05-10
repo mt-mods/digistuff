@@ -714,7 +714,7 @@ local function runcommand(pos, meta, command)
 		color = validate_color(command.color, "ff6600")
 		local char, px
 		for i = 1, string.len(command.text) do
-			char = font[string.byte(string.sub(command.text, i, i))]
+			char = font[string.byte(string.sub(command.text, i, i))] or font[32]
 			for chary = 1, 12 do
 				for charx = 1, 5 do
 					x2 = x1 + (i * 6 - 6)
