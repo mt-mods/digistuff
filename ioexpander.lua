@@ -106,6 +106,7 @@ end
 local groups_base = {
 	cracky = 3,
 	not_blocking_trains = 1,
+  heatsinkable = 1,
 }
 
 for i=0,15,1 do
