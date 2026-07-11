@@ -222,18 +222,17 @@ Noise:
 return math.random()*255, math.random()*255, math.random()*255
 ```
 
-Classic showcase of how RGB works:
+Circles:
 ```
-local radius = 16 -- radius, not named "r" because that would shadow the "r" global
+local radius = 16
 local dist = 10 -- distance between circles
 local cX, cY = x-(xsize/2), y-(ysize/2) -- center X, center Y
 local r2 = radius^2
 
-local red_circle   = r2 - (cX^2+(cY+dist)^2) -- thanks pythagoras
+local red_circle   = r2 - (cX^2+(cY+dist)^2)
 local green_circle = r2 - ((cX+dist)^2+cY^2)
 local blue_circle  = r2 - ((cX-dist)^2+cY^2)
 
--- make them solid
 red_circle, green_circle, blue_circle =
  math.min(1, red_circle)*255,
  math.min(1, green_circle)*255,
