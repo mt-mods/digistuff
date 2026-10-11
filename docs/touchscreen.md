@@ -249,7 +249,7 @@ digiline_send("touchscreen", {
 	H = 2,
 	name = "model",
 	mesh = "character.b3d",
-	textures = {character.png},
+	textures = {"character.png"},
 	rotation_x = 0,
 	rotation_y = 0,
 	continuous = false,
