@@ -254,6 +254,9 @@ digiline_send("touchscreen", {
 	rotation_y = 0,
 	continuous = false,
 	mouse_control = true,
+	frame_start = 0,
+	frame_end = 0,
+	animation_speed = 0,
 })
 ```
 

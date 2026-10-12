@@ -131,10 +131,10 @@ local formspec_elements = {
 		{num, num, num, num, str, str, num, num, num, middle}
 	},
 	model = {
-		"model[%s,%s;%s,%s;%s;%s;%s;%s,%s;%s;%s;0,0]",
-		{"X", "Y", "W", "H", "name", "mesh", "textures", "rotation_x", "rotation_y", "continuous", "mouse_control"},
-		{"0", "0", "2", "2", "model", "character.b3d", "character.png", "0", "0", "", ""},
-		{num, num, num, num, str, str, list, num, num, bool, bool}
+		"model[%s,%s;%s,%s;%s;%s;%s;%s,%s;%s;%s;%s,%s;%s]",
+		{"X", "Y", "W", "H", "name", "mesh", "textures", "rotation_x", "rotation_y", "continuous", "mouse_control", "frame_start", "frame_end", "animation_speed"},
+		{"0", "0", "2", "2", "model", "character.b3d", "character.png", "0", "0", "", "", "0", "0", "0"},
+		{num, num, num, num, str, str, list, num, num, bool, bool, num, num, num}
 	},
 	item_image = {
 		"item_image[%s,%s;%s,%s;%s]",
