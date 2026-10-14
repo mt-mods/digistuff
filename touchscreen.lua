@@ -133,7 +133,7 @@ local function process_command(meta, data, msg)
 end
 
 local function get_data(meta)
-	local data = minetest.deserialize(meta:get("data"))
+	local data = minetest.deserialize(meta:get_string("data"))
 	if data and type(data[1]) == "table" then
 		-- Old data, convert to new format
 		for i,v in ipairs(data) do
