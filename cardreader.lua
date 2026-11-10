@@ -15,7 +15,7 @@ local cardreader_rules = {
 
 minetest.register_craftitem("digistuff:card",{
 	description = "Blank Magnetic Card",
-	image = "digistuff_magnetic_card.png",
+	inventory_image = "digistuff_magnetic_card.png",
 	stack_max = 1,
 	on_use = function(stack,_,pointed)
 		local pos = pointed.under
