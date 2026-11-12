@@ -1,18 +1,32 @@
-local heatsinkable_nodes = {
-	["digistuff:nic"] = true,
-	["digistuff:gpu"] = true,
-	["digistuff:ram"] = true,
-	["digistuff:eeprom"] = true,
-}
 
 for i = 0, 15, 1 do
 	local bit0 = i % 2 > 0 and "1" or "0"
 	local bit1 = i % 4 > 1 and "1" or "0"
 	local bit2 = i % 8 > 3 and "1" or "0"
 	local bit3 = i % 16 > 7 and "1" or "0"
-	heatsinkable_nodes["mesecons_luacontroller:luacontroller" .. bit0 .. bit1 .. bit2 .. bit3] = true
-	heatsinkable_nodes["mooncontroller:mooncontroller" .. bit0 .. bit1 .. bit2 .. bit3] = true
-	heatsinkable_nodes["digistuff:ioexpander_" .. i] = true
+	local bits = bit0 .. bit1 .. bit2 .. bit3
+	do
+		local name = "mesecons_luacontroller:luacontroller" .. bits
+		local def = core.registered_nodes[name]
+		if def then
+			local groups = table.copy(def.groups)
+			groups.heatsinkable = 1
+			core.override_item(name, {
+				groups = groups
+			})
+		end
+	end
+	do
+		local name = "mooncontroller:mooncontroller" .. bits
+		local def = core.registered_nodes[name]
+		if def then
+			local groups = table.copy(def.groups)
+			groups.heatsinkable = 1
+			core.override_item(name, {
+				groups = groups
+			})
+		end
+	end
 end
 
 minetest.register_node("digistuff:heatsink", {
@@ -46,7 +60,7 @@ minetest.register_node("digistuff:heatsink", {
 	},
 	after_place_node = function(pos)
 		local icpos = vector.add(pos,vector.new(0,-1,0))
-		if heatsinkable_nodes[minetest.get_node(icpos).name] then
+		if core.get_item_group(core.get_node(icpos).name, "heatsinkable") then
 			minetest.set_node(pos,{name = "digistuff:heatsink_onic"})
 		end
 	end,
