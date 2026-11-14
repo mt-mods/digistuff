@@ -925,9 +925,7 @@ local function runcommand(pos, meta, command)
 		--- layer
 		for y = 1, buffer.ysize do
 			for x = 1, buffer.xsize do
-				if (changed_buffer[y] and changed_buffer[y][x]) then
-					buffer[y][x] = changed_buffer[y][x]
-				end
+				buffer[y][x] = changed_buffer[y] and changed_buffer[y][x] or buffer[y][x]
 			end
 		end
 
