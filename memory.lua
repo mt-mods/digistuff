@@ -73,8 +73,11 @@ minetest.register_node("digistuff:eeprom", {
 	after_place_node = function(pos,_,istack)
 		local meta = minetest.get_meta(pos)
 		local smeta = istack:get_meta()
+		local base64 = smeta:get_int("base64") == 1
 		for i=0,31,1 do
-			meta:set_string(string.format("data%02d",i),smeta:get_string(string.format("data%02d",i)))
+			local data = smeta:get_string(string.format("data%02d",i))
+			if base64 then data = minetest.decode_base64(data) end
+			meta:set_string(string.format("data%02d",i),data)
 		end
 		meta:set_string("channel",smeta:get_string("channel"))
 	end,
@@ -88,8 +91,11 @@ minetest.register_node("digistuff:eeprom", {
 		local istack = ItemStack("digistuff:eeprom")
 		local smeta = istack:get_meta()
 		for i=0,31,1 do
-			smeta:set_string(string.format("data%02d",i),meta:get_string(string.format("data%02d",i)))
+			local data = meta:get_string(string.format("data%02d",i))
+			data = minetest.encode_base64(data)
+			smeta:set_string(string.format("data%02d",i),data)
 		end
+		smeta:set_int("base64",1)
 		smeta:set_string("channel",meta:get_string("channel"))
 		minetest.remove_node(pos)
 		smeta:set_string("description","Digilines 128KBit EEPROM (with data)")
